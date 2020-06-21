@@ -37,7 +37,7 @@ body {
 }
 
 .white-rook {
-    background-image: url("Icons/white_rook.png");
+    background-image: url("icons/white_rook.png");
     background-size: 65% 70%;
 }
 
@@ -46,17 +46,17 @@ body {
 }
 
 .white-knight {
-    background-image: url("Icons/white_knight.png");
+    background-image: url("icons/white_knight.png");
     background-size: 70% 70%;
 }
 
 .white-bishop {
-    background-image: url("Icons/white_bishop.png");
+    background-image: url("icons/white_bishop.png");
     background-size: 70% 70%;
 }
 
 .white-queen {
-    background-image: url("Icons/white_queen.png");
+    background-image: url("icons/white_queen.png");
     background-size: 75% 70%;
 }
 
@@ -65,17 +65,17 @@ body {
 }
 
 .white-king {
-    background-image: url("Icons/white_king.png");
+    background-image: url("icons/white_king.png");
     background-size: 70% 70%;
 }
 
 .white-pawn {
-    background-image: url("Icons/white_pawn.png");
+    background-image: url("icons/white_pawn.png");
     background-size: 70% 70%;
 }
 
 .black-rook {
-    background-image: url("Icons/black_rook.png");
+    background-image: url("icons/black_rook.png");
     background-size: 65% 70%;
 }
 
@@ -84,27 +84,27 @@ body {
 }
 
 .black-knight {
-    background-image: url("Icons/black_knight.png");
+    background-image: url("icons/black_knight.png");
     background-size: 70% 70%;
 }
 
 .black-bishop {
-    background-image: url("Icons/black_bishop.png");
+    background-image: url("icons/black_bishop.png");
     background-size: 70% 70%;
 }
 
 .black-queen {
-    background-image: url("Icons/black_queen.png");
+    background-image: url("icons/black_queen.png");
     background-size: 70% 70%;
 }
 
 .black-king {
-    background-image: url("Icons/black_king.png");
+    background-image: url("icons/black_king.png");
     background-size: 70% 70%;
 }
 
 .black-pawn {
-    background-image: url("Icons/black_pawn.png");
+    background-image: url("icons/black_pawn.png");
     background-size: 70% 70%;
 }
 
