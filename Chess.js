@@ -641,6 +641,9 @@ function dot_event() {
     selected.classList.remove("selected")
     icon = selected.classList[2]
     selected.classList.remove(icon)
+    if (this.classList.length=== 3) {
+        this.classList.remove(this.classList[2])
+    }
     this.classList.add(icon)
     if (turn === "black") {
         if (icon === "black-rook") {
