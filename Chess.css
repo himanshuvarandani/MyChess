@@ -1,0 +1,117 @@
+body {
+    background-color: rgb(95, 181, 231);
+}
+
+.white {
+    background-color: rgb(248, 181, 104);
+    height: 80px;
+    max-width: 80px;
+    padding: 9px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.black {
+    background-color: rgb(77, 42, 2);
+    height: 80px;
+    max-width: 80px;
+    padding: 9px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.container {
+    margin: 80px auto;
+}
+
+.white:hover {
+    background-size: 80% 80%;
+}
+
+.black:hover {
+    background-size: 80% 80%;
+}
+
+.selected {
+    background-size: 80% 80% !important;
+}
+
+.white-rook {
+    background-image: url("Icons/white_rook.png");
+    background-size: 65% 70%;
+}
+
+.white-rook:hover {
+    background-size: 75% 80%;
+}
+
+.white-knight {
+    background-image: url("Icons/white_knight.png");
+    background-size: 70% 70%;
+}
+
+.white-bishop {
+    background-image: url("Icons/white_bishop.png");
+    background-size: 70% 70%;
+}
+
+.white-queen {
+    background-image: url("Icons/white_queen.png");
+    background-size: 75% 70%;
+}
+
+.white-queen:hover {
+    background-size: 85% 80%;
+}
+
+.white-king {
+    background-image: url("Icons/white_king.png");
+    background-size: 70% 70%;
+}
+
+.white-pawn {
+    background-image: url("Icons/white_pawn.png");
+    background-size: 70% 70%;
+}
+
+.black-rook {
+    background-image: url("Icons/black_rook.png");
+    background-size: 65% 70%;
+}
+
+.black-rook:hover {
+    background-size: 75% 80%;
+}
+
+.black-knight {
+    background-image: url("Icons/black_knight.png");
+    background-size: 70% 70%;
+}
+
+.black-bishop {
+    background-image: url("Icons/black_bishop.png");
+    background-size: 70% 70%;
+}
+
+.black-queen {
+    background-image: url("Icons/black_queen.png");
+    background-size: 70% 70%;
+}
+
+.black-king {
+    background-image: url("Icons/black_king.png");
+    background-size: 70% 70%;
+}
+
+.black-pawn {
+    background-image: url("Icons/black_pawn.png");
+    background-size: 70% 70%;
+}
+
+.dot {
+    background-color: seagreen;
+    border-radius: 50%;
+    height: 20%;
+    width: 20%;
+    margin: 40% 40%;
+}
