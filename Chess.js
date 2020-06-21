@@ -54,12 +54,20 @@ function white() {
         white_rooks[i].addEventListener("click", white_rook_movement)
     }
 
+    for (let i = 0; i < white_knights.length; i++) {
+        white_knights[i].addEventListener("click", white_knight_movement)
+    }
+
     for (let i = 0; i < white_bishops.length; i++) {
         white_bishops[i].addEventListener("click", white_bishop_movement)
     }
 
     for (let i = 0; i < white_queens.length; i++) {
         white_queens[i].addEventListener("click", white_queen_movement)
+    }
+
+    for (let i = 0; i < white_kings.length; i++) {
+        white_kings[i].addEventListener("click", white_king_movement)
     }
 
     for (let i = 0; i < white_pawns.length; i++) {
@@ -72,6 +80,12 @@ function white() {
         }
     }
 
+    for (let i = 0; i < black_knights.length; i++) {
+        if (black_knights[i].removeEventListener) {
+            black_knights[i].removeEventListener("click", black_knight_movement)
+        }
+    }
+
     for (let i = 0; i < black_bishops.length; i++) {
         if (black_bishops[i].removeEventListener) {
             black_bishops[i].removeEventListener("click", black_bishop_movement)
@@ -81,6 +95,12 @@ function white() {
     for (let i = 0; i < black_queens.length; i++) {
         if (black_queens[i].removeEventListener) {
             black_queens[i].removeEventListener("click", black_queen_movement)
+        }
+    }
+
+    for (let i = 0; i < black_kings.length; i++) {
+        if (black_kings[i].removeEventListener) {
+            black_kings[i].removeEventListener("click", black_king_movement)
         }
     }
 
@@ -110,12 +130,20 @@ function black() {
         black_rooks[i].addEventListener("click", black_rook_movement)
     }
 
+    for (let i = 0; i < black_knights.length; i++) {
+        black_knights[i].addEventListener("click", black_knight_movement)
+    }
+
     for (let i = 0; i < black_bishops.length; i++) {
         black_bishops[i].addEventListener("click", black_bishop_movement)
     }
 
     for (let i = 0; i < black_queens.length; i++) {
         black_queens[i].addEventListener("click", black_queen_movement)
+    }
+
+    for (let i = 0; i < black_kings.length; i++) {
+        black_kings[i].addEventListener("click", black_king_movement)
     }
 
     for (let i = 0; i < black_pawns.length; i++) {
@@ -128,6 +156,12 @@ function black() {
         }
     }
 
+    for (let i = 0; i < white_knights.length; i++) {
+        if (white_knights[i].removeEventListener) {
+            white_knights[i].removeEventListener("click", white_knight_movement)
+        }
+    }
+
     for (let i = 0; i < white_bishops.length; i++) {
         if (white_bishops[i].removeEventListener) {
             white_bishops[i].removeEventListener("click", white_bishop_movement)
@@ -137,6 +171,12 @@ function black() {
     for (let i = 0; i < white_queens.length; i++) {
         if (white_queens[i].removeEventListener) {
             white_queens[i].removeEventListener("click", white_queen_movement)
+        }
+    }
+
+    for (let i = 0; i < white_kings.length; i++) {
+        if (white_kings[i].removeEventListener) {
+            white_kings[i].removeEventListener("click", white_king_movement)
         }
     }
 
@@ -399,6 +439,94 @@ function black_pawn_movement() {
     }
 }
 
+function white_knight_movement() {
+    if (turn === "white") {
+        var flag = 1
+        if (selected) {
+            remove_dots()
+            selected.classList.remove("selected")
+
+            if (selected === this) {
+                selected = null
+                flag = 0
+            }
+        }
+        if (flag === 1) {
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            knight_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function black_knight_movement() {
+    if (turn === "black") {
+        var flag = 1
+        if (selected) {
+            remove_dots()
+            selected.classList.remove("selected")
+
+            if (selected === this) {
+                selected = null
+                flag = 0
+            }
+        }
+        if (flag === 1) {
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            knight_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function white_king_movement() {
+    if (turn === "white") {
+        var flag = 1
+        if (selected) {
+            remove_dots()
+            selected.classList.remove("selected")
+
+            if (selected === this) {
+                selected = null
+                flag = 0
+            }
+        }
+        if (flag === 1) {
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            king_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function black_king_movement() {
+    if (turn === "black") {
+        var flag = 1
+        if (selected) {
+            remove_dots()
+            selected.classList.remove("selected")
+
+            if (selected === this) {
+                selected = null
+                flag = 0
+            }
+        }
+        if (flag === 1) {
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            king_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
 function left_right_movement(id) {
     check_movement(id, 1, id - id % 10 + 8, id - id % 10 + 1)
 }
@@ -432,6 +560,34 @@ function cross_diagonal_movement(id) {
         min += (id - j) * 10
     }
     check_movement(id, 9, max, min)
+}
+
+function knight_movement(id) {
+    knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
+    for (let j = 0; j < 8; j++) {
+        dot = document.getElementById("" + String(knight_moves[j]))
+        if (dot) {
+            if (dot.classList.length < 3) {
+                add_dot(dot)
+            } else if (!(dot.classList[2][0] === turn[0])) {
+                add_dot(dot)
+            }
+        }
+    }
+}
+
+function king_movement(id) {
+    king_moves = [id-11, id-10, id-9, id-1, id+1, id+9, id+10, id+11]
+    for (let j = 0; j < 8; j++) {
+        dot = document.getElementById("" + String(king_moves[j]))
+        if (dot) {
+            if (dot.classList.length < 3) {
+                add_dot(dot)
+            } else if (!(dot.classList[2][0] === turn[0])) {
+                add_dot(dot)
+            }
+        }
+    }
 }
 
 function check_movement(id, k, max, min) {
@@ -489,10 +645,14 @@ function dot_event() {
     if (turn === "black") {
         if (icon === "black-rook") {
             selected.removeEventListener("click", black_rook_movement)
+        } else if (icon === "black-knight") {
+            selected.removeEventListener("click", black_knight_movement)
         } else if (icon === "black-bishop") {
             selected.removeEventListener("click", black_bishop_movement)
         } else if (icon === "black-queen") {
             selected.removeEventListener("click", black_queen_movement)
+        } else if (icon === "black-king") {
+            selected.removeEventListener("click", black_king_movement)
         } else if (icon === "black-pawn") {
             selected.removeEventListener("click", black_pawn_movement)
         }
@@ -501,10 +661,14 @@ function dot_event() {
     } else {
         if (icon === "white-rook") {
             selected.removeEventListener("click", white_rook_movement)
+        } else if (icon === "white-knight") {
+            selected.removeEventListener("click", white_knight_movement)
         } else if (icon === "white-bishop") {
             selected.removeEventListener("click", white_bishop_movement)
         } else if (icon === "white-queen") {
             selected.removeEventListener("click", white_queen_movement)
+        } else if (icon === "white-king") {
+            selected.removeEventListener("click", white_king_movement)
         } else if (icon === "white-pawn") {
             selected.removeEventListener("click", white_pawn_movement)
         }
