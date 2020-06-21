@@ -62,10 +62,29 @@ function white() {
         white_rooks[i].addEventListener("click", white_rook_movement)
     }
     
+    for (let i = 0; i < white_bishops.length; i++) {
+        white_bishops[i].addEventListener("click", white_bishop_movement)
+    }
+
+    for (let i = 0; i < white_queens.length; i++) {
+        white_queens[i].addEventListener("click", white_queen_movement)
+    }
+
     for (let i = 0; i < black_rooks.length; i++) {
         if (black_rooks[i].removeEventListener){
-            console.log(0)
             black_rooks[i].removeEventListener("click", black_rook_movement)
+        }
+    }
+
+    for (let i = 0; i < black_bishops.length; i++) {
+        if (black_bishops[i].removeEventListener){
+            black_bishops[i].removeEventListener("click", black_bishop_movement)
+        }
+    }
+
+    for (let i = 0; i < black_queens.length; i++) {
+        if (black_queens[i].removeEventListener){
+            black_queens[i].removeEventListener("click", black_queen_movement)
         }
     }
 }
@@ -89,10 +108,29 @@ function black() {
         black_rooks[i].addEventListener("click", black_rook_movement)
     }
 
+    for (let i = 0; i < black_bishops.length; i++) {
+        black_bishops[i].addEventListener("click", black_bishop_movement)
+    }
+
+    for (let i = 0; i < black_queens.length; i++) {
+        black_queens[i].addEventListener("click", black_queen_movement)
+    }
+
     for (let i = 0; i < white_rooks.length; i++) {
-        console.log(1)
         if (white_rooks[i].removeEventListener){
             white_rooks[i].removeEventListener("click", white_rook_movement)
+        }
+    }
+
+    for (let i = 0; i < white_bishops.length; i++) {
+        if (white_bishops[i].removeEventListener){
+            white_bishops[i].removeEventListener("click", white_bishop_movement)
+        }
+    }
+
+    for (let i = 0; i < white_queens.length; i++) {
+        if (white_queens[i].removeEventListener){
+            white_queens[i].removeEventListener("click", white_queen_movement)
         }
     }
 }
@@ -153,33 +191,163 @@ function black_rook_movement() {
     }
 }
 
-function left_right_movement(id) {
-    for(j=id+1;j<=id-id%10+8;j+=1){
-        dot = document.getElementById(""+String(j))
-        if(dot.classList.length<3){
-            add_dot(dot)
-        }else if(!(dot.classList[2][0]===turn[0])) {
-            add_dot(dot)
-            break
+function white_bishop_movement() {
+    if(turn==="white"){
+        if(selected){
+            remove_dots()
+
+            if(selected===this){
+                this.classList.remove("selected")
+                selected = null
+            }else{
+                selected.classList.remove("selected")
+                selected = this
+                selected.classList.add("selected")
+                var id = Number(this.id)
+                main_diagonal_movement(id)
+                cross_diagonal_movement(id)
+                add_event_to_dots()
+            }
         }else{
-            break
-        }
-    }
-    for(j=id-1;j>=id-id%10+1;j-=1){
-        dot = document.getElementById(""+String(j))
-        if(dot.classList.length<3){
-            add_dot(dot)
-        }else if(!(dot.classList[2][0]===turn[0])) {
-            add_dot(dot)
-            break
-        }else{
-            break
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            main_diagonal_movement(id)
+            cross_diagonal_movement(id)
+            add_event_to_dots()
         }
     }
 }
 
+function black_bishop_movement() {
+    if(turn==="black"){
+        if(selected){
+            remove_dots()
+
+            if(selected===this){
+                this.classList.remove("selected")
+                selected = null
+            }else{
+                selected.classList.remove("selected")
+                selected = this
+                selected.classList.add("selected")
+                var id = Number(this.id)
+                main_diagonal_movement(id)
+                cross_diagonal_movement(id)
+                add_event_to_dots()
+            }
+        }else{
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            main_diagonal_movement(id)
+            cross_diagonal_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function white_queen_movement() {
+    if(turn==="white"){
+        if(selected){
+            remove_dots()
+
+            if(selected===this){
+                this.classList.remove("selected")
+                selected = null
+            }else{
+                selected.classList.remove("selected")
+                selected = this
+                selected.classList.add("selected")
+                var id = Number(this.id)    
+                up_down_movement(id)
+                left_right_movement(id)
+                main_diagonal_movement(id)
+                cross_diagonal_movement(id)
+                add_event_to_dots()
+            }
+        }else{
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            up_down_movement(id)
+            left_right_movement(id)
+            main_diagonal_movement(id)
+            cross_diagonal_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function black_queen_movement() {
+    if(turn==="black"){
+        if(selected){
+            remove_dots()
+
+            if(selected===this){
+                this.classList.remove("selected")
+                selected = null
+            }else{
+                selected.classList.remove("selected")
+                selected = this
+                selected.classList.add("selected")
+                var id = Number(this.id)
+                up_down_movement(id)
+                left_right_movement(id)
+                main_diagonal_movement(id)
+                cross_diagonal_movement(id)
+                add_event_to_dots()
+            }
+        }else{
+            selected = this
+            selected.classList.add("selected")
+            var id = Number(this.id)
+            up_down_movement(id)
+            left_right_movement(id)
+            main_diagonal_movement(id)
+            cross_diagonal_movement(id)
+            add_event_to_dots()
+        }
+    }
+}
+
+function left_right_movement(id) {
+    check_movement(id, 1, id-id%10+8, id-id%10+1)
+}
+
 function up_down_movement(id) {
-    for(j=id+10;j<=88;j+=10){
+    check_movement(id, 10, 88, 11)
+}
+
+function main_diagonal_movement(id) {
+    var max = 88
+    var min = 11
+    var j = id-id%10
+    j += j/10
+    if (j<id){
+        max -= (id-j)*10
+    }else{
+        min += (j-id)*10
+    }
+    check_movement(id, 11, max, min)
+}
+
+function cross_diagonal_movement(id) {
+    var max = 88
+    var min = 11
+    var j = id-id%10
+    j -= j/10
+    j += 9
+    if (j>id){
+        max -= (j-id)*10
+    }else{
+        min += (id-j)*10
+    }
+    check_movement(id, 9, max, min)
+}
+
+function check_movement(id, k, max, min) {
+    for(j=id+k;j<=max;j+=k){
         dot = document.getElementById(""+String(j))
         if(dot.classList.length<3){
             add_dot(dot)
@@ -190,7 +358,7 @@ function up_down_movement(id) {
             break
         }
     }
-    for(j=id-10;j>=11;j-=10){
+    for(j=id-k;j>=min;j-=k){
         dot = document.getElementById(""+String(j))
         if(dot.classList.length<3){
             add_dot(dot)
