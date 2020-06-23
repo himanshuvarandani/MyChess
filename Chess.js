@@ -637,6 +637,8 @@ function white_pawn_movement_check(id) {
                 } else {
                     add_dot(dot)
                 }
+            } else {
+                break
             }
         }
     } else {
@@ -754,6 +756,8 @@ function black_pawn_movement_check(id) {
                 } else {
                     add_dot(dot)
                 }
+            } else {
+                break
             }
         }
     } else {
@@ -906,6 +910,14 @@ function white_king_movement() {
 
             white_king_movement_check(id)
 
+            if (possible_id.length) {
+                for (let i = 0; i < possible_id.length; i++) {
+                    dot = document.getElementById(possible_id[i])
+                    add_dot(dot)
+                }
+                possible_id = []
+            }
+
             add_event_to_dots()
         }
     }
@@ -1028,9 +1040,17 @@ function white_king_movement_check(id) {
 
         if (!check) {
             if (place.classList.length < 3) {
-                add_dot(place)
+                if (checked) {
+                    possible_id.push(place.id)
+                } else {
+                    add_dot(place)
+                }
             } else if (!(place.classList[2][0] === turn[0])) {
-                add_dot(place)
+                if (checked) {
+                    possible_id.push(place.id)
+                } else {
+                    add_dot(place)
+                }
             }
         }
     }
@@ -1057,7 +1077,15 @@ function black_king_movement() {
 
             var id = Number(this.id)
 
-            black_king_movement_check()
+            black_king_movement_check(id)
+
+            if (possible_id.length) {
+                for (let i = 0; i < possible_id.length; i++) {
+                    dot = document.getElementById(possible_id[i])
+                    add_dot(dot)
+                }
+                possible_id = []
+            }
 
             add_event_to_dots()
         }
@@ -1181,9 +1209,17 @@ function black_king_movement_check(id) {
 
         if (!check) {
             if (place.classList.length < 3) {
-                add_dot(place)
+                if (checked) {
+                    possible_id.push(place.id)
+                } else {
+                    add_dot(place)
+                }
             } else if (!(place.classList[2][0] === turn[0])) {
-                add_dot(place)
+                if (checked) {
+                    possible_id.push(place.id)
+                } else {
+                    add_dot(place)
+                }
             }
         }
     }
@@ -1193,7 +1229,7 @@ function black_king_movement_check(id) {
 function knight_movement(id) {
     var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
 
-    // if any of these id don't have opposite icon then add dot
+    // if any of these id don't have opposite scout then add dot
     for (let j = 0; j < 8; j++) {
         dot = document.getElementById("" + String(knight_moves[j]))
 
@@ -1239,9 +1275,11 @@ function king_movement(id, place_id, k, check) {
                 return check
             }
             
-            // if this id have any icon then break
+            // if this id have any scout then break
             if (!(dot.classList.length < 3)) {
-                break
+                if (!(dot.classList[2] === turn+"-king")) {
+                    break
+                }
             }
         } else {
             break
@@ -1260,9 +1298,11 @@ function king_movement(id, place_id, k, check) {
                 return check
             }
             
-            // if this id have any icon then break
+            // if this id have any scout then break
             if (!(dot.classList.length < 3)) {
-                break
+                if (!(dot.classList[2] === turn+"-king")) {
+                    break
+                }
             }
         } else {
             break
@@ -1280,8 +1320,8 @@ function check_movement(id, k) {
 
         // check if id is available otherwise break as other id's are also not available
         if (dot) {
-            // if this id don't have any icon then add dot and 
-            // if it has opposite icon then add dot and break
+            // if this id don't have any scout then add dot and 
+            // if it has opposite scout then add dot and break
             // and break otherwise
             if (dot.classList.length < 3) {
                 if (checked) {
@@ -1320,8 +1360,8 @@ function check_movement(id, k) {
 
         // check if id is available otherwise break as other id's are also not available
         if (dot) {
-            // if this id don't have any icon then add dot and 
-            // if it has opposite icon then add dot and break
+            // if this id don't have any scout then add dot and 
+            // if it has opposite scout then add dot and break
             // and break otherwise
             if (dot.classList.length < 3) {
                 if (checked) {
@@ -1403,27 +1443,27 @@ function dot_event() {
     }
 
     selected.classList.remove("selected")
-    icon = selected.classList[2]
-    selected.classList.remove(icon)
+    scout = selected.classList[2]
+    selected.classList.remove(scout)
     
     if (this.classList.length=== 3) {
         this.classList.remove(this.classList[2])
     }
-    this.classList.add(icon)
+    this.classList.add(scout)
 
     if (turn === "black") {
         // remove event listener from slected id
-        if (icon === "black-rook") {
+        if (scout === "black-rook") {
             selected.removeEventListener("click", black_rook_movement)
-        } else if (icon === "black-knight") {
+        } else if (scout === "black-knight") {
             selected.removeEventListener("click", black_knight_movement)
-        } else if (icon === "black-bishop") {
+        } else if (scout === "black-bishop") {
             selected.removeEventListener("click", black_bishop_movement)
-        } else if (icon === "black-queen") {
+        } else if (scout === "black-queen") {
             selected.removeEventListener("click", black_queen_movement)
-        } else if (icon === "black-king") {
+        } else if (scout === "black-king") {
             selected.removeEventListener("click", black_king_movement)
-        } else if (icon === "black-pawn") {
+        } else if (scout === "black-pawn") {
             selected.removeEventListener("click", black_pawn_movement)
         }
 
@@ -1436,21 +1476,21 @@ function dot_event() {
             white_check_mate()
         }
 
-        // add event listener to white icons
+        // add event listener to white scouts
         white("add")
     } else {
         // remove event listener from slected id
-        if (icon === "white-rook") {
+        if (scout === "white-rook") {
             selected.removeEventListener("click", white_rook_movement)
-        } else if (icon === "white-knight") {
+        } else if (scout === "white-knight") {
             selected.removeEventListener("click", white_knight_movement)
-        } else if (icon === "white-bishop") {
+        } else if (scout === "white-bishop") {
             selected.removeEventListener("click", white_bishop_movement)
-        } else if (icon === "white-queen") {
+        } else if (scout === "white-queen") {
             selected.removeEventListener("click", white_queen_movement)
-        } else if (icon === "white-king") {
+        } else if (scout === "white-king") {
             selected.removeEventListener("click", white_king_movement)
-        } else if (icon === "white-pawn") {
+        } else if (scout === "white-pawn") {
             selected.removeEventListener("click", white_pawn_movement)
         }
 
@@ -1463,7 +1503,7 @@ function dot_event() {
             black_check_mate()
         }
 
-        // add event listener to black icons 
+        // add event listener to black scouts 
         black("add")
     }
 
@@ -1478,7 +1518,7 @@ function check_king_movement(id, k, king) {
 
         // check if id is available otherwise break as other id's are also not available
         if (dot) {
-            // if this id have any icon then
+            // if this id have any scout then
             // check if it has opposite king then add dot and break
             if (!(dot.classList.length < 3)) {
                 if (dot === king) {
@@ -1509,7 +1549,7 @@ function check_king_movement(id, k, king) {
 
         // check if id is available otherwise break as other id's are also not available
         if (dot) {
-            // if this id have any icon then
+            // if this id have any scout then
             // check if it has opposite king then add dot and break
             if (!(dot.classList.length < 3)) {
                 if (dot === king) {
@@ -1554,31 +1594,31 @@ function white_check_mate() {
 
     for (let i = 0; i < white_rooks.length; i++) {
         // left-right-movement
-        check_movement(white_rooks[i], 1)
+        check_movement(Number(white_rooks[i].id), 1)
         // up-down-movement
-        check_movement(white_rooks[i], 10)
+        check_movement(Number(white_rooks[i].id), 10)
     }
 
     for (let i = 0; i < white_knights.length; i++) {
-        knight_movement(white_knights[i])
+        knight_movement(Number(white_knights[i].id))
     }
 
     for (let i = 0; i < white_bishops.length; i++) {
         // main-diagonal-movement
-        check_movement(white_bishops[i], 11)
+        check_movement(Number(white_bishops[i].id), 11)
         // cross-diagonal-movement
-        check_movement(white_bishops[i], 9)
+        check_movement(Number(white_bishops[i].id), 9)
     }
 
     if (white_queen) {        
         // left-right-movement
-        check_movement(white_queen[i], 1)
+        check_movement(Number(white_queen.id), 1)
         // up-down-movement
-        check_movement(white_queen[i], 10)
+        check_movement(Number(white_queen.id), 10)
         // main-diagonal-movement
-        check_movement(white_queen[i], 11)
+        check_movement(Number(white_queen.id), 11)
         // cross-diagonal-movement
-        check_movement(white_queen[i], 9)
+        check_movement(Number(white_queen.id), 9)
     }
 
     white_king_movement_check(Number(white_king.id))
@@ -1590,6 +1630,8 @@ function white_check_mate() {
     if (!possible_id.length) {
         alert("Check Mate")
     }
+
+    possible_id = []
 }
 
 
@@ -1603,31 +1645,31 @@ function black_check_mate() {
 
     for (let i = 0; i < black_rooks.length; i++) {
         // left-right-movement
-        check_movement(black_rooks[i], 1)
+        check_movement(Number(black_rooks[i].id), 1)
         // up-down-movement
-        check_movement(black_rooks[i], 10)
+        check_movement(Number(black_rooks[i].id), 10)
     }
 
     for (let i = 0; i < black_knights.length; i++) {
-        knight_movement(black_knights[i])
+        knight_movement(Number(black_knights[i].id))
     }
 
     for (let i = 0; i < black_bishops.length; i++) {
         // main-diagonal-movement
-        check_movement(black_bishops[i], 11)
+        check_movement(Number(black_bishops[i].id), 11)
         // cross-diagonal-movement
-        check_movement(black_bishops[i], 9)
+        check_movement(Number(black_bishops[i].id), 9)
     }
 
     if (black_queen) {        
         // left-right-movement
-        check_movement(black_queen[i], 1)
+        check_movement(Number(black_queen.id), 1)
         // up-down-movement
-        check_movement(black_queen[i], 10)
+        check_movement(Number(black_queen.id), 10)
         // main-diagonal-movement
-        check_movement(black_queen[i], 11)
+        check_movement(Number(black_queen.id), 11)
         // cross-diagonal-movement
-        check_movement(black_queen[i], 9)
+        check_movement(Number(black_queen.id), 9)
     }
 
     black_king_movement_check(Number(black_king.id))
@@ -1639,4 +1681,6 @@ function black_check_mate() {
     if (!possible_id.length) {
         alert("Check Mate")
     }
+
+    possible_id = []
 }

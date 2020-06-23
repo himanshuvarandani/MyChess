@@ -28,14 +28,17 @@ body {
 
 .white:hover {
     background-size: 80% 80%;
+    cursor: pointer;
 }
 
 .black:hover {
     background-size: 80% 80%;
+    cursor: pointer;
 }
 
 .selected {
     background-size: 80% 80% !important;
+    background-color: rgb(129, 110, 3);
 }
 
 .white-rook {
