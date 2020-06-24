@@ -7,6 +7,7 @@ var black_pawn_default_id = ["71", "72", "73", "74", "75", "76", "77", "78"]
 var check_list = []
 var number_of_checks = 0
 var possible_id = []
+var movement_possibility = true
 
 
 reset()
@@ -356,10 +357,7 @@ function white_rook_movement() {
 
             var id = Number(this.id)
 
-            // left-right-movement
-            check_movement(id, 1)
-            // up-down-movement
-            check_movement(id, 10)
+            rook_movement(id)
 
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
@@ -395,11 +393,8 @@ function black_rook_movement() {
 
             var id = Number(this.id)
 
-            // left-right-movement
-            check_movement(id, 1)
-            // up-down-movement
-            check_movement(id, 10)
-
+            rook_movement(id)
+            
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
                     dot = document.getElementById(possible_id[i])
@@ -411,6 +406,35 @@ function black_rook_movement() {
             add_event_to_dots()
         }
     }
+}
+
+
+function rook_movement(id) {
+    // check if it is removed then king have checked or not
+    // for main-diagonal-movement
+    movement_possible_or_not(id, 11)
+    // for cross-diagonal-movement
+    movement_possible_or_not(id, 9)
+
+    if (movement_possibility) {
+        // for left-right-movement
+        movement_possible_or_not(id, 1)
+        var left_right = movement_possibility
+        movement_possibility = true
+        // for up-down-movement
+        movement_possible_or_not(id, 10)
+        var up_down = movement_possibility
+        
+        if (!left_right) {
+            check_movement(id, 1)
+        } else if (!up_down){
+            check_movement(id, 10)
+        } else {
+            check_movement(id, 1)
+            check_movement(id, 10)
+        }
+    }
+    movement_possibility = true
 }
 
 
@@ -434,10 +458,7 @@ function white_bishop_movement() {
 
             var id = Number(this.id)
 
-            // main-diagonal-movement
-            check_movement(id, 11)
-            // cross-diagonal-movement
-            check_movement(id, 9)
+            bishop_movement(id)
 
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
@@ -473,10 +494,7 @@ function black_bishop_movement() {
 
             var id = Number(this.id)
 
-            // main-diagonal-movement
-            check_movement(id, 11)
-            // cross-diagonal-movement
-            check_movement(id, 9)
+            bishop_movement(id)
 
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
@@ -489,6 +507,35 @@ function black_bishop_movement() {
             add_event_to_dots()
         }
     }
+}
+
+
+function bishop_movement(id) {
+    // check if it is removed then king have checked or not
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+
+    if (movement_possibility) {
+        // for main-digonal-movement
+        movement_possible_or_not(id, 11)
+        var main_diagonal = movement_possibility
+        movement_possibility = true
+        // for cross-diaonal-movement
+        movement_possible_or_not(id, 9)
+        var cross_diagonal = movement_possibility
+        
+        if (!main_diagonal) {
+            check_movement(id, 11)
+        } else if (!cross_diagonal){
+            check_movement(id, 9)
+        } else {
+            check_movement(id, 11)
+            check_movement(id, 9)
+        }
+    }
+    movement_possibility = true
 }
 
 
@@ -512,14 +559,7 @@ function white_queen_movement() {
 
             var id = Number(this.id)
 
-            // left-right-movement
-            check_movement(id, 1)
-            // up-down-movement
-            check_movement(id, 10)
-            // main-diagonal-movement
-            check_movement(id, 11)
-            // cross-diagonal-movement
-            check_movement(id, 9)
+            queen_movement(id)
 
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
@@ -555,14 +595,7 @@ function black_queen_movement() {
 
             var id = Number(this.id)
 
-            // left-right-movement
-            check_movement(id, 1)
-            // up-down-movement
-            check_movement(id, 10)
-            // main-diagonal-movement
-            check_movement(id, 11)
-            // cross-diagonal-movement
-            check_movement(id, 9)
+            queen_movement(id)
 
             if (possible_id.length) {
                 for (let i = 0; i < possible_id.length; i++) {
@@ -575,6 +608,43 @@ function black_queen_movement() {
             add_event_to_dots()
         }
     }
+}
+
+
+function queen_movement(id) {
+    // check if it is removed then king have checked or not
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    var left_right = movement_possibility
+    movement_possibility = true
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+    var up_down = movement_possibility
+    movement_possibility = true
+    // for main-digonal-movement
+    movement_possible_or_not(id, 11)
+    var main_diagonal = movement_possibility
+    movement_possibility = true
+    // for cross-diaonal-movement
+    movement_possible_or_not(id, 9)
+    var cross_diagonal = movement_possibility
+    movement_possibility = true
+    
+    if (!left_right) {
+        check_movement(id, 1)
+    } else if (!up_down){
+        check_movement(id, 10)
+    } else if (!main_diagonal) {
+        check_movement(id, 11)
+    } else if (!cross_diagonal){
+        check_movement(id, 9)
+    } else {
+        check_movement(id, 1)
+        check_movement(id, 10)
+        check_movement(id, 11)
+        check_movement(id, 9)
+    }
+    movement_possibility = true
 }
 
 
@@ -615,6 +685,43 @@ function white_pawn_movement() {
 
 
 function white_pawn_movement_check(id) {
+    // check if it is removed then king have checked or not
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    var left_right = movement_possibility
+    movement_possibility = true
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+    var up_down = movement_possibility
+    movement_possibility = true
+    // for main-digonal-movement
+    movement_possible_or_not(id, 11)
+    var main_diagonal = movement_possibility
+    movement_possibility = true
+    // for cross-diaonal-movement
+    movement_possible_or_not(id, 9)
+    var cross_diagonal = movement_possibility
+    movement_possibility = true
+
+    if (left_right) {
+        if (!up_down) {
+            pawn_white_forward_move(id)
+        } else if (!main_diagonal) {
+            // check for right forward move
+            pawn_diagonal_move(id, 11)
+        } else if (!cross_diagonal) {
+            // check for left forward move
+            pawn_diagonal_move(id, 9)
+        } else {
+            pawn_white_forward_move(id)
+            pawn_diagonal_move(id, 11)
+            pawn_diagonal_move(id, 9)
+        }
+    }
+}
+
+
+function pawn_white_forward_move(id) {
     // checks if white pawn is at the startng or not
     for (var j = 0; j < 8; j++) {
         if (white_pawn_default_id[j] === String(id)) {
@@ -624,75 +731,9 @@ function white_pawn_movement_check(id) {
 
     // if pawn is at default id then check for 2 forward moves otherwise check for only 1 forward move
     if (white_pawn_default_id[j] === String(id)) {
-        for (j = 10; j <= 20; j += 10) {
-            dot = document.getElementById("" + String(id + j))
-            if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            } else {
-                break
-            }
-        }
+        pawn_default_forward_move(id, 1)
     } else {
-        dot = document.getElementById("" + String(id + 10))
-        if (dot.classList.length < 3) {
-            if (checked) {
-                for (let i = 0; i < check_list.length; i++) {
-                    if (dot.id === String(check_list[i])) {
-                        possible_id.push(dot.id)
-                        break
-                    }
-                }
-            } else {
-                add_dot(dot)
-            }
-        }
-    }
-
-    // check for right forward move
-    dot = document.getElementById("" + String(id + 11))
-    if (dot) {
-        if (dot.classList.length === 3) {
-            if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            }
-        }
-    }
-
-    // check for left forward move
-    dot = document.getElementById("" + String(id + 9))
-    if (dot) {
-        if (dot.classList.length === 3) {
-            if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            }
-        }
+        pawn_forward_move(id, 1)
     }
 }
 
@@ -734,6 +775,43 @@ function black_pawn_movement() {
 
 
 function black_pawn_movement_check(id) {
+    // check if it is removed then king have checked or not
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    var left_right = movement_possibility
+    movement_possibility = true
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+    var up_down = movement_possibility
+    movement_possibility = true
+    // for main-digonal-movement
+    movement_possible_or_not(id, 11)
+    var main_diagonal = movement_possibility
+    movement_possibility = true
+    // for cross-diaonal-movement
+    movement_possible_or_not(id, 9)
+    var cross_diagonal = movement_possibility
+    movement_possibility = true
+
+    if (left_right) {
+        if (!up_down) {
+            pawn_black_forward_move(id)
+        } else if (!main_diagonal) {
+            // check for right forward move
+            pawn_diagonal_move(id, -11)
+        } else if (!cross_diagonal) {
+            // check for left forward move
+            pawn_diagonal_move(id, -9)
+        } else {
+            pawn_black_forward_move(id)
+            pawn_diagonal_move(id, -11)
+            pawn_diagonal_move(id, -9)
+        }
+    }
+}
+
+
+function pawn_black_forward_move(id) {
     // checks if black pawn is at the startng or not
     for (var j = 0; j < 8; j++) {
         if (black_pawn_default_id[j] === String(id)) {
@@ -743,25 +821,16 @@ function black_pawn_movement_check(id) {
 
     // if pawn is at default id then check for 2 forward moves otherwise check for only 1 forward move
     if (black_pawn_default_id[j] === String(id)) {
-        for (j = 10; j <= 20; j += 10) {
-            dot = document.getElementById("" + String(id - j))
-            if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            } else {
-                break
-            }
-        }
+        pawn_default_forward_move(id, -1)
     } else {
-        dot = document.getElementById("" + String(id - 10))
+        pawn_forward_move(id, -1)
+    }
+}
+
+
+function pawn_default_forward_move(id, k) {
+    for (j = 10; j <= 20; j += 10) {
+        dot = document.getElementById("" + String(id + j*k))
         if (dot.classList.length < 3) {
             if (checked) {
                 for (let i = 0; i < check_list.length; i++) {
@@ -773,31 +842,33 @@ function black_pawn_movement_check(id) {
             } else {
                 add_dot(dot)
             }
+        } else {
+            break
         }
     }
+}
 
-    // check for left forward move
-    if (id % 10 > 1) {
-        dot = document.getElementById("" + String(id - 11))
-        if (dot.classList.length === 3) {
-            if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
+
+function pawn_forward_move(id, k) {
+    dot = document.getElementById("" + String(id + 10*k))
+    if (dot.classList.length < 3) {
+        if (checked) {
+            for (let i = 0; i < check_list.length; i++) {
+                if (dot.id === String(check_list[i])) {
+                    possible_id.push(dot.id)
+                    break
                 }
             }
+        } else {
+            add_dot(dot)
         }
     }
+}
 
-    // check for right forward move
-    if (id % 10 < 8) {
-        dot = document.getElementById("" + String(id - 9))
+
+function pawn_diagonal_move(id, k) {
+    dot = document.getElementById("" + String(id + k))
+    if (dot) {
         if (dot.classList.length === 3) {
             if (!(dot.classList[2][0] === turn[0])) {
                 if (checked) {
@@ -883,6 +954,62 @@ function black_knight_movement() {
             }
 
             add_event_to_dots()
+        }
+    }
+}
+
+
+function knight_movement(id) {
+    // check if it is removed then king have checked or not
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    var left_right = movement_possibility
+    movement_possibility = true
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+    var up_down = movement_possibility
+    movement_possibility = true
+    // for main-digonal-movement
+    movement_possible_or_not(id, 11)
+    var main_diagonal = movement_possibility
+    movement_possibility = true
+    // for cross-diaonal-movement
+    movement_possible_or_not(id, 9)
+    var cross_diagonal = movement_possibility
+    movement_possibility = true
+    
+    if (left_right && up_down && main_diagonal && cross_diagonal) {
+        var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
+
+        // if any of these id don't have opposite scout then add dot
+        for (let j = 0; j < 8; j++) {
+            dot = document.getElementById("" + String(knight_moves[j]))
+
+            if (dot) {
+                if (dot.classList.length < 3) {
+                    if (checked) {
+                        for (let i = 0; i < check_list.length; i++) {
+                            if (dot.id === String(check_list[i])) {
+                                possible_id.push(dot.id)
+                                break
+                            }
+                        }
+                    } else {
+                        add_dot(dot)
+                    }
+                } else if (!(dot.classList[2][0] === turn[0])) {
+                    if (checked) {
+                        for (let i = 0; i < check_list.length; i++) {
+                            if (dot.id === String(check_list[i])) {
+                                possible_id.push(dot.id)
+                                break
+                            }
+                        }
+                    } else {
+                        add_dot(dot)
+                    }
+                }
+            }
         }
     }
 }
@@ -1226,42 +1353,6 @@ function black_king_movement_check(id) {
 }
 
 
-function knight_movement(id) {
-    var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
-
-    // if any of these id don't have opposite scout then add dot
-    for (let j = 0; j < 8; j++) {
-        dot = document.getElementById("" + String(knight_moves[j]))
-
-        if (dot) {
-            if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            } else if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            }
-        }
-    }
-}
-
-
 function king_movement(id, place_id, k, check) {
     // check for downward id's w.r.t. board
     for (let j = id + k; j <= 88; j += k) {
@@ -1387,6 +1478,80 @@ function check_movement(id, k) {
                 }
                 break
             } else {
+                break
+            }
+        } else {
+            break
+        }
+    }
+}
+
+
+function movement_possible_or_not(id, k) {
+    var opposite_scout = false
+    var same_king = false
+
+    // check for downward id's w.r.t. board
+    for (j = id + k; j <= 88; j += k) {
+        dot = document.getElementById("" + String(j))
+
+        // check if id is available otherwise break as other id's are also not available
+        if (dot) {
+            // if this id don't have any scout then add dot and 
+            // if it has opposite scout then add dot and break
+            // and break otherwise
+            if (!(dot.classList.length < 3)) {
+                if (dot.classList[2][0] === turn[0]) {
+                    if (dot.classList[2] === turn+"-king") {
+                        same_king = true
+                    }
+                } else {
+                    if (k === 10 || k === 1) {
+                        if (dot.classList[2].substring(6) === "rook" || dot.classList[2].substring(6) === "queen") {
+                            opposite_scout = true
+                        }
+                    } else if (k === 11 || k === 9) {
+                        if (dot.classList[2].substring(6) === "bishop" || dot.classList[2].substring(6) === "queen") {
+                            opposite_scout = true
+                        }
+                    }
+                }
+                break
+            }
+        } else {
+            break
+        }
+    }
+
+    //check for upward id's w.r.t. board
+    for (j = id - k; j >= 11; j -= k) {
+        dot = document.getElementById("" + String(j))
+
+        // check if id is available otherwise break as other id's are also not available
+        if (dot) {
+            // if this id don't have any scout then add dot and 
+            // if it has opposite scout then add dot and break
+            // and break otherwise
+            if (!(dot.classList.length < 3)) {
+                if (dot.classList[2][0] === turn[0]) {
+                    if (dot.classList[2] === turn+"-king") {
+                        if (opposite_scout) {
+                            movement_possibility = false
+                        }
+                    }
+                } else {
+                    if (same_king) {
+                        if (k === 10 || k === 1) {
+                            if (dot.classList[2].substring(6) === "rook" || dot.classList[2].substring(6) === "queen") {
+                                movement_possibility = false
+                            }
+                        } else if (k === 11 || k === 9) {
+                            if (dot.classList[2].substring(6) === "bishop" || dot.classList[2].substring(6) === "queen") {
+                                movement_possibility = false
+                            }
+                        }
+                    }
+                }
                 break
             }
         } else {
@@ -1592,40 +1757,29 @@ function white_check_mate() {
     var white_king = document.querySelector(".white-king")
     var white_pawns = document.querySelectorAll(".white-pawn")
 
-    for (let i = 0; i < white_rooks.length; i++) {
-        // left-right-movement
-        check_movement(Number(white_rooks[i].id), 1)
-        // up-down-movement
-        check_movement(Number(white_rooks[i].id), 10)
-    }
+    if (number_of_checks < 2) {
+        for (let i = 0; i < white_rooks.length; i++) {
+            rook_movement(Number(white_rooks[i].id))
+        }
 
-    for (let i = 0; i < white_knights.length; i++) {
-        knight_movement(Number(white_knights[i].id))
-    }
+        for (let i = 0; i < white_knights.length; i++) {
+            knight_movement(Number(white_knights[i].id))
+        }
 
-    for (let i = 0; i < white_bishops.length; i++) {
-        // main-diagonal-movement
-        check_movement(Number(white_bishops[i].id), 11)
-        // cross-diagonal-movement
-        check_movement(Number(white_bishops[i].id), 9)
-    }
+        for (let i = 0; i < white_bishops.length; i++) {
+            bishop_movement(Number(white_bishops[i].id))
+        }
 
-    if (white_queen) {        
-        // left-right-movement
-        check_movement(Number(white_queen.id), 1)
-        // up-down-movement
-        check_movement(Number(white_queen.id), 10)
-        // main-diagonal-movement
-        check_movement(Number(white_queen.id), 11)
-        // cross-diagonal-movement
-        check_movement(Number(white_queen.id), 9)
+        if (white_queen) {
+            queen_movement(Number(white_queen.id))
+        }
+
+        for (let i = 0; i < white_pawns.length; i++) {
+            white_pawn_movement_check(Number(white_pawns[i].id))
+        }
     }
 
     white_king_movement_check(Number(white_king.id))
-
-    for (let i = 0; i < white_pawns.length; i++) {
-        white_pawn_movement_check(Number(white_pawns[i].id))
-    }
 
     if (!possible_id.length) {
         alert("Check Mate")
@@ -1643,40 +1797,29 @@ function black_check_mate() {
     var black_king = document.querySelector(".black-king")
     var black_pawns = document.querySelectorAll(".black-pawn")
 
-    for (let i = 0; i < black_rooks.length; i++) {
-        // left-right-movement
-        check_movement(Number(black_rooks[i].id), 1)
-        // up-down-movement
-        check_movement(Number(black_rooks[i].id), 10)
-    }
+    if (number_of_checks < 2) {
+        for (let i = 0; i < black_rooks.length; i++) {
+            rook_movement(Number(black_rooks[i].id))
+        }
 
-    for (let i = 0; i < black_knights.length; i++) {
-        knight_movement(Number(black_knights[i].id))
-    }
+        for (let i = 0; i < black_knights.length; i++) {
+            knight_movement(Number(black_knights[i].id))
+        }
 
-    for (let i = 0; i < black_bishops.length; i++) {
-        // main-diagonal-movement
-        check_movement(Number(black_bishops[i].id), 11)
-        // cross-diagonal-movement
-        check_movement(Number(black_bishops[i].id), 9)
-    }
+        for (let i = 0; i < black_bishops.length; i++) {
+            bishop_movement(Number(black_bishops[i].id))
+        }
 
-    if (black_queen) {        
-        // left-right-movement
-        check_movement(Number(black_queen.id), 1)
-        // up-down-movement
-        check_movement(Number(black_queen.id), 10)
-        // main-diagonal-movement
-        check_movement(Number(black_queen.id), 11)
-        // cross-diagonal-movement
-        check_movement(Number(black_queen.id), 9)
-    }
+        if (black_queen) {
+            queen_movement(Number(black_queen.id))
+        }
+
+        for (let i = 0; i < black_pawns.length; i++) {
+            black_pawn_movement_check(Number(black_pawns[i].id))
+        }
+    }    
 
     black_king_movement_check(Number(black_king.id))
-
-    for (let i = 0; i < black_pawns.length; i++) {
-        black_pawn_movement_check(Number(black_pawns[i].id))
-    }
 
     if (!possible_id.length) {
         alert("Check Mate")
