@@ -1953,7 +1953,7 @@ function white_check_mate() {
 
     if (!possible_id.length) {
         setTimeout(() => {
-            alert("Check Mate \nWhite Player Won")
+            alert("Check Mate \nBlack Player Won")
         }, 0);
         setTimeout(() => {
             if (confirm("Reset Board")) {
@@ -2000,7 +2000,7 @@ function black_check_mate() {
 
     if (!possible_id.length) {
         setTimeout(() => {
-            alert("Check Mate \nBlack Player Won")
+            alert("Check Mate \nWhite Player Won")
         }, 0);
         setTimeout(() => {
             if (confirm("Reset Board")) {
