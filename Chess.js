@@ -11,10 +11,100 @@ var movement_possibility = true
 
 
 reset()
-white("add")
 
 
 function reset() {
+    remove_dots()
+
+    // if king is checked then remove check dot from king
+    if (checked) {
+        if (turn === "black") {
+            var black_king = document.querySelector(".black-king")
+    
+            black_king.innerHTML = ""
+        } else {
+            var white_king = document.querySelector(".white-king")
+    
+            white_king.innerHTML = ""
+        }
+    }
+
+    if (selected) {
+        selected.classList.remove("selected")
+    }
+
+    var white_removes = document.querySelectorAll(".white-remove")
+    for (let i = 0; i < white_removes.length; i++) {
+        white_removes[i].innerHTML = ""
+    }
+
+    var black_removes = document.querySelectorAll(".black-remove")
+    for (let i = 0; i < black_removes.length; i++) {
+        black_removes[i].innerHTML = ""
+    }
+
+    var white_rooks = document.querySelectorAll(".white-rook")
+    var white_knights = document.querySelectorAll(".white-knight")
+    var white_bishops = document.querySelectorAll(".white-bishop")
+    var white_queen = document.querySelector(".white-queen")
+    var white_king = document.querySelector(".white-king")
+    var white_pawns = document.querySelectorAll(".white-pawn")
+
+    for (let i = 0; i < white_rooks.length; i++) {
+        white_rooks[i].classList.remove("white-rook")
+    }
+
+    for (let i = 0; i < white_knights.length; i++) {
+        white_knights[i].classList.remove("white-knight")
+    }
+
+    for (let i = 0; i < white_bishops.length; i++) {
+        white_bishops[i].classList.remove("white-bishop")
+    }
+
+    if (white_queen) {
+        white_queen.classList.remove("white-queen")
+    }
+
+    if (white_king) {
+        white_king.classList.remove("white-king")
+    }
+
+    for (let i = 0; i < white_pawns.length; i++) {
+        white_pawns[i].classList.remove("white-pawn")
+    }
+
+    var black_rooks = document.querySelectorAll(".black-rook")
+    var black_knights = document.querySelectorAll(".black-knight")
+    var black_bishops = document.querySelectorAll(".black-bishop")
+    var black_queen = document.querySelector(".black-queen")
+    var black_king = document.querySelector(".black-king")
+    var black_pawns = document.querySelectorAll(".black-pawn")
+
+    for (let i = 0; i < black_rooks.length; i++) {
+        black_rooks[i].classList.remove("black-rook")
+    }
+
+    for (let i = 0; i < black_knights.length; i++) {
+        black_knights[i].classList.remove("black-knight")
+    }
+
+    for (let i = 0; i < black_bishops.length; i++) {
+        black_bishops[i].classList.remove("black-bishop")
+    }
+
+    if (black_queen) {
+        black_queen.classList.remove("black-queen")
+    }
+
+    if (black_king) {
+        black_king.classList.remove("black-king")
+    }
+
+    for (let i = 0; i < black_pawns.length; i++) {
+        black_pawns[i].classList.remove("black-pawn")
+    }
+
     document.getElementById("11").classList.add("white-rook")
     document.getElementById("12").classList.add("white-knight")
     document.getElementById("13").classList.add("white-bishop")
@@ -40,6 +130,22 @@ function reset() {
     document.getElementById("86").classList.add("black-bishop")
     document.getElementById("87").classList.add("black-knight")
     document.getElementById("88").classList.add("black-rook")
+
+    turn = "white"
+    dots = []
+    selected = null
+    checked = false
+    check_list = []
+    number_of_checks = 0
+    possible_id = []
+    movement_possibility = true
+
+    white("add")
+    
+    var white_player = document.getElementById("white-player")
+    var black_player = document.getElementById("black-player")
+    black_player.textContent = ""
+    white_player.textContent = "White's Turn"
 }
 
 
@@ -831,6 +937,29 @@ function pawn_black_forward_move(id) {
 function pawn_default_forward_move(id, k) {
     for (j = 10; j <= 20; j += 10) {
         dot = document.getElementById("" + String(id + j*k))
+        if (dot) {
+            if (dot.classList.length < 3) {
+                if (checked) {
+                    for (let i = 0; i < check_list.length; i++) {
+                        if (dot.id === String(check_list[i])) {
+                            possible_id.push(dot.id)
+                            break
+                        }
+                    }
+                } else {
+                    add_dot(dot)
+                }
+            } else {
+                break
+            }
+        }
+    }
+}
+
+
+function pawn_forward_move(id, k) {
+    dot = document.getElementById("" + String(id + 10*k))
+    if (dot) {
         if (dot.classList.length < 3) {
             if (checked) {
                 for (let i = 0; i < check_list.length; i++) {
@@ -842,25 +971,6 @@ function pawn_default_forward_move(id, k) {
             } else {
                 add_dot(dot)
             }
-        } else {
-            break
-        }
-    }
-}
-
-
-function pawn_forward_move(id, k) {
-    dot = document.getElementById("" + String(id + 10*k))
-    if (dot.classList.length < 3) {
-        if (checked) {
-            for (let i = 0; i < check_list.length; i++) {
-                if (dot.id === String(check_list[i])) {
-                    possible_id.push(dot.id)
-                    break
-                }
-            }
-        } else {
-            add_dot(dot)
         }
     }
 }
@@ -1612,7 +1722,30 @@ function dot_event() {
     selected.classList.remove(scout)
     
     if (this.classList.length=== 3) {
-        this.classList.remove(this.classList[2])
+        removing_scout = this.classList[2]
+        this.classList.remove(removing_scout)
+
+        var remove_scout = document.createElement("div")
+        remove_scout.classList.add("col-1")
+        remove_scout.classList.add(removing_scout)
+
+        if (turn === "white") {
+            var black_removes = document.querySelectorAll(".black-remove")
+            
+            if (black_removes[0].children.length < 8) {
+                black_removes[0].appendChild(remove_scout)
+            } else {
+                black_removes[1].appendChild(remove_scout)
+            }
+        } else {
+            var white_removes = document.querySelectorAll(".white-remove")
+            
+            if (white_removes[0].children.length < 8) {
+                white_removes[0].appendChild(remove_scout)
+            } else {
+                white_removes[1].appendChild(remove_scout)
+            }
+        }
     }
     this.classList.add(scout)
 
@@ -1636,6 +1769,11 @@ function dot_event() {
         black("remove")
         // change turn to white
         turn = "white"
+
+        var white_player = document.getElementById("white-player")
+        var black_player = document.getElementById("black-player")
+        black_player.textContent = ""
+        white_player.textContent = "White's Turn"
 
         if (checked) {
             white_check_mate()
@@ -1663,6 +1801,11 @@ function dot_event() {
         white("remove")
         // change turn to black
         turn = "black"
+
+        var black_player = document.getElementById("black-player")
+        var white_player = document.getElementById("white-player")
+        white_player.textContent = ""
+        black_player.textContent = "Black's Turn"
 
         if (checked) {
             black_check_mate()
@@ -1782,7 +1925,14 @@ function white_check_mate() {
     white_king_movement_check(Number(white_king.id))
 
     if (!possible_id.length) {
-        alert("Check Mate")
+        setTimeout(() => {
+            alert("Check Mate \n White Player Won")
+        }, 0);
+        setTimeout(() => {
+            if (confirm("Reset Board")) {
+                reset()
+            }
+        }, 10000);
     }
 
     possible_id = []
@@ -1822,7 +1972,14 @@ function black_check_mate() {
     black_king_movement_check(Number(black_king.id))
 
     if (!possible_id.length) {
-        alert("Check Mate")
+        setTimeout(() => {
+            alert("Check Mate \n Black Player Won")
+        }, 0);
+        setTimeout(() => {
+            if (confirm("Reset Board")) {
+                reset()
+            }
+        }, 1000);
     }
 
     possible_id = []
