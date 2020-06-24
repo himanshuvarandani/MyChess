@@ -46,7 +46,7 @@ function reset() {
     var white_rooks = document.querySelectorAll(".white-rook")
     var white_knights = document.querySelectorAll(".white-knight")
     var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queen = document.querySelector(".white-queen")
+    var white_queens = document.querySelectorAll(".white-queen")
     var white_king = document.querySelector(".white-king")
     var white_pawns = document.querySelectorAll(".white-pawn")
 
@@ -62,8 +62,8 @@ function reset() {
         white_bishops[i].classList.remove("white-bishop")
     }
 
-    if (white_queen) {
-        white_queen.classList.remove("white-queen")
+    for (let i = 0; i < white_queens.length; i++) {
+        white_queens[i].classList.remove("white-queen")
     }
 
     if (white_king) {
@@ -77,7 +77,7 @@ function reset() {
     var black_rooks = document.querySelectorAll(".black-rook")
     var black_knights = document.querySelectorAll(".black-knight")
     var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queen = document.querySelector(".black-queen")
+    var black_queens = document.querySelectorAll(".black-queen")
     var black_king = document.querySelector(".black-king")
     var black_pawns = document.querySelectorAll(".black-pawn")
 
@@ -93,8 +93,8 @@ function reset() {
         black_bishops[i].classList.remove("black-bishop")
     }
 
-    if (black_queen) {
-        black_queen.classList.remove("black-queen")
+    for (let i = 0; i < black_queens.length; i++) {
+        black_queens[i].classList.remove("black-queen")
     }
 
     if (black_king) {
@@ -153,7 +153,7 @@ function white(option) {
     var white_rooks = document.querySelectorAll(".white-rook")
     var white_knights = document.querySelectorAll(".white-knight")
     var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queen = document.querySelector(".white-queen")
+    var white_queens = document.querySelectorAll(".white-queen")
     var white_king = document.querySelector(".white-king")
     var white_pawns = document.querySelectorAll(".white-pawn")
 
@@ -171,8 +171,8 @@ function white(option) {
             white_bishops[i].addEventListener("click", white_bishop_movement)
         }
 
-        if (white_queen) {
-            white_queen.addEventListener("click", white_queen_movement)
+        for (let i = 0; i < white_queens.length; i++) {
+            white_queens[i].addEventListener("click", white_queen_movement)
         }
 
         white_king.addEventListener("click", white_king_movement)
@@ -234,20 +234,20 @@ function white(option) {
             }
         }
     
-        if (white_queen) {
-            if (white_queen.removeEventListener) {
-                white_queen.removeEventListener("click", white_queen_movement)
+        for (let i = 0; i < white_queens.length; i++) {
+            if (white_queens[i].removeEventListener) {
+                white_queens[i].removeEventListener("click", white_queen_movement)
             }
 
             if (number_of_checks  < 2) {
                 // left-right-movement
-                check_king_movement(Number(white_queen.id), 1, black_king)
+                check_king_movement(Number(white_queens[i].id), 1, black_king)
                 // up-down-movement
-                check_king_movement(Number(white_queen.id), 10, black_king)
+                check_king_movement(Number(white_queens[i].id), 10, black_king)
                 // main-diagonal-movement
-                check_king_movement(Number(white_queen.id), 11, black_king)
+                check_king_movement(Number(white_queens[i].id), 11, black_king)
                 // cross-diagonal-movement
-                check_king_movement(Number(white_queen.id), 9, black_king)
+                check_king_movement(Number(white_queens[i].id), 9, black_king)
             }
         }
     
@@ -300,7 +300,7 @@ function black(option) {
     var black_rooks = document.querySelectorAll(".black-rook")
     var black_knights = document.querySelectorAll(".black-knight")
     var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queen = document.querySelector(".black-queen")
+    var black_queens = document.querySelectorAll(".black-queen")
     var black_king = document.querySelector(".black-king")
     var black_pawns = document.querySelectorAll(".black-pawn")
 
@@ -318,8 +318,8 @@ function black(option) {
             black_bishops[i].addEventListener("click", black_bishop_movement)
         }
 
-        if (black_queen) {
-            black_queen.addEventListener("click", black_queen_movement)
+        for (let i = 0; i < black_queens.length; i++) {
+            black_queens[i].addEventListener("click", black_queen_movement)
         }
 
         black_king.addEventListener("click", black_king_movement)
@@ -381,20 +381,20 @@ function black(option) {
             }
         }
 
-        if (black_queen) {
-            if (black_queen.removeEventListener) {
-                black_queen.removeEventListener("click", black_queen_movement)
+        for (let i = 0; i < black_queens.length; i++) {
+            if (black_queens[i].removeEventListener) {
+                black_queens[i].removeEventListener("click", black_queen_movement)
             }
 
             if (number_of_checks  < 2) {
                 // left-right-movement
-                check_king_movement(Number(black_queen.id), 1, white_king)
+                check_king_movement(Number(black_queens[i].id), 1, white_king)
                 // up-down-movement
-                check_king_movement(Number(black_queen.id), 10, white_king)
+                check_king_movement(Number(black_queens[i].id), 10, white_king)
                 // main-diagonal-movement
-                check_king_movement(Number(black_queen.id), 11, white_king)
+                check_king_movement(Number(black_queens[i].id), 11, white_king)
                 // cross-diagonal-movement
-                check_king_movement(Number(black_queen.id), 9, white_king)
+                check_king_movement(Number(black_queens[i].id), 9, white_king)
             }
         }
 
@@ -1165,7 +1165,7 @@ function white_king_movement_check(id) {
     var black_rooks = document.querySelectorAll(".black-rook")
     var black_knights = document.querySelectorAll(".black-knight")
     var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queen = document.querySelector(".black-queen")
+    var black_queens = document.querySelectorAll(".black-queen")
     var black_king = document.querySelector(".black-king")
     var black_pawns = document.querySelectorAll(".black-pawn")
 
@@ -1226,16 +1226,16 @@ function white_king_movement_check(id) {
             }
         }
 
-        if (black_queen) {
+        for (let i = 0; i < black_queens.length; i++) {
             if (!check) {
                 // left-right-movement
-                check = king_movement(Number(black_queen.id), place_id, 1, check)
+                check = king_movement(Number(black_queens[i].id), place_id, 1, check)
                 // up-down-movement
-                check = king_movement(Number(black_queen.id), place_id, 10, check)
+                check = king_movement(Number(black_queens[i].id), place_id, 10, check)
                 // main-diagonal-movement
-                check = king_movement(Number(black_queen.id), place_id, 11, check)
+                check = king_movement(Number(black_queens[i].id), place_id, 11, check)
                 // cross-diagonal-movement
-                check = king_movement(Number(black_queen.id), place_id, 9, check)
+                check = king_movement(Number(black_queens[i].id), place_id, 9, check)
             }
         }
 
@@ -1334,7 +1334,7 @@ function black_king_movement_check(id) {
     var white_rooks = document.querySelectorAll(".white-rook")
     var white_knights = document.querySelectorAll(".white-knight")
     var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queen = document.querySelector(".white-queen")
+    var white_queens = document.querySelectorAll(".white-queen")
     var white_king = document.querySelector(".white-king")
     var white_pawns = document.querySelectorAll(".white-pawn")
 
@@ -1395,16 +1395,16 @@ function black_king_movement_check(id) {
             }
         }
 
-        if (white_queen) {
+        for (let i = 0; i < white_queens.length; i++) {
             if (!check) {
                 // left-right-movement
-                check = king_movement(Number(white_queen.id), place_id, 1, check)
+                check = king_movement(Number(white_queens[i].id), place_id, 1, check)
                 // up-down-movement
-                check = king_movement(Number(white_queen.id), place_id, 10, check)
+                check = king_movement(Number(white_queens[i].id), place_id, 10, check)
                 // main-diagonal-movement
-                check = king_movement(Number(white_queen.id), place_id, 11, check)
+                check = king_movement(Number(white_queens[i].id), place_id, 11, check)
                 // cross-diagonal-movement
-                check = king_movement(Number(white_queen.id), place_id, 9, check)
+                check = king_movement(Number(white_queens[i].id), place_id, 9, check)
             }
         }
 
@@ -1747,7 +1747,34 @@ function dot_event() {
             }
         }
     }
-    this.classList.add(scout)
+
+    if (scout.substring(6) === "pawn") {
+        var id = Number(this.id)
+        if (id-id%10 === 10 || id-id%10 === 80) {
+            while (true) {
+                var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
+                if (x === "Q" || x === "q") {
+                    this.classList.add(scout.substring(0, 6)+"queen")
+                    break
+                } else if (x === "R" || x === "r") {
+                    this.classList.add(scout.substring(0, 6)+"rook")
+                    break
+                } else if (x === "K" || x === "k") {
+                    this.classList.add(scout.substring(0, 6)+"knight")
+                    break
+                } else if (x === "B" || x === "b") {
+                    this.classList.add(scout.substring(0, 6)+"bishop")
+                    break
+                } else {
+                    x = prompt("Type correct value \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
+                }
+            }
+        } else {
+            this.classList.add(scout)
+        }
+    } else {
+        this.classList.add(scout)
+    }
 
     if (turn === "black") {
         // remove event listener from slected id
@@ -1896,7 +1923,7 @@ function white_check_mate() {
     var white_rooks = document.querySelectorAll(".white-rook")
     var white_knights = document.querySelectorAll(".white-knight")
     var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queen = document.querySelector(".white-queen")
+    var white_queens = document.querySelectorAll(".white-queen")
     var white_king = document.querySelector(".white-king")
     var white_pawns = document.querySelectorAll(".white-pawn")
 
@@ -1913,8 +1940,8 @@ function white_check_mate() {
             bishop_movement(Number(white_bishops[i].id))
         }
 
-        if (white_queen) {
-            queen_movement(Number(white_queen.id))
+        for (let i = 0; i < white_queens.length; i++) {
+            queen_movement(Number(white_queens[i].id))
         }
 
         for (let i = 0; i < white_pawns.length; i++) {
@@ -1926,7 +1953,7 @@ function white_check_mate() {
 
     if (!possible_id.length) {
         setTimeout(() => {
-            alert("Check Mate \n White Player Won")
+            alert("Check Mate \nWhite Player Won")
         }, 0);
         setTimeout(() => {
             if (confirm("Reset Board")) {
@@ -1943,7 +1970,7 @@ function black_check_mate() {
     var black_rooks = document.querySelectorAll(".black-rook")
     var black_knights = document.querySelectorAll(".black-knight")
     var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queen = document.querySelector(".black-queen")
+    var black_queens = document.querySelectorAll(".black-queen")
     var black_king = document.querySelector(".black-king")
     var black_pawns = document.querySelectorAll(".black-pawn")
 
@@ -1960,8 +1987,8 @@ function black_check_mate() {
             bishop_movement(Number(black_bishops[i].id))
         }
 
-        if (black_queen) {
-            queen_movement(Number(black_queen.id))
+        for (let i = 0; i < black_queens.length; i++) {
+            queen_movement(Number(black_queens[i].id))
         }
 
         for (let i = 0; i < black_pawns.length; i++) {
@@ -1973,7 +2000,7 @@ function black_check_mate() {
 
     if (!possible_id.length) {
         setTimeout(() => {
-            alert("Check Mate \n Black Player Won")
+            alert("Check Mate \nBlack Player Won")
         }, 0);
         setTimeout(() => {
             if (confirm("Reset Board")) {
