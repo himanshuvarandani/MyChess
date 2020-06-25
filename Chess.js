@@ -8,6 +8,7 @@ var check_list = []
 var number_of_checks = 0
 var possible_id = []
 var movement_possibility = true
+var players_left = 0
 
 
 reset()
@@ -141,6 +142,8 @@ function reset() {
     movement_possibility = true
 
     white("add")
+
+    players_left = 0
     
     var white_player = document.getElementById("white-player")
     var black_player = document.getElementById("black-player")
@@ -160,25 +163,47 @@ function white(option) {
     if (option === "add") {
         // add event listener
         for (let i = 0; i < white_rooks.length; i++) {
-            white_rooks[i].addEventListener("click", white_rook_movement)
+            if (white_rooks[i].id) {
+                players_left += 1
+
+                white_rooks[i].addEventListener("click", white_rook_movement)
+            }
         }
 
         for (let i = 0; i < white_knights.length; i++) {
-            white_knights[i].addEventListener("click", white_knight_movement)
+            if (white_knights[i].id) {
+                players_left += 1
+
+                white_knights[i].addEventListener("click", white_knight_movement)
+            }
         }
 
         for (let i = 0; i < white_bishops.length; i++) {
-            white_bishops[i].addEventListener("click", white_bishop_movement)
+            if (white_bishops[i].id) {
+                players_left += 1
+
+                white_bishops[i].addEventListener("click", white_bishop_movement)
+            }
         }
 
         for (let i = 0; i < white_queens.length; i++) {
-            white_queens[i].addEventListener("click", white_queen_movement)
+            if (white_queens[i].id) {
+                players_left += 1
+
+                white_queens[i].addEventListener("click", white_queen_movement)
+            }
         }
+
+        players_left += 1
 
         white_king.addEventListener("click", white_king_movement)
 
         for (let i = 0; i < white_pawns.length; i++) {
-            white_pawns[i].addEventListener("click", white_pawn_movement)
+            if (white_pawns[i].id) {
+                players_left += 1
+
+                white_pawns[i].addEventListener("click", white_pawn_movement)
+            }
         }
     } else {
         // remove event listener and check for black king is checked or not
@@ -190,7 +215,11 @@ function white(option) {
                 white_rooks[i].removeEventListener("click", white_rook_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (white_rooks[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && white_rooks[i].id) {
                 // left-right-movement
                 check_king_movement(Number(white_rooks[i].id), 1, black_king)
                 // up-down-movement
@@ -203,7 +232,11 @@ function white(option) {
                 white_knights[i].removeEventListener("click", white_knight_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (white_knights[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && white_knights[i].id) {
                 var id = Number(white_knights[i].id)
                 var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
 
@@ -226,7 +259,11 @@ function white(option) {
                 white_bishops[i].removeEventListener("click", white_bishop_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (white_bishops[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && white_bishops[i].id) {
                 // main-diagonal-movement
                 check_king_movement(Number(white_bishops[i].id), 11, black_king)
                 // cross-diagonal-movement
@@ -239,7 +276,11 @@ function white(option) {
                 white_queens[i].removeEventListener("click", white_queen_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (white_queens[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && white_queens[i].id) {
                 // left-right-movement
                 check_king_movement(Number(white_queens[i].id), 1, black_king)
                 // up-down-movement
@@ -250,7 +291,8 @@ function white(option) {
                 check_king_movement(Number(white_queens[i].id), 9, black_king)
             }
         }
-    
+
+        players_left += 1
         if (white_king.removeEventListener) {
             white_king.removeEventListener("click", white_king_movement)
         }
@@ -260,7 +302,11 @@ function white(option) {
                 white_pawns[i].removeEventListener("click", white_pawn_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (white_pawns[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && white_pawns[i].id) {
                 var id = Number(white_pawns[i].id)
 
                 // check for right forward
@@ -307,25 +353,47 @@ function black(option) {
     if (option === "add") {
         // add event listener
         for (let i = 0; i < black_rooks.length; i++) {
-            black_rooks[i].addEventListener("click", black_rook_movement)
+            if (black_rooks[i].id) {
+                players_left += 1
+
+                black_rooks[i].addEventListener("click", black_rook_movement)
+            }
         }
 
         for (let i = 0; i < black_knights.length; i++) {
-            black_knights[i].addEventListener("click", black_knight_movement)
+            if (black_knights[i].id) {
+                players_left += 1
+
+                black_knights[i].addEventListener("click", black_knight_movement)
+            }
         }
 
         for (let i = 0; i < black_bishops.length; i++) {
-            black_bishops[i].addEventListener("click", black_bishop_movement)
+            if (black_bishops[i].id) {
+                players_left += 1
+
+                black_bishops[i].addEventListener("click", black_bishop_movement)
+            }
         }
 
         for (let i = 0; i < black_queens.length; i++) {
-            black_queens[i].addEventListener("click", black_queen_movement)
+            if (black_queens[i].id) {
+                players_left += 1
+
+                black_queens[i].addEventListener("click", black_queen_movement)
+            }
         }
+
+        players_left += 1
 
         black_king.addEventListener("click", black_king_movement)
 
         for (let i = 0; i < black_pawns.length; i++) {
-            black_pawns[i].addEventListener("click", black_pawn_movement)
+            if (black_pawns[i].id) {
+                players_left += 1
+
+                black_pawns[i].addEventListener("click", black_pawn_movement)
+            }
         }
     } else {
         // remove event listener and check for white king is checked or not
@@ -337,7 +405,11 @@ function black(option) {
                 black_rooks[i].removeEventListener("click", black_rook_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (black_rooks[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && black_rooks[i].id) {
                 // left-right-movement
                 check_king_movement(Number(black_rooks[i].id), 1, white_king)
                 // up-down-movement
@@ -350,7 +422,11 @@ function black(option) {
                 black_knights[i].removeEventListener("click", black_knight_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (black_knights[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && black_knights[i].id) {
                 var id = Number(black_knights[i].id)
                 knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
 
@@ -373,7 +449,11 @@ function black(option) {
                 black_bishops[i].removeEventListener("click", black_bishop_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (black_bishops[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && black_bishops[i].id) {
                 // main-diagonal-movement
                 check_king_movement(Number(black_bishops[i].id), 11, white_king)
                 // cross-diagonal-movement
@@ -386,7 +466,11 @@ function black(option) {
                 black_queens[i].removeEventListener("click", black_queen_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (black_queens[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && black_queens[i].id) {
                 // left-right-movement
                 check_king_movement(Number(black_queens[i].id), 1, white_king)
                 // up-down-movement
@@ -398,6 +482,7 @@ function black(option) {
             }
         }
 
+        players_left += 1
         if (black_king.removeEventListener) {
             black_king.removeEventListener("click", black_king_movement)
         }
@@ -407,7 +492,11 @@ function black(option) {
                 black_pawns[i].removeEventListener("click", black_pawn_movement)
             }
 
-            if (number_of_checks  < 2) {
+            if (black_pawns[i].id) {
+                players_left += 1
+            }
+
+            if (number_of_checks  < 2 && black_pawns[i].id) {
                 var id = Number(black_pawns[i].id)
 
                 // check for left forward move
@@ -1189,10 +1278,12 @@ function white_king_movement_check(id) {
 
         for (let i = 0; i < black_rooks.length; i++) {
             if (!check) {
-                // left-right-movement
-                check = king_movement(Number(black_rooks[i].id), place_id, 1, check)
-                // up-down-movement
-                check = king_movement(Number(black_rooks[i].id), place_id, 10, check)
+                if (black_rooks[i].id) {
+                    // left-right-movement
+                    check = king_movement(Number(black_rooks[i].id), place_id, 1, check)
+                    // up-down-movement
+                    check = king_movement(Number(black_rooks[i].id), place_id, 10, check)
+                }
             } else {
                 break
             }
@@ -1200,14 +1291,16 @@ function white_king_movement_check(id) {
 
         for (let i = 0; i < black_knights.length; i++) {
             if (!check) {
-                var id1 = Number(black_knights[i].id)
-                knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
+                if (black_knights[i].id) {
+                    var id1 = Number(black_knights[i].id)
+                    knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
 
-                // check if any of these id has black-king
-                for (let j = 0; j < 8; j++) {
-                    if (place_id === String(knight_moves[j])) {
-                        check = true
-                        break
+                    // check if any of these id has black-king
+                    for (let j = 0; j < 8; j++) {
+                        if (place_id === String(knight_moves[j])) {
+                            check = true
+                            break
+                        }
                     }
                 }
             } else {
@@ -1217,10 +1310,12 @@ function white_king_movement_check(id) {
 
         for (let i = 0; i < black_bishops.length; i++) {
             if (!check) {
-                // main-diagonal-movement
-                check = king_movement(Number(black_bishops[i].id), place_id, 11, check)
-                // cross-diagonal-movement
-                check = king_movement(Number(black_bishops[i].id), place_id, 9, check)
+                if (black_bishops[i].id) {
+                    // main-diagonal-movement
+                    check = king_movement(Number(black_bishops[i].id), place_id, 11, check)
+                    // cross-diagonal-movement
+                    check = king_movement(Number(black_bishops[i].id), place_id, 9, check)
+                }
             } else {
                 break
             }
@@ -1228,14 +1323,18 @@ function white_king_movement_check(id) {
 
         for (let i = 0; i < black_queens.length; i++) {
             if (!check) {
-                // left-right-movement
-                check = king_movement(Number(black_queens[i].id), place_id, 1, check)
-                // up-down-movement
-                check = king_movement(Number(black_queens[i].id), place_id, 10, check)
-                // main-diagonal-movement
-                check = king_movement(Number(black_queens[i].id), place_id, 11, check)
-                // cross-diagonal-movement
-                check = king_movement(Number(black_queens[i].id), place_id, 9, check)
+                if (black_queens[i].id) {
+                    // left-right-movement
+                    check = king_movement(Number(black_queens[i].id), place_id, 1, check)
+                    // up-down-movement
+                    check = king_movement(Number(black_queens[i].id), place_id, 10, check)
+                    // main-diagonal-movement
+                    check = king_movement(Number(black_queens[i].id), place_id, 11, check)
+                    // cross-diagonal-movement
+                    check = king_movement(Number(black_queens[i].id), place_id, 9, check)
+                }
+            } else {
+                break
             }
         }
 
@@ -1253,21 +1352,23 @@ function white_king_movement_check(id) {
 
         for (let i = 0; i < black_pawns.length; i++) {
             if (!check) {
-                var id1 = Number(black_pawns[i].id)
+                if (black_pawns[i].id) {
+                    var id1 = Number(black_pawns[i].id)
 
-                // check for left forward move
-                dot = document.getElementById("" + String(id1 - 11))
-                if (dot) {
-                    if (dot.id === place_id) {
-                        check = true
+                    // check for left forward move
+                    dot = document.getElementById("" + String(id1 - 11))
+                    if (dot) {
+                        if (dot.id === place_id) {
+                            check = true
+                        }
                     }
-                }
 
-                // check for right forward move
-                dot = document.getElementById("" + String(id1 - 9))
-                if (dot) {
-                    if (dot.id === place_id) {
-                        check = true
+                    // check for right forward move
+                    dot = document.getElementById("" + String(id1 - 9))
+                    if (dot) {
+                        if (dot.id === place_id) {
+                            check = true
+                        }
                     }
                 }
             } else {
@@ -1358,10 +1459,12 @@ function black_king_movement_check(id) {
 
         for (let i = 0; i < white_rooks.length; i++) {
             if (!check) {
-                // left-right-movement
-                check = king_movement(Number(white_rooks[i].id), place_id, 1, check)
-                // up-down-movement
-                check = king_movement(Number(white_rooks[i].id), place_id, 10, check)
+                if (white_rooks[i].id) {
+                    // left-right-movement
+                    check = king_movement(Number(white_rooks[i].id), place_id, 1, check)
+                    // up-down-movement
+                    check = king_movement(Number(white_rooks[i].id), place_id, 10, check)
+                }
             } else {
                 break
             }
@@ -1369,14 +1472,16 @@ function black_king_movement_check(id) {
 
         for (let i = 0; i < white_knights.length; i++) {
             if (!check) {
-                var id1 = Number(white_knights[i].id)
-                knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
+                if (white_knights[i].id) {
+                    var id1 = Number(white_knights[i].id)
+                    knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
 
-                // check if any of these id has black-king
-                for (let j = 0; j < 8; j++) {
-                    if (place_id === String(knight_moves[j])) {
-                        check = true
-                        break
+                    // check if any of these id has black-king
+                    for (let j = 0; j < 8; j++) {
+                        if (place_id === String(knight_moves[j])) {
+                            check = true
+                            break
+                        }
                     }
                 }
             } else {
@@ -1386,10 +1491,12 @@ function black_king_movement_check(id) {
 
         for (let i = 0; i < white_bishops.length; i++) {
             if (!check) {
-                // main-diagonal-movement
-                check = king_movement(Number(white_bishops[i].id), place_id, 11, check)
-                // cross-diagonal-movement
-                check = king_movement(Number(white_bishops[i].id), place_id, 9, check)
+                if (white_bishops[i].id) {
+                    // main-diagonal-movement
+                    check = king_movement(Number(white_bishops[i].id), place_id, 11, check)
+                    // cross-diagonal-movement
+                    check = king_movement(Number(white_bishops[i].id), place_id, 9, check)
+                }
             } else {
                 break
             }
@@ -1397,14 +1504,18 @@ function black_king_movement_check(id) {
 
         for (let i = 0; i < white_queens.length; i++) {
             if (!check) {
-                // left-right-movement
-                check = king_movement(Number(white_queens[i].id), place_id, 1, check)
-                // up-down-movement
-                check = king_movement(Number(white_queens[i].id), place_id, 10, check)
-                // main-diagonal-movement
-                check = king_movement(Number(white_queens[i].id), place_id, 11, check)
-                // cross-diagonal-movement
-                check = king_movement(Number(white_queens[i].id), place_id, 9, check)
+                if (white_queens[i].id) {
+                    // left-right-movement
+                    check = king_movement(Number(white_queens[i].id), place_id, 1, check)
+                    // up-down-movement
+                    check = king_movement(Number(white_queens[i].id), place_id, 10, check)
+                    // main-diagonal-movement
+                    check = king_movement(Number(white_queens[i].id), place_id, 11, check)
+                    // cross-diagonal-movement
+                    check = king_movement(Number(white_queens[i].id), place_id, 9, check)
+                }
+            } else {
+                break
             }
         }
 
@@ -1422,21 +1533,23 @@ function black_king_movement_check(id) {
 
         for (let i = 0; i < white_pawns.length; i++) {
             if (!check) {
-                var id1 = Number(white_pawns[i].id)
+                if (white_pawns[i].id) {
+                    var id1 = Number(white_pawns[i].id)
 
-                // check for left forward move
-                dot = document.getElementById("" + String(id1 + 11))
-                if (dot) {
-                    if (dot.id === place_id) {
-                        check = true
+                    // check for left forward move
+                    dot = document.getElementById("" + String(id1 + 11))
+                    if (dot) {
+                        if (dot.id === place_id) {
+                            check = true
+                        }
                     }
-                }
 
-                // check for right forward move
-                dot = document.getElementById("" + String(id1 + 9))
-                if (dot) {
-                    if (dot.id === place_id) {
-                        check = true
+                    // check for right forward move
+                    dot = document.getElementById("" + String(id1 + 9))
+                    if (dot) {
+                        if (dot.id === place_id) {
+                            check = true
+                        }
                     }
                 }
             } else {
@@ -1842,6 +1955,16 @@ function dot_event() {
         black("add")
     }
 
+    console.log(players_left)
+    if (players_left === 2) {
+        setTimeout(() => {
+            alert("Game Tie")
+        }, 10);
+        setTimeout(reset, 5000);
+    }
+
+    players_left = 0
+
     selected = null
 }
 
@@ -1929,23 +2052,33 @@ function white_check_mate() {
 
     if (number_of_checks < 2) {
         for (let i = 0; i < white_rooks.length; i++) {
-            rook_movement(Number(white_rooks[i].id))
+            if (white_rooks[i].id) {
+                rook_movement(Number(white_rooks[i].id))
+            }
         }
 
         for (let i = 0; i < white_knights.length; i++) {
-            knight_movement(Number(white_knights[i].id))
+            if (white_knights[i].id) {
+                knight_movement(Number(white_knights[i].id))
+            }
         }
 
         for (let i = 0; i < white_bishops.length; i++) {
-            bishop_movement(Number(white_bishops[i].id))
+            if (white_bishops[i].id) {
+                bishop_movement(Number(white_bishops[i].id))
+            }
         }
 
         for (let i = 0; i < white_queens.length; i++) {
-            queen_movement(Number(white_queens[i].id))
+            if (white_queens[i].id) {
+                queen_movement(Number(white_queens[i].id))
+            }
         }
 
         for (let i = 0; i < white_pawns.length; i++) {
-            white_pawn_movement_check(Number(white_pawns[i].id))
+            if (white_pawns[i].id) {
+                white_pawn_movement_check(Number(white_pawns[i].id))
+            }
         }
     }
 
@@ -1954,14 +2087,14 @@ function white_check_mate() {
     if (!possible_id.length) {
         setTimeout(() => {
             alert("Check Mate \nBlack Player Won")
-        }, 0);
+        }, 10);
         setTimeout(() => {
             if (confirm("Reset Board")) {
                 reset()
             }
         }, 10000);
     }
-
+    
     possible_id = []
 }
 
@@ -1976,23 +2109,33 @@ function black_check_mate() {
 
     if (number_of_checks < 2) {
         for (let i = 0; i < black_rooks.length; i++) {
-            rook_movement(Number(black_rooks[i].id))
+            if (black_rooks[i].id) {
+                rook_movement(Number(black_rooks[i].id))
+            }
         }
 
         for (let i = 0; i < black_knights.length; i++) {
-            knight_movement(Number(black_knights[i].id))
+            if (black_knights[i].id) {
+                knight_movement(Number(black_knights[i].id))
+            }
         }
 
         for (let i = 0; i < black_bishops.length; i++) {
-            bishop_movement(Number(black_bishops[i].id))
+            if (black_bishops[i].id) {
+                bishop_movement(Number(black_bishops[i].id))
+            }
         }
 
         for (let i = 0; i < black_queens.length; i++) {
-            queen_movement(Number(black_queens[i].id))
+            if (black_queens[i].id) {
+                queen_movement(Number(black_queens[i].id))
+            }
         }
 
         for (let i = 0; i < black_pawns.length; i++) {
-            black_pawn_movement_check(Number(black_pawns[i].id))
+            if (black_pawns[i].id) {
+                black_pawn_movement_check(Number(black_pawns[i].id))
+            }
         }
     }    
 
@@ -2001,7 +2144,7 @@ function black_check_mate() {
     if (!possible_id.length) {
         setTimeout(() => {
             alert("Check Mate \nWhite Player Won")
-        }, 0);
+        }, 10);
         setTimeout(() => {
             if (confirm("Reset Board")) {
                 reset()
