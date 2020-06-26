@@ -23,12 +23,7 @@ body {
     margin: 20px auto;
 }
 
-.white:hover {
-    background-size: 80% 80%;
-    cursor: pointer;
-}
-
-.black:hover {
+.active:hover {
     background-size: 80% 80%;
     cursor: pointer;
 }
@@ -128,6 +123,10 @@ body {
     height: 100%;
     width: 100%;
     box-shadow: 0 0 20px 10px green;
+}
+
+.dot:hover {
+    cursor: pointer;
 }
 
 .checked {

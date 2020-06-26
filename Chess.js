@@ -166,6 +166,7 @@ function white(option) {
             if (white_rooks[i].id) {
                 players_left += 1
 
+                white_rooks[i].classList.add("active")
                 white_rooks[i].addEventListener("click", white_rook_movement)
             }
         }
@@ -174,6 +175,7 @@ function white(option) {
             if (white_knights[i].id) {
                 players_left += 1
 
+                white_knights[i].classList.add("active")
                 white_knights[i].addEventListener("click", white_knight_movement)
             }
         }
@@ -182,6 +184,7 @@ function white(option) {
             if (white_bishops[i].id) {
                 players_left += 1
 
+                white_bishops[i].classList.add("active")
                 white_bishops[i].addEventListener("click", white_bishop_movement)
             }
         }
@@ -190,18 +193,21 @@ function white(option) {
             if (white_queens[i].id) {
                 players_left += 1
 
+                white_queens[i].classList.add("active")
                 white_queens[i].addEventListener("click", white_queen_movement)
             }
         }
 
         players_left += 1
 
+        white_king.classList.add("active")
         white_king.addEventListener("click", white_king_movement)
 
         for (let i = 0; i < white_pawns.length; i++) {
             if (white_pawns[i].id) {
                 players_left += 1
 
+                white_pawns[i].classList.add("active")
                 white_pawns[i].addEventListener("click", white_pawn_movement)
             }
         }
@@ -217,6 +223,7 @@ function white(option) {
 
             if (white_rooks[i].id) {
                 players_left += 1
+                white_rooks[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && white_rooks[i].id) {
@@ -234,6 +241,7 @@ function white(option) {
 
             if (white_knights[i].id) {
                 players_left += 1
+                white_knights[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && white_knights[i].id) {
@@ -261,6 +269,7 @@ function white(option) {
 
             if (white_bishops[i].id) {
                 players_left += 1
+                white_bishops[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && white_bishops[i].id) {
@@ -278,6 +287,7 @@ function white(option) {
 
             if (white_queens[i].id) {
                 players_left += 1
+                white_queens[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && white_queens[i].id) {
@@ -293,6 +303,7 @@ function white(option) {
         }
 
         players_left += 1
+        white_king.classList.remove("active")
         if (white_king.removeEventListener) {
             white_king.removeEventListener("click", white_king_movement)
         }
@@ -304,6 +315,7 @@ function white(option) {
 
             if (white_pawns[i].id) {
                 players_left += 1
+                white_pawns[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && white_pawns[i].id) {
@@ -356,6 +368,7 @@ function black(option) {
             if (black_rooks[i].id) {
                 players_left += 1
 
+                black_rooks[i].classList.add("active")
                 black_rooks[i].addEventListener("click", black_rook_movement)
             }
         }
@@ -364,6 +377,7 @@ function black(option) {
             if (black_knights[i].id) {
                 players_left += 1
 
+                black_knights[i].classList.add("active")
                 black_knights[i].addEventListener("click", black_knight_movement)
             }
         }
@@ -372,6 +386,7 @@ function black(option) {
             if (black_bishops[i].id) {
                 players_left += 1
 
+                black_bishops[i].classList.add("active")
                 black_bishops[i].addEventListener("click", black_bishop_movement)
             }
         }
@@ -380,18 +395,21 @@ function black(option) {
             if (black_queens[i].id) {
                 players_left += 1
 
+                black_queens[i].classList.add("active")
                 black_queens[i].addEventListener("click", black_queen_movement)
             }
         }
 
         players_left += 1
 
+        black_king.classList.add("active")
         black_king.addEventListener("click", black_king_movement)
 
         for (let i = 0; i < black_pawns.length; i++) {
             if (black_pawns[i].id) {
                 players_left += 1
 
+                black_pawns[i].classList.add("active")
                 black_pawns[i].addEventListener("click", black_pawn_movement)
             }
         }
@@ -407,6 +425,7 @@ function black(option) {
 
             if (black_rooks[i].id) {
                 players_left += 1
+                black_rooks[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && black_rooks[i].id) {
@@ -424,6 +443,7 @@ function black(option) {
 
             if (black_knights[i].id) {
                 players_left += 1
+                black_knights[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && black_knights[i].id) {
@@ -451,6 +471,7 @@ function black(option) {
 
             if (black_bishops[i].id) {
                 players_left += 1
+                black_bishops[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && black_bishops[i].id) {
@@ -468,6 +489,7 @@ function black(option) {
 
             if (black_queens[i].id) {
                 players_left += 1
+                black_queens[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && black_queens[i].id) {
@@ -483,6 +505,7 @@ function black(option) {
         }
 
         players_left += 1
+        black_king.classList.remove("active")
         if (black_king.removeEventListener) {
             black_king.removeEventListener("click", black_king_movement)
         }
@@ -494,6 +517,7 @@ function black(option) {
 
             if (black_pawns[i].id) {
                 players_left += 1
+                black_pawns[i].classList.remove("active")
             }
 
             if (number_of_checks  < 2 && black_pawns[i].id) {
@@ -1831,6 +1855,7 @@ function dot_event() {
     }
 
     selected.classList.remove("selected")
+    selected.classList.remove("active")
     scout = selected.classList[2]
     selected.classList.remove(scout)
     
@@ -1955,7 +1980,6 @@ function dot_event() {
         black("add")
     }
 
-    console.log(players_left)
     if (players_left === 2) {
         setTimeout(() => {
             alert("Game Tie")
