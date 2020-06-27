@@ -146,3 +146,7 @@ body {
     background-color: rgb(150, 119, 85);
     height: 40px;
 }
+
+.moving-div {
+    position: absolute;
+}

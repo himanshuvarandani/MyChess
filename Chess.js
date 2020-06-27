@@ -1858,138 +1858,115 @@ function dot_event() {
     selected.classList.remove("active")
     scout = selected.classList[2]
     selected.classList.remove(scout)
-    
-    if (this.classList.length=== 3) {
-        removing_scout = this.classList[2]
-        this.classList.remove(removing_scout)
 
-        var remove_scout = document.createElement("div")
-        remove_scout.classList.add("col-1")
-        remove_scout.classList.add(removing_scout)
+    move_scout.bind(this)(scout)
 
-        if (turn === "white") {
-            var black_removes = document.querySelectorAll(".black-remove")
-            
-            if (black_removes[0].children.length < 8) {
-                black_removes[0].appendChild(remove_scout)
-            } else {
-                black_removes[1].appendChild(remove_scout)
-            }
-        } else {
-            var white_removes = document.querySelectorAll(".white-remove")
-            
-            if (white_removes[0].children.length < 8) {
-                white_removes[0].appendChild(remove_scout)
-            } else {
-                white_removes[1].appendChild(remove_scout)
-            }
-        }
-    }
-
-    if (scout.substring(6) === "pawn") {
-        var id = Number(this.id)
-        if (id-id%10 === 10 || id-id%10 === 80) {
-            while (true) {
-                var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
-                if (x === "Q" || x === "q") {
-                    this.classList.add(scout.substring(0, 6)+"queen")
-                    break
-                } else if (x === "R" || x === "r") {
-                    this.classList.add(scout.substring(0, 6)+"rook")
-                    break
-                } else if (x === "K" || x === "k") {
-                    this.classList.add(scout.substring(0, 6)+"knight")
-                    break
-                } else if (x === "B" || x === "b") {
-                    this.classList.add(scout.substring(0, 6)+"bishop")
-                    break
-                } else {
-                    x = prompt("Type correct value \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
+    setTimeout(() => {
+        if (scout.substring(6) === "pawn") {
+            var id = Number(this.id)
+            if (id-id%10 === 10 || id-id%10 === 80) {
+                while (true) {
+                    var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
+                    if (x === "Q" || x === "q") {
+                        this.classList.remove(scout)
+                        this.classList.add(scout.substring(0, 6)+"queen")
+                        break
+                    } else if (x === "R" || x === "r") {
+                        this.classList.remove(scout)
+                        this.classList.add(scout.substring(0, 6)+"rook")
+                        break
+                    } else if (x === "K" || x === "k") {
+                        this.classList.remove(scout)
+                        this.classList.add(scout.substring(0, 6)+"knight")
+                        break
+                    } else if (x === "B" || x === "b") {
+                        this.classList.remove(scout)
+                        this.classList.add(scout.substring(0, 6)+"bishop")
+                        break
+                    } else {
+                        x = prompt("Type correct value \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
+                    }
                 }
             }
+        }
+
+        if (turn === "black") {
+            // remove event listener from slected id
+            if (scout === "black-rook") {
+                selected.removeEventListener("click", black_rook_movement)
+            } else if (scout === "black-knight") {
+                selected.removeEventListener("click", black_knight_movement)
+            } else if (scout === "black-bishop") {
+                selected.removeEventListener("click", black_bishop_movement)
+            } else if (scout === "black-queen") {
+                selected.removeEventListener("click", black_queen_movement)
+            } else if (scout === "black-king") {
+                selected.removeEventListener("click", black_king_movement)
+            } else if (scout === "black-pawn") {
+                selected.removeEventListener("click", black_pawn_movement)
+            }
+
+            // remove event listener and check for black king is checked or not
+            black("remove")
+            // change turn to white
+            turn = "white"
+
+            var white_player = document.getElementById("white-player")
+            var black_player = document.getElementById("black-player")
+            black_player.textContent = ""
+            white_player.textContent = "White's Turn"
+
+            if (checked) {
+                white_check_mate()
+            }
+
+            // add event listener to white scouts
+            white("add")
         } else {
-            this.classList.add(scout)
-        }
-    } else {
-        this.classList.add(scout)
-    }
+            // remove event listener from slected id
+            if (scout === "white-rook") {
+                selected.removeEventListener("click", white_rook_movement)
+            } else if (scout === "white-knight") {
+                selected.removeEventListener("click", white_knight_movement)
+            } else if (scout === "white-bishop") {
+                selected.removeEventListener("click", white_bishop_movement)
+            } else if (scout === "white-queen") {
+                selected.removeEventListener("click", white_queen_movement)
+            } else if (scout === "white-king") {
+                selected.removeEventListener("click", white_king_movement)
+            } else if (scout === "white-pawn") {
+                selected.removeEventListener("click", white_pawn_movement)
+            }
 
-    if (turn === "black") {
-        // remove event listener from slected id
-        if (scout === "black-rook") {
-            selected.removeEventListener("click", black_rook_movement)
-        } else if (scout === "black-knight") {
-            selected.removeEventListener("click", black_knight_movement)
-        } else if (scout === "black-bishop") {
-            selected.removeEventListener("click", black_bishop_movement)
-        } else if (scout === "black-queen") {
-            selected.removeEventListener("click", black_queen_movement)
-        } else if (scout === "black-king") {
-            selected.removeEventListener("click", black_king_movement)
-        } else if (scout === "black-pawn") {
-            selected.removeEventListener("click", black_pawn_movement)
-        }
+            // remove event listener and check for white king is checked or not
+            white("remove")
+            // change turn to black
+            turn = "black"
 
-        // remove event listener and check for black king is checked or not
-        black("remove")
-        // change turn to white
-        turn = "white"
+            var black_player = document.getElementById("black-player")
+            var white_player = document.getElementById("white-player")
+            white_player.textContent = ""
+            black_player.textContent = "Black's Turn"
 
-        var white_player = document.getElementById("white-player")
-        var black_player = document.getElementById("black-player")
-        black_player.textContent = ""
-        white_player.textContent = "White's Turn"
+            if (checked) {
+                black_check_mate()
+            }
 
-        if (checked) {
-            white_check_mate()
+            // add event listener to black scouts 
+            black("add")
         }
 
-        // add event listener to white scouts
-        white("add")
-    } else {
-        // remove event listener from slected id
-        if (scout === "white-rook") {
-            selected.removeEventListener("click", white_rook_movement)
-        } else if (scout === "white-knight") {
-            selected.removeEventListener("click", white_knight_movement)
-        } else if (scout === "white-bishop") {
-            selected.removeEventListener("click", white_bishop_movement)
-        } else if (scout === "white-queen") {
-            selected.removeEventListener("click", white_queen_movement)
-        } else if (scout === "white-king") {
-            selected.removeEventListener("click", white_king_movement)
-        } else if (scout === "white-pawn") {
-            selected.removeEventListener("click", white_pawn_movement)
+        if (players_left === 2) {
+            setTimeout(() => {
+                alert("Game Tie")
+            }, 10);
+            setTimeout(reset, 5000);
         }
 
-        // remove event listener and check for white king is checked or not
-        white("remove")
-        // change turn to black
-        turn = "black"
+        players_left = 0
 
-        var black_player = document.getElementById("black-player")
-        var white_player = document.getElementById("white-player")
-        white_player.textContent = ""
-        black_player.textContent = "Black's Turn"
-
-        if (checked) {
-            black_check_mate()
-        }
-
-        // add event listener to black scouts 
-        black("add")
-    }
-
-    if (players_left === 2) {
-        setTimeout(() => {
-            alert("Game Tie")
-        }, 10);
-        setTimeout(reset, 5000);
-    }
-
-    players_left = 0
-
-    selected = null
+        selected = null
+    }, 300);
 }
 
 
@@ -2173,8 +2150,185 @@ function black_check_mate() {
             if (confirm("Reset Board")) {
                 reset()
             }
-        }, 1000);
+        }, 10000);
     }
 
     possible_id = []
+}
+
+
+function move_scout(scout) {
+    var rows = document.querySelectorAll(".row")
+    var moving_div = document.createElement("div")
+    moving_div.classList.add("moving-div")
+
+    document.querySelector(".container").appendChild(moving_div)
+
+    var img = document.createElement('img')
+    img.setAttribute('src', 'icons/'+scout.substring(0, 5)+'_'+scout.substring(6)+'.png')
+    img.style.height = '50px'
+    img.style.width = img.style.height
+    img.style.margin = '5px auto auto 5px'
+    img.style.position = 'relative'
+
+    moving_div.appendChild(img)
+
+    var id = (this.id<selected.id)?(this.id):(selected.id)
+    var select = document.getElementById(id)
+    left1 = select.offsetLeft + rows[3*(Number(id)-Number(id)%10)/10].offsetLeft + 9
+    top1 = rows[3*(Number(id)-Number(id)%10)/10].offsetTop
+    width = select.clientWidth
+    if (Number(id)%10 > 4) {
+        left1 += 4*width+document.getElementById("11").offsetLeft
+    }
+
+    selected_id = Number(selected.id)
+    this_id = Number(this.id)
+    number_of_blocks = Math.abs(selected_id%10-this_id%10)+1
+    moving_div.style.height = width
+
+    if (scout.substring(6) === "knight") {
+        number_of_blocks = 3
+        if (this_id > selected_id) {
+            if (this_id%10-selected_id%10 === -1) {
+                moving_div.style.top = top1+width
+                moving_div.style.left = left1-width*number_of_blocks/2
+                moving_div.style.transform = 'rotate(120deg)'
+                img.style.transform = 'rotate(-120deg)'
+            } else if (this_id%10-selected_id%10 === -2) {
+                moving_div.style.top = top1+width/2
+                moving_div.style.left = left1-width*(number_of_blocks-1)
+                moving_div.style.transform = 'rotate(150deg)'
+                img.style.transform = 'rotate(-150deg)'
+            } else if (this_id%10-selected_id%10 === 1) {
+                moving_div.style.top = top1+width
+                moving_div.style.left = left1-width/2
+                moving_div.style.transform = 'rotate(60deg)'
+                img.style.transform = 'rotate(-60deg)'
+            } else {
+                moving_div.style.top = top1+width/2
+                moving_div.style.left = left1-width/10
+                moving_div.style.transform = 'rotate(30deg)'
+                img.style.transform = 'rotate(-30deg)'
+            }
+        } else {
+            console.log(this_id)
+            if (this_id%10-selected_id%10 === -1) {
+                moving_div.style.top = top1+width
+                moving_div.style.left = left1-width/2
+                moving_div.style.transform = 'rotate(-120deg)'
+                img.style.transform = 'rotate(120deg)'
+            } else if (this_id%10-selected_id%10 === -2) {
+                moving_div.style.top = top1+width/2
+                moving_div.style.left = left1-width/10
+                moving_div.style.transform = 'rotate(-150deg)'
+                img.style.transform = 'rotate(150deg)'
+            } else if (this_id%10-selected_id%10 === 1) {
+                moving_div.style.top = top1+width
+                moving_div.style.left = left1-width*number_of_blocks/2
+                moving_div.style.transform = 'rotate(-60deg)'
+                img.style.transform = 'rotate(60deg)'
+            } else {
+                moving_div.style.top = top1+width/2
+                moving_div.style.left = left1-width*(number_of_blocks-1)
+                moving_div.style.transform = 'rotate(-30deg)'
+                img.style.transform = 'rotate(30deg)'
+            }
+        }
+    } else {
+        if(this_id%10 === selected_id%10) {
+            number_of_blocks = Math.abs(selected_id-selected_id%10-this_id+this_id%10)/10+1
+            moving_div.style.top = top1+width*(number_of_blocks/2-0.5)
+            moving_div.style.left = left1-width*(number_of_blocks/2-0.5)
+            if(this_id > selected_id) {
+                moving_div.style.transform = 'rotate(90deg)'
+                img.style.transform = 'rotate(-90deg)'
+            } else {
+                moving_div.style.transform = 'rotate(-90deg)'
+                img.style.transform = 'rotate(90deg)'
+            }
+        } else if (this_id-this_id%10 === selected_id-selected.id%10) {
+            moving_div.style.top = top1
+            moving_div.style.left = left1
+            if (this_id < selected_id) {
+                moving_div.style.transform = 'rotate(180deg)'
+                img.style.transform = 'rotate(-180deg)'
+            }
+        } else {
+            if (this_id>selected_id) {
+                var number_of_extra_blocks = number_of_blocks/2-1
+                number_of_blocks += number_of_extra_blocks
+                moving_div.style.top = top1+width*(number_of_blocks/2-0.5-number_of_extra_blocks/2)
+                if(this_id%10 > selected_id%10) {
+                    moving_div.style.left = left1-width*number_of_extra_blocks/2
+                    moving_div.style.transform = 'rotate(45deg)'
+                    img.style.transform = 'rotate(-45deg)'
+                } else {
+                    moving_div.style.left = left1-width*(number_of_blocks-1-number_of_extra_blocks/2)
+                    moving_div.style.transform = 'rotate(135deg)'
+                    img.style.transform = 'rotate(-135deg)'
+                }
+            } else {
+                var number_of_extra_blocks = number_of_blocks/2-1
+                number_of_blocks += number_of_extra_blocks
+                moving_div.style.top = top1+width*(number_of_blocks/2-0.5-number_of_extra_blocks/2)
+                if(this_id%10 < selected_id%10) {
+                    moving_div.style.left = left1-width*number_of_extra_blocks/2
+                    moving_div.style.transform = 'rotate(-135deg)'
+                    img.style.transform = 'rotate(135deg)'
+                } else {
+                    moving_div.style.left = left1-width*(number_of_blocks-1-number_of_extra_blocks/2)
+                    moving_div.style.transform = 'rotate(-45deg)'
+                    img.style.transform = 'rotate(45deg)'
+                }
+            }
+        }
+    }
+    moving_div.style.width = width*number_of_blocks
+
+    if (number_of_blocks > 3) {
+        duration = 300
+    } else if (number_of_blocks === 3) {
+        duration = 150
+    } else {
+        duration = 100
+    }
+
+    min_width = '5px'
+    max_width = String(width*(number_of_blocks-1))+'px'
+    img.animate({
+        left: [min_width, max_width]
+    }, duration)
+    setTimeout(() => {
+        document.querySelector(".container").removeChild(moving_div)
+
+        if (this.classList.length === 3) {
+            removing_scout = this.classList[2]
+            this.classList.remove(removing_scout)
+
+            var remove_scout = document.createElement("div")
+            remove_scout.classList.add("col-1")
+            remove_scout.classList.add(removing_scout)
+    
+            if (turn === "white") {
+                var black_removes = document.querySelectorAll(".black-remove")
+                
+                if (black_removes[0].children.length < 8) {
+                    black_removes[0].appendChild(remove_scout)
+                } else {
+                    black_removes[1].appendChild(remove_scout)
+                }
+            } else {
+                var white_removes = document.querySelectorAll(".white-remove")
+                
+                if (white_removes[0].children.length < 8) {
+                    white_removes[0].appendChild(remove_scout)
+                } else {
+                    white_removes[1].appendChild(remove_scout)
+                }
+            }    
+        }
+
+        this.classList.add(scout)
+    }, duration);
 }
