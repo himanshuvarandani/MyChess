@@ -1363,7 +1363,7 @@ function white_king_movement_check(id) {
         }
 
         if (!check) {
-            var id1 = black_king.id
+            var id1 = Number(black_king.id)
             var black_king_moves = [id1-11, id1-10, id1-9, id1-1, id1+1, id1+9, id1+10, id1+11]
 
             for (let k = 0; k < 8; k++) {
@@ -1865,8 +1865,8 @@ function dot_event() {
         if (scout.substring(6) === "pawn") {
             var id = Number(this.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
+                var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
                 while (true) {
-                    var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
                     if (x === "Q" || x === "q") {
                         this.classList.remove(scout)
                         this.classList.add(scout.substring(0, 6)+"queen")
