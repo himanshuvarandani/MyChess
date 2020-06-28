@@ -148,5 +148,5 @@ body {
 }
 
 .moving-div {
-    position: absolute;
+    position: fixed;
 }

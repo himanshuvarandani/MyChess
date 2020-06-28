@@ -163,7 +163,7 @@
             window.onresize = resize
             function resize() {
                 var whites = document.querySelectorAll('.white')
-                width = whites[0].clientWidth
+                width = whites[0].getBoundingClientRect().width
 
                 whites.forEach(function (white) {
                     white.style.height = width

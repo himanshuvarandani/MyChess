@@ -2093,7 +2093,7 @@ function white_check_mate() {
             if (confirm("Reset Board")) {
                 reset()
             }
-        }, 10000);
+        }, 1000);
     }
     
     possible_id = []
@@ -2150,7 +2150,7 @@ function black_check_mate() {
             if (confirm("Reset Board")) {
                 reset()
             }
-        }, 10000);
+        }, 1000);
     }
 
     possible_id = []
@@ -2158,7 +2158,6 @@ function black_check_mate() {
 
 
 function move_scout(scout) {
-    var rows = document.querySelectorAll(".row")
     var moving_div = document.createElement("div")
     moving_div.classList.add("moving-div")
 
@@ -2166,21 +2165,19 @@ function move_scout(scout) {
 
     var img = document.createElement('img')
     img.setAttribute('src', 'icons/'+scout.substring(0, 5)+'_'+scout.substring(6)+'.png')
-    img.style.height = '50px'
-    img.style.width = img.style.height
-    img.style.margin = '5px auto auto 5px'
     img.style.position = 'relative'
 
     moving_div.appendChild(img)
 
     var id = (this.id<selected.id)?(this.id):(selected.id)
-    var select = document.getElementById(id)
-    left1 = select.offsetLeft + rows[3*(Number(id)-Number(id)%10)/10].offsetLeft + 9
-    top1 = rows[3*(Number(id)-Number(id)%10)/10].offsetTop
-    width = select.clientWidth
-    if (Number(id)%10 > 4) {
-        left1 += 4*width+document.getElementById("11").offsetLeft
-    }
+    var dimensions = document.getElementById(id).getBoundingClientRect()
+    left1 = dimensions.left
+    top1 = dimensions.top
+    width = dimensions.width
+
+    img.style.height = width*3/4
+    img.style.width = width*3/4
+    img.style.margin = width/8
 
     selected_id = Number(selected.id)
     this_id = Number(this.id)
@@ -2212,7 +2209,6 @@ function move_scout(scout) {
                 img.style.transform = 'rotate(-30deg)'
             }
         } else {
-            console.log(this_id)
             if (this_id%10-selected_id%10 === -1) {
                 moving_div.style.top = top1+width
                 moving_div.style.left = left1-width/2
