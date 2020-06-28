@@ -2185,52 +2185,96 @@ function move_scout(scout) {
     moving_div.style.height = width
 
     if (scout.substring(6) === "knight") {
-        number_of_blocks = 3
+        moving_div.style.height = 3*width
+        moving_div.style.width = 2*width
         if (this_id > selected_id) {
             if (this_id%10-selected_id%10 === -1) {
-                moving_div.style.top = top1+width
-                moving_div.style.left = left1-width*number_of_blocks/2
-                moving_div.style.transform = 'rotate(120deg)'
-                img.style.transform = 'rotate(-120deg)'
+                moving_div.style.top = top1
+                moving_div.style.left = left1-width
+                min_width_left = width+5
+                max_width_left = 5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else if (this_id%10-selected_id%10 === -2) {
-                moving_div.style.top = top1+width/2
-                moving_div.style.left = left1-width*(number_of_blocks-1)
-                moving_div.style.transform = 'rotate(150deg)'
-                img.style.transform = 'rotate(-150deg)'
+                moving_div.style.top = top1-width/2
+                moving_div.style.left = left1-width*3/2
+                moving_div.style.transform = 'rotate(90deg)'
+                img.style.transform = 'rotate(-90deg)'
+                min_width_left = 5
+                max_width_left = width+5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else if (this_id%10-selected_id%10 === 1) {
-                moving_div.style.top = top1+width
-                moving_div.style.left = left1-width/2
-                moving_div.style.transform = 'rotate(60deg)'
-                img.style.transform = 'rotate(-60deg)'
+                moving_div.style.top = top1
+                moving_div.style.left = left1
+                min_width_left = 5
+                max_width_left = width+5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else {
-                moving_div.style.top = top1+width/2
-                moving_div.style.left = left1-width/10
-                moving_div.style.transform = 'rotate(30deg)'
-                img.style.transform = 'rotate(-30deg)'
+                moving_div.style.top = top1-width/2
+                moving_div.style.left = left1+width/2
+                moving_div.style.transform = 'rotate(-90deg)'
+                img.style.transform = 'rotate(90deg)'
+                min_width_left = width+5
+                max_width_left = 5
+                min_width_top = 5
+                max_width_top = 2*width+5
             }
         } else {
             if (this_id%10-selected_id%10 === -1) {
-                moving_div.style.top = top1+width
-                moving_div.style.left = left1-width/2
-                moving_div.style.transform = 'rotate(-120deg)'
-                img.style.transform = 'rotate(120deg)'
+                moving_div.style.top = top1
+                moving_div.style.left = left1
+                moving_div.style.transform = 'rotate(180deg)'
+                img.style.transform = 'rotate(-180deg)'
+                min_width_left = 5
+                max_width_left = width+5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else if (this_id%10-selected_id%10 === -2) {
-                moving_div.style.top = top1+width/2
-                moving_div.style.left = left1-width/10
-                moving_div.style.transform = 'rotate(-150deg)'
-                img.style.transform = 'rotate(150deg)'
+                moving_div.style.top = top1-width/2
+                moving_div.style.left = left1+width/2
+                moving_div.style.transform = 'rotate(90deg)'
+                img.style.transform = 'rotate(-90deg)'
+                min_width_left = width+5
+                max_width_left = 5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else if (this_id%10-selected_id%10 === 1) {
-                moving_div.style.top = top1+width
-                moving_div.style.left = left1-width*number_of_blocks/2
-                moving_div.style.transform = 'rotate(-60deg)'
-                img.style.transform = 'rotate(60deg)'
+                moving_div.style.top = top1
+                moving_div.style.left = left1-width
+                moving_div.style.transform = 'rotate(180deg)'
+                img.style.transform = 'rotate(-180deg)'
+                min_width_left = width+5
+                max_width_left = 5
+                min_width_top = 5
+                max_width_top = 2*width+5
             } else {
-                moving_div.style.top = top1+width/2
-                moving_div.style.left = left1-width*(number_of_blocks-1)
-                moving_div.style.transform = 'rotate(-30deg)'
-                img.style.transform = 'rotate(30deg)'
+                moving_div.style.top = top1-width/2
+                moving_div.style.left = left1-width*3/2
+                moving_div.style.transform = 'rotate(-90deg)'
+                img.style.transform = 'rotate(90deg)'
+                min_width_left = 5
+                max_width_left = width+5
+                min_width_top = 5
+                max_width_top = 2*width+5
             }
         }
+
+        img.style.marginTop = min_width_top
+        img.style.marginLeft = min_width_left
+
+        img.animate({
+            marginTop: [String(min_width_top)+'px', String(max_width_top)+'px']
+        }, 150)
+
+        setTimeout(() => {
+            img.style.marginTop = max_width_top
+            img.animate({
+                marginLeft: [String(min_width_left)+'px', String(max_width_left)+'px']
+            }, 100)
+        }, 150);
+        duration = 250
     } else {
         if(this_id%10 === selected_id%10) {
             number_of_blocks = Math.abs(selected_id-selected_id%10-this_id+this_id%10)/10+1
@@ -2279,22 +2323,22 @@ function move_scout(scout) {
                 }
             }
         }
-    }
-    moving_div.style.width = width*number_of_blocks
+        moving_div.style.width = width*number_of_blocks
 
-    if (number_of_blocks > 3) {
-        duration = 300
-    } else if (number_of_blocks === 3) {
-        duration = 150
-    } else {
-        duration = 100
-    }
+        if (number_of_blocks > 3) {
+            duration = 300
+        } else if (number_of_blocks === 3) {
+            duration = 150
+        } else {
+            duration = 100
+        }
 
-    min_width = '5px'
-    max_width = String(width*(number_of_blocks-1))+'px'
-    img.animate({
-        left: [min_width, max_width]
-    }, duration)
+        min_width = '5px'
+        max_width = String(width*(number_of_blocks-1))+'px'
+        img.animate({
+            left: [min_width, max_width]
+        }, duration)
+    }
     setTimeout(() => {
         document.querySelector(".container").removeChild(moving_div)
 
