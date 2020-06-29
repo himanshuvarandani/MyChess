@@ -2345,7 +2345,10 @@ function move_scout(scout, duration) {
 
         var k = 1
         if (diagonal) {
-            k = 1.4
+            k = 1.25
+            if (number_of_extra_blocks) {
+                k = 1.4
+            }
         }
 
         min_width = '5px'
