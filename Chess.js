@@ -1859,7 +1859,8 @@ function dot_event() {
     scout = selected.classList[2]
     selected.classList.remove(scout)
 
-    move_scout.bind(this)(scout)
+    duration = 0
+    duration = move_scout.bind(this)(scout, duration)
 
     setTimeout(() => {
         if (scout.substring(6) === "pawn") {
@@ -1966,7 +1967,7 @@ function dot_event() {
         players_left = 0
 
         selected = null
-    }, 300);
+    }, duration);
 }
 
 
@@ -2157,7 +2158,7 @@ function black_check_mate() {
 }
 
 
-function move_scout(scout) {
+function move_scout(scout, duration) {
     var moving_div = document.createElement("div")
     moving_div.classList.add("moving-div")
 
@@ -2264,18 +2265,34 @@ function move_scout(scout) {
         img.style.marginTop = min_width_top
         img.style.marginLeft = min_width_left
 
-        img.animate({
-            marginTop: [String(min_width_top)+'px', String(max_width_top)+'px']
-        }, 150)
+        min_width = String(min_width_top)+'px'
+        max_width = String(width+5)+'px'
+
+        for (let j = 1; j < 3; j++) {
+            setTimeout(() => {
+                img.animate({
+                    marginTop: [min_width, max_width]
+                }, 200)
+                setTimeout(() => {
+                    img.style.marginTop = max_width
+                    min_width = max_width
+                    max_width = String(max_width_top)+'px'
+                }, 200);
+            }, duration);
+            duration += 400
+        }
 
         setTimeout(() => {
-            img.style.marginTop = max_width_top
             img.animate({
                 marginLeft: [String(min_width_left)+'px', String(max_width_left)+'px']
-            }, 100)
-        }, 150);
-        duration = 250
+            }, 200)
+            setTimeout(() => {
+                img.style.marginLeft = max_width_left
+            }, 200);
+        }, duration);
+        duration += 200
     } else {
+        var diagonal = 0
         if(this_id%10 === selected_id%10) {
             number_of_blocks = Math.abs(selected_id-selected_id%10-this_id+this_id%10)/10+1
             moving_div.style.top = top1+width*(number_of_blocks/2-0.5)
@@ -2295,6 +2312,7 @@ function move_scout(scout) {
                 img.style.transform = 'rotate(-180deg)'
             }
         } else {
+            diagonal = 1
             if (this_id>selected_id) {
                 var number_of_extra_blocks = number_of_blocks/2-1
                 number_of_blocks += number_of_extra_blocks
@@ -2325,19 +2343,29 @@ function move_scout(scout) {
         }
         moving_div.style.width = width*number_of_blocks
 
-        if (number_of_blocks > 3) {
-            duration = 300
-        } else if (number_of_blocks === 3) {
-            duration = 150
-        } else {
-            duration = 100
+        var k = 1
+        if (diagonal) {
+            k = 1.25
+            if (number_of_extra_blocks) {
+                k = 1.4
+            }
         }
 
         min_width = '5px'
-        max_width = String(width*(number_of_blocks-1))+'px'
-        img.animate({
-            left: [min_width, max_width]
-        }, duration)
+        for (let j = k; j < number_of_blocks; j += k) {
+            console.log(j)
+            setTimeout(() => {
+                max_width = String(width*j+5)+'px'
+                img.animate({
+                    marginLeft: [min_width, max_width]
+                }, 200)
+                min_width = max_width
+                setTimeout(() => {
+                    img.style.marginLeft = max_width
+                }, 200);
+            }, duration);
+            duration += 400
+        }
     }
     setTimeout(() => {
         document.querySelector(".container").removeChild(moving_div)
@@ -2371,4 +2399,5 @@ function move_scout(scout) {
 
         this.classList.add(scout)
     }, duration);
+    return duration
 }
