@@ -14,26 +14,25 @@ var players_left = 0
 reset()
 
 
+// to reset board
 function reset() {
+    // removing dots if available
     remove_dots()
+
+    // remove event listeners from all scouts
+    player("remove")
 
     // if king is checked then remove check dot from king
     if (checked) {
-        if (turn === "black") {
-            var black_king = document.querySelector(".black-king")
-    
-            black_king.innerHTML = ""
-        } else {
-            var white_king = document.querySelector(".white-king")
-    
-            white_king.innerHTML = ""
-        }
+        var king = document.querySelector("."+turn+"-king")
+        king.innerHTML = ""
     }
 
     if (selected) {
         selected.classList.remove("selected")
     }
 
+    // remove all scouts from removing space
     var white_removes = document.querySelectorAll(".white-remove")
     for (let i = 0; i < white_removes.length; i++) {
         white_removes[i].innerHTML = ""
@@ -44,68 +43,11 @@ function reset() {
         black_removes[i].innerHTML = ""
     }
 
-    var white_rooks = document.querySelectorAll(".white-rook")
-    var white_knights = document.querySelectorAll(".white-knight")
-    var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queens = document.querySelectorAll(".white-queen")
-    var white_king = document.querySelector(".white-king")
-    var white_pawns = document.querySelectorAll(".white-pawn")
+    // remove all scouts from board
+    remove_scouts("white")
+    remove_scouts("black")
 
-    for (let i = 0; i < white_rooks.length; i++) {
-        white_rooks[i].classList.remove("white-rook")
-    }
-
-    for (let i = 0; i < white_knights.length; i++) {
-        white_knights[i].classList.remove("white-knight")
-    }
-
-    for (let i = 0; i < white_bishops.length; i++) {
-        white_bishops[i].classList.remove("white-bishop")
-    }
-
-    for (let i = 0; i < white_queens.length; i++) {
-        white_queens[i].classList.remove("white-queen")
-    }
-
-    if (white_king) {
-        white_king.classList.remove("white-king")
-    }
-
-    for (let i = 0; i < white_pawns.length; i++) {
-        white_pawns[i].classList.remove("white-pawn")
-    }
-
-    var black_rooks = document.querySelectorAll(".black-rook")
-    var black_knights = document.querySelectorAll(".black-knight")
-    var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queens = document.querySelectorAll(".black-queen")
-    var black_king = document.querySelector(".black-king")
-    var black_pawns = document.querySelectorAll(".black-pawn")
-
-    for (let i = 0; i < black_rooks.length; i++) {
-        black_rooks[i].classList.remove("black-rook")
-    }
-
-    for (let i = 0; i < black_knights.length; i++) {
-        black_knights[i].classList.remove("black-knight")
-    }
-
-    for (let i = 0; i < black_bishops.length; i++) {
-        black_bishops[i].classList.remove("black-bishop")
-    }
-
-    for (let i = 0; i < black_queens.length; i++) {
-        black_queens[i].classList.remove("black-queen")
-    }
-
-    if (black_king) {
-        black_king.classList.remove("black-king")
-    }
-
-    for (let i = 0; i < black_pawns.length; i++) {
-        black_pawns[i].classList.remove("black-pawn")
-    }
-
+    // adding scouts to board at default id's
     document.getElementById("11").classList.add("white-rook")
     document.getElementById("12").classList.add("white-knight")
     document.getElementById("13").classList.add("white-bishop")
@@ -132,6 +74,7 @@ function reset() {
     document.getElementById("87").classList.add("black-knight")
     document.getElementById("88").classList.add("black-rook")
 
+    // setting all global variables to default
     turn = "white"
     dots = []
     selected = null
@@ -141,7 +84,8 @@ function reset() {
     possible_id = []
     movement_possibility = true
 
-    white("add")
+    // adding event listeners to white scouts
+    player("add")
 
     players_left = 0
     
@@ -152,498 +96,242 @@ function reset() {
 }
 
 
-function white(option) {
-    var white_rooks = document.querySelectorAll(".white-rook")
-    var white_knights = document.querySelectorAll(".white-knight")
-    var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queens = document.querySelectorAll(".white-queen")
-    var white_king = document.querySelector(".white-king")
-    var white_pawns = document.querySelectorAll(".white-pawn")
+// to remove scouts of white and black when reset
+function remove_scouts(scout) {
+    var rooks = document.querySelectorAll("."+scout+"-rook")
+    var knights = document.querySelectorAll("."+scout+"-knight")
+    var bishops = document.querySelectorAll("."+scout+"-bishop")
+    var queens = document.querySelectorAll("."+scout+"-queen")
+    var king = document.querySelector("."+scout+"-king")
+    var pawns = document.querySelectorAll("."+scout+"-pawn")
+
+    for (let i = 0; i < rooks.length; i++) {
+        rooks[i].classList.remove(""+scout+"-rook")
+    }
+
+    for (let i = 0; i < knights.length; i++) {
+        knights[i].classList.remove(""+scout+"-knight")
+    }
+
+    for (let i = 0; i < bishops.length; i++) {
+        bishops[i].classList.remove(""+scout+"-bishop")
+    }
+
+    for (let i = 0; i < queens.length; i++) {
+        queens[i].classList.remove(""+scout+"-queen")
+    }
+
+    if (king) {
+        king.classList.remove(""+scout+"-king")
+    }
+
+    for (let i = 0; i < pawns.length; i++) {
+        pawns[i].classList.remove(""+scout+"-pawn")
+    }
+}
+
+
+// to add or remove event listeners from scouts of turn
+function player(option) {
+    var rooks = document.querySelectorAll("."+turn+"-rook")
+    var knights = document.querySelectorAll("."+turn+"-knight")
+    var bishops = document.querySelectorAll("."+turn+"-bishop")
+    var queens = document.querySelectorAll("."+turn+"-queen")
+    var king = document.querySelector("."+turn+"-king")
+    var pawns = document.querySelectorAll("."+turn+"-pawn")
 
     if (option === "add") {
         // add event listener
-        for (let i = 0; i < white_rooks.length; i++) {
-            if (white_rooks[i].id) {
+        for (let i = 0; i < rooks.length; i++) {
+            if (rooks[i].id) {
                 players_left += 1
 
-                white_rooks[i].classList.add("active")
-                white_rooks[i].addEventListener("click", white_rook_movement)
+                rooks[i].classList.add("active")
+                rooks[i].addEventListener("click", rook_movement)
             }
         }
 
-        for (let i = 0; i < white_knights.length; i++) {
-            if (white_knights[i].id) {
+        for (let i = 0; i < knights.length; i++) {
+            if (knights[i].id) {
                 players_left += 1
 
-                white_knights[i].classList.add("active")
-                white_knights[i].addEventListener("click", white_knight_movement)
+                knights[i].classList.add("active")
+                knights[i].addEventListener("click", knight_movement)
             }
         }
 
-        for (let i = 0; i < white_bishops.length; i++) {
-            if (white_bishops[i].id) {
+        for (let i = 0; i < bishops.length; i++) {
+            if (bishops[i].id) {
                 players_left += 1
 
-                white_bishops[i].classList.add("active")
-                white_bishops[i].addEventListener("click", white_bishop_movement)
+                bishops[i].classList.add("active")
+                bishops[i].addEventListener("click", bishop_movement)
             }
         }
 
-        for (let i = 0; i < white_queens.length; i++) {
-            if (white_queens[i].id) {
+        for (let i = 0; i < queens.length; i++) {
+            if (queens[i].id) {
                 players_left += 1
 
-                white_queens[i].classList.add("active")
-                white_queens[i].addEventListener("click", white_queen_movement)
+                queens[i].classList.add("active")
+                queens[i].addEventListener("click", queen_movement)
             }
         }
 
         players_left += 1
 
-        white_king.classList.add("active")
-        white_king.addEventListener("click", white_king_movement)
+        king.classList.add("active")
+        king.addEventListener("click", king_movement)
 
-        for (let i = 0; i < white_pawns.length; i++) {
-            if (white_pawns[i].id) {
+        for (let i = 0; i < pawns.length; i++) {
+            if (pawns[i].id) {
                 players_left += 1
 
-                white_pawns[i].classList.add("active")
-                white_pawns[i].addEventListener("click", white_pawn_movement)
+                pawns[i].classList.add("active")
+                pawns[i].addEventListener("click", pawn_movement)
             }
         }
     } else {
-        // remove event listener and check for black king is checked or not
-        var black_king = document.querySelector(".black-king")
-        var black_king_id = Number(black_king.id)
-
-        for (let i = 0; i < white_rooks.length; i++) {
-            if (white_rooks[i].removeEventListener) {
-                white_rooks[i].removeEventListener("click", white_rook_movement)
+        // remove event listener and check for opposite king is checked or not
+        for (let i = 0; i < rooks.length; i++) {
+            if (rooks[i].removeEventListener) {
+                rooks[i].removeEventListener("click", rook_movement)
             }
 
-            if (white_rooks[i].id) {
-                players_left += 1
-                white_rooks[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && white_rooks[i].id) {
-                // left-right-movement
-                check_king_movement(Number(white_rooks[i].id), 1, black_king)
-                // up-down-movement
-                check_king_movement(Number(white_rooks[i].id), 10, black_king)
+            if (rooks[i].id) {
+                rooks[i].classList.remove("active")
             }
         }
     
-        for (let i = 0; i < white_knights.length; i++) {
-            if (white_knights[i].removeEventListener) {
-                white_knights[i].removeEventListener("click", white_knight_movement)
+        for (let i = 0; i < knights.length; i++) {
+            if (knights[i].removeEventListener) {
+                knights[i].removeEventListener("click", knight_movement)
             }
 
-            if (white_knights[i].id) {
-                players_left += 1
-                white_knights[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && white_knights[i].id) {
-                var id = Number(white_knights[i].id)
-                var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
-
-                // check if any of these id has black-king
-                for (let j = 0; j < 8; j++) {
-                    if (black_king_id === knight_moves[j]) {
-                        number_of_checks += 1
-                        if (!checked) {
-                            add_checked_dot_to_king(black_king)
-                            check_list.push(id)
-                        }
-                        break
-                    }
-                }
+            if (knights[i].id) {
+                knights[i].classList.remove("active")
             }
         }
     
-        for (let i = 0; i < white_bishops.length; i++) {
-            if (white_bishops[i].removeEventListener) {
-                white_bishops[i].removeEventListener("click", white_bishop_movement)
+        for (let i = 0; i < bishops.length; i++) {
+            if (bishops[i].removeEventListener) {
+                bishops[i].removeEventListener("click", bishop_movement)
             }
 
-            if (white_bishops[i].id) {
-                players_left += 1
-                white_bishops[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && white_bishops[i].id) {
-                // main-diagonal-movement
-                check_king_movement(Number(white_bishops[i].id), 11, black_king)
-                // cross-diagonal-movement
-                check_king_movement(Number(white_bishops[i].id), 9, black_king)
+            if (bishops[i].id) {
+                bishops[i].classList.remove("active")
             }
         }
     
-        for (let i = 0; i < white_queens.length; i++) {
-            if (white_queens[i].removeEventListener) {
-                white_queens[i].removeEventListener("click", white_queen_movement)
+        for (let i = 0; i < queens.length; i++) {
+            if (queens[i].removeEventListener) {
+                queens[i].removeEventListener("click", queen_movement)
             }
 
-            if (white_queens[i].id) {
-                players_left += 1
-                white_queens[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && white_queens[i].id) {
-                // left-right-movement
-                check_king_movement(Number(white_queens[i].id), 1, black_king)
-                // up-down-movement
-                check_king_movement(Number(white_queens[i].id), 10, black_king)
-                // main-diagonal-movement
-                check_king_movement(Number(white_queens[i].id), 11, black_king)
-                // cross-diagonal-movement
-                check_king_movement(Number(white_queens[i].id), 9, black_king)
+            if (queens[i].id) {
+                queens[i].classList.remove("active")
             }
         }
 
-        players_left += 1
-        white_king.classList.remove("active")
-        if (white_king.removeEventListener) {
-            white_king.removeEventListener("click", white_king_movement)
+        if (king) {
+            king.classList.remove("active")
+            if (king.removeEventListener) {
+                king.removeEventListener("click", king_movement)
+            }
         }
     
-        for (let i = 0; i < white_pawns.length; i++) {
-            if (white_pawns[i].removeEventListener) {
-                white_pawns[i].removeEventListener("click", white_pawn_movement)
+        for (let i = 0; i < pawns.length; i++) {
+            if (pawns[i].removeEventListener) {
+                pawns[i].removeEventListener("click", pawn_movement)
             }
 
-            if (white_pawns[i].id) {
-                players_left += 1
-                white_pawns[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && white_pawns[i].id) {
-                var id = Number(white_pawns[i].id)
-
-                // check for right forward
-                dot = document.getElementById("" + String(id + 11))
-                if (dot) {
-                    if (dot.classList.length === 3) {
-                        if (dot === black_king) {
-                            number_of_checks += 1
-                            if (!checked) {
-                                add_checked_dot_to_king(black_king)
-                                check_list.push(id)
-                            }
-                        }
-                    }
-                }
-
-                // check for left forward
-                dot = document.getElementById("" + String(id + 9))
-                if (dot) {
-                    if (dot.classList.length === 3) {
-                        if (dot === black_king) {
-                            number_of_checks += 1
-                            if (!checked) {
-                                add_checked_dot_to_king(black_king)
-                                check_list.push(id)
-                            }
-                        }
-                    }
-                }
+            if (pawns[i].id) {
+                pawns[i].classList.remove("active")
             }
         }
     }
 }
 
 
-function black(option) {
-    var black_rooks = document.querySelectorAll(".black-rook")
-    var black_knights = document.querySelectorAll(".black-knight")
-    var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queens = document.querySelectorAll(".black-queen")
-    var black_king = document.querySelector(".black-king")
-    var black_pawns = document.querySelectorAll(".black-pawn")
+// functions for listeners calling movement function on click
+function rook_movement() {
+    movement.bind(this)("rook")
+}
+function knight_movement() {
+    movement.bind(this)("knight")
+}
+function bishop_movement() {
+    movement.bind(this)("bishop")
+}
+function queen_movement() {
+    movement.bind(this)("queen")
+}
+function king_movement() {
+    movement.bind(this)("king")
+}
+function pawn_movement() {
+    movement.bind(this)("pawn")
+}
 
-    if (option === "add") {
-        // add event listener
-        for (let i = 0; i < black_rooks.length; i++) {
-            if (black_rooks[i].id) {
-                players_left += 1
 
-                black_rooks[i].classList.add("active")
-                black_rooks[i].addEventListener("click", black_rook_movement)
-            }
+// check if any scout is selected then remove dots and selected class
+// and add selected class to this scout
+// and call movement check according to scout
+function movement(scout) {
+    var flag = 1
+
+    if (selected) {
+        remove_dots()
+        selected.classList.remove("selected")
+
+        if (selected === this) {
+            selected = null
+            flag = 0
+        }
+    }
+
+    if (flag === 1) {
+        selected = this
+        selected.classList.add("selected")
+
+        var id = Number(this.id)
+
+        if (scout === "rook") {
+            rook_movement_check(id)
+        } else if (scout === "knight") {
+            knight_movement_check(id)
+        } else if (scout === "bishop") {
+            bishop_movement_check(id)
+        } else if (scout === "queen") {
+            queen_movement_check(id)
+        } else if (scout === "king") {
+            player_king_movement_check(id)
+        } else if (scout === "pawn") {
+            pawn_movement_check(id)
         }
 
-        for (let i = 0; i < black_knights.length; i++) {
-            if (black_knights[i].id) {
-                players_left += 1
-
-                black_knights[i].classList.add("active")
-                black_knights[i].addEventListener("click", black_knight_movement)
+        if (possible_id.length) {
+            for (let i = 0; i < possible_id.length; i++) {
+                dot = document.getElementById(possible_id[i])
+                add_dot(dot)
             }
+            possible_id = []
         }
 
-        for (let i = 0; i < black_bishops.length; i++) {
-            if (black_bishops[i].id) {
-                players_left += 1
-
-                black_bishops[i].classList.add("active")
-                black_bishops[i].addEventListener("click", black_bishop_movement)
-            }
-        }
-
-        for (let i = 0; i < black_queens.length; i++) {
-            if (black_queens[i].id) {
-                players_left += 1
-
-                black_queens[i].classList.add("active")
-                black_queens[i].addEventListener("click", black_queen_movement)
-            }
-        }
-
-        players_left += 1
-
-        black_king.classList.add("active")
-        black_king.addEventListener("click", black_king_movement)
-
-        for (let i = 0; i < black_pawns.length; i++) {
-            if (black_pawns[i].id) {
-                players_left += 1
-
-                black_pawns[i].classList.add("active")
-                black_pawns[i].addEventListener("click", black_pawn_movement)
-            }
-        }
-    } else {
-        // remove event listener and check for white king is checked or not
-        var white_king = document.querySelector(".white-king")
-        var white_king_id = Number(white_king.id)
-
-        for (let i = 0; i < black_rooks.length; i++) {
-            if (black_rooks[i].removeEventListener) {
-                black_rooks[i].removeEventListener("click", black_rook_movement)
-            }
-
-            if (black_rooks[i].id) {
-                players_left += 1
-                black_rooks[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && black_rooks[i].id) {
-                // left-right-movement
-                check_king_movement(Number(black_rooks[i].id), 1, white_king)
-                // up-down-movement
-                check_king_movement(Number(black_rooks[i].id), 10, white_king)
-            }
-        }
-
-        for (let i = 0; i < black_knights.length; i++) {
-            if (black_knights[i].removeEventListener) {
-                black_knights[i].removeEventListener("click", black_knight_movement)
-            }
-
-            if (black_knights[i].id) {
-                players_left += 1
-                black_knights[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && black_knights[i].id) {
-                var id = Number(black_knights[i].id)
-                knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
-
-                // check if any of these id has black-king
-                for (let j = 0; j < 8; j++) {
-                    if (white_king_id === knight_moves[j]) {
-                        number_of_checks += 1
-                        if (!checked) {
-                            add_checked_dot_to_king(white_king)
-                            check_list.push(id)
-                        }
-                        break
-                    }
-                }
-            }
-        }
-
-        for (let i = 0; i < black_bishops.length; i++) {
-            if (black_bishops[i].removeEventListener) {
-                black_bishops[i].removeEventListener("click", black_bishop_movement)
-            }
-
-            if (black_bishops[i].id) {
-                players_left += 1
-                black_bishops[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && black_bishops[i].id) {
-                // main-diagonal-movement
-                check_king_movement(Number(black_bishops[i].id), 11, white_king)
-                // cross-diagonal-movement
-                check_king_movement(Number(black_bishops[i].id), 9, white_king)
-            }
-        }
-
-        for (let i = 0; i < black_queens.length; i++) {
-            if (black_queens[i].removeEventListener) {
-                black_queens[i].removeEventListener("click", black_queen_movement)
-            }
-
-            if (black_queens[i].id) {
-                players_left += 1
-                black_queens[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && black_queens[i].id) {
-                // left-right-movement
-                check_king_movement(Number(black_queens[i].id), 1, white_king)
-                // up-down-movement
-                check_king_movement(Number(black_queens[i].id), 10, white_king)
-                // main-diagonal-movement
-                check_king_movement(Number(black_queens[i].id), 11, white_king)
-                // cross-diagonal-movement
-                check_king_movement(Number(black_queens[i].id), 9, white_king)
-            }
-        }
-
-        players_left += 1
-        black_king.classList.remove("active")
-        if (black_king.removeEventListener) {
-            black_king.removeEventListener("click", black_king_movement)
-        }
-
-        for (let i = 0; i < black_pawns.length; i++) {
-            if (black_pawns[i].removeEventListener) {
-                black_pawns[i].removeEventListener("click", black_pawn_movement)
-            }
-
-            if (black_pawns[i].id) {
-                players_left += 1
-                black_pawns[i].classList.remove("active")
-            }
-
-            if (number_of_checks  < 2 && black_pawns[i].id) {
-                var id = Number(black_pawns[i].id)
-
-                // check for left forward move
-                dot = document.getElementById("" + String(id - 11))
-                if (dot) {
-                    if (dot.classList.length === 3) {
-                        if (dot === white_king) {
-                            number_of_checks += 1
-                            if (!checked) {
-                                add_checked_dot_to_king(white_king)
-                                check_list.push(id)
-                            }
-                        }
-                    }
-                }
-
-                // check for right forward move
-                dot = document.getElementById("" + String(id - 9))
-                if (dot) {
-                    if (dot.classList.length === 3) {
-                        if (dot === white_king) {
-                            number_of_checks += 1
-                            if (!checked) {
-                                add_checked_dot_to_king(white_king)
-                                check_list.push(id)
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        add_event_to_dots()
     }
 }
 
 
-function white_rook_movement() {
-    if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            rook_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_rook_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            rook_movement(id)
-            
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function rook_movement(id) {
+// check movement of rook is possible or not
+// then add dots to possible blocks
+function rook_movement_check(id) {
     // check if it is removed then king have checked or not
-    // for main-diagonal-movement
-    movement_possible_or_not(id, 11)
-    // for cross-diagonal-movement
-    movement_possible_or_not(id, 9)
+    var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
 
-    if (movement_possibility) {
-        // for left-right-movement
-        movement_possible_or_not(id, 1)
-        var left_right = movement_possibility
-        movement_possibility = true
-        // for up-down-movement
-        movement_possible_or_not(id, 10)
-        var up_down = movement_possibility
-        
+    // if movement is possible in only one direction then rook can only move in that direction
+    // otherwise rook can move in up-down and left-right direction
+    if (main_diagonal && cross_diagonal) {
         if (!left_right) {
             check_movement(id, 1)
         } else if (!up_down){
@@ -657,94 +345,15 @@ function rook_movement(id) {
 }
 
 
-function white_bishop_movement() {
-    if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            bishop_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_bishop_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-            
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            bishop_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function bishop_movement(id) {
+// check movement of bishop is possible or not
+// then add dots to possible blocks
+function bishop_movement_check(id) {
     // check if it is removed then king have checked or not
-    // for left-right-movement
-    movement_possible_or_not(id, 1)
-    // for up-down-movement
-    movement_possible_or_not(id, 10)
+    var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
 
-    if (movement_possibility) {
-        // for main-digonal-movement
-        movement_possible_or_not(id, 11)
-        var main_diagonal = movement_possibility
-        movement_possibility = true
-        // for cross-diaonal-movement
-        movement_possible_or_not(id, 9)
-        var cross_diagonal = movement_possibility
-        
+    // if movement is possible in only one direction then bishop can only move in that direction
+    // otherwise bishop can move in main-diagonal and cross-diagonal direction
+    if (left_right && up_down) {
         if (!main_diagonal) {
             check_movement(id, 11)
         } else if (!cross_diagonal){
@@ -758,97 +367,14 @@ function bishop_movement(id) {
 }
 
 
-function white_queen_movement() {
-    if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            queen_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_queen_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            queen_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function queen_movement(id) {
+// check movement of queen is possible or not
+// then add dots to possible blocks
+function queen_movement_check(id) {
     // check if it is removed then king have checked or not
-    // for left-right-movement
-    movement_possible_or_not(id, 1)
-    var left_right = movement_possibility
-    movement_possibility = true
-    // for up-down-movement
-    movement_possible_or_not(id, 10)
-    var up_down = movement_possibility
-    movement_possibility = true
-    // for main-digonal-movement
-    movement_possible_or_not(id, 11)
-    var main_diagonal = movement_possibility
-    movement_possibility = true
-    // for cross-diaonal-movement
-    movement_possible_or_not(id, 9)
-    var cross_diagonal = movement_possibility
-    movement_possibility = true
+    var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
     
+    // if movement is possible in only one direction then queen can only move in that direction
+    // otherwise queen can move in all these directions
     if (!left_right) {
         check_movement(id, 1)
     } else if (!up_down){
@@ -867,201 +393,65 @@ function queen_movement(id) {
 }
 
 
-function white_pawn_movement() {
+// check movement of pawn is possible or not
+// then add dots to possible blocks
+function pawn_movement_check(id) {
+    // check if it is removed then king have checked or not
+    var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
+
     if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-        
-        if ( flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            white_pawn_movement_check(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
+        k = 1 // white pawn moves downward w.r.t. board
+    } else {
+        k = -1 // black pawn moves upward w.r.t. board
     }
-}
 
-
-function white_pawn_movement_check(id) {
-    // check if it is removed then king have checked or not
-    // for left-right-movement
-    movement_possible_or_not(id, 1)
-    var left_right = movement_possibility
-    movement_possibility = true
-    // for up-down-movement
-    movement_possible_or_not(id, 10)
-    var up_down = movement_possibility
-    movement_possibility = true
-    // for main-digonal-movement
-    movement_possible_or_not(id, 11)
-    var main_diagonal = movement_possibility
-    movement_possibility = true
-    // for cross-diaonal-movement
-    movement_possible_or_not(id, 9)
-    var cross_diagonal = movement_possibility
-    movement_possibility = true
-
+    
+    // if movement is possible in only one direction then rook can only move in that direction
+    // otherwise rook can move in up-down direction and diagonally
     if (left_right) {
         if (!up_down) {
-            pawn_white_forward_move(id)
+            pawn_forward_move(id, k)
         } else if (!main_diagonal) {
             // check for right forward move
-            pawn_diagonal_move(id, 11)
+            pawn_diagonal_move(id, 11*k)
         } else if (!cross_diagonal) {
             // check for left forward move
-            pawn_diagonal_move(id, 9)
+            pawn_diagonal_move(id, 9*k)
         } else {
-            pawn_white_forward_move(id)
-            pawn_diagonal_move(id, 11)
-            pawn_diagonal_move(id, 9)
+            pawn_forward_move(id, k)
+            pawn_diagonal_move(id, 11*k)
+            pawn_diagonal_move(id, 9*k)
         }
     }
 }
 
 
-function pawn_white_forward_move(id) {
-    // checks if white pawn is at the startng or not
-    for (var j = 0; j < 8; j++) {
-        if (white_pawn_default_id[j] === String(id)) {
-            break
+// to move pawn in forward direction
+function pawn_forward_move(id, k) {
+    p = 1 // pawn have only one move
+    // checks if pawn is at the default id then pawn have 2 moves
+    if (k === 1) {
+        for (var j = 0; j < 8; j++) {
+            if (white_pawn_default_id[j] === String(id)) {
+                p = 2
+                break
+            }
+        }
+    } else {
+        for (var j = 0; j < 8; j++) {
+            if (black_pawn_default_id[j] === String(id)) {
+                p = 2
+                break
+            }
         }
     }
 
     // if pawn is at default id then check for 2 forward moves otherwise check for only 1 forward move
-    if (white_pawn_default_id[j] === String(id)) {
-        pawn_default_forward_move(id, 1)
-    } else {
-        pawn_forward_move(id, 1)
-    }
-}
-
-
-function black_pawn_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            black_pawn_movement_check(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_pawn_movement_check(id) {
-    // check if it is removed then king have checked or not
-    // for left-right-movement
-    movement_possible_or_not(id, 1)
-    var left_right = movement_possibility
-    movement_possibility = true
-    // for up-down-movement
-    movement_possible_or_not(id, 10)
-    var up_down = movement_possibility
-    movement_possibility = true
-    // for main-digonal-movement
-    movement_possible_or_not(id, 11)
-    var main_diagonal = movement_possibility
-    movement_possibility = true
-    // for cross-diaonal-movement
-    movement_possible_or_not(id, 9)
-    var cross_diagonal = movement_possibility
-    movement_possibility = true
-
-    if (left_right) {
-        if (!up_down) {
-            pawn_black_forward_move(id)
-        } else if (!main_diagonal) {
-            // check for right forward move
-            pawn_diagonal_move(id, -11)
-        } else if (!cross_diagonal) {
-            // check for left forward move
-            pawn_diagonal_move(id, -9)
-        } else {
-            pawn_black_forward_move(id)
-            pawn_diagonal_move(id, -11)
-            pawn_diagonal_move(id, -9)
-        }
-    }
-}
-
-
-function pawn_black_forward_move(id) {
-    // checks if black pawn is at the startng or not
-    for (var j = 0; j < 8; j++) {
-        if (black_pawn_default_id[j] === String(id)) {
-            break
-        }
-    }
-
-    // if pawn is at default id then check for 2 forward moves otherwise check for only 1 forward move
-    if (black_pawn_default_id[j] === String(id)) {
-        pawn_default_forward_move(id, -1)
-    } else {
-        pawn_forward_move(id, -1)
-    }
-}
-
-
-function pawn_default_forward_move(id, k) {
-    for (j = 10; j <= 20; j += 10) {
+    for (j = 10; j <= 10*p; j += 10) {
         dot = document.getElementById("" + String(id + j*k))
         if (dot) {
             if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
+                add_or_push_dot(dot)
             } else {
                 break
             }
@@ -1070,137 +460,23 @@ function pawn_default_forward_move(id, k) {
 }
 
 
-function pawn_forward_move(id, k) {
-    dot = document.getElementById("" + String(id + 10*k))
-    if (dot) {
-        if (dot.classList.length < 3) {
-            if (checked) {
-                for (let i = 0; i < check_list.length; i++) {
-                    if (dot.id === String(check_list[i])) {
-                        possible_id.push(dot.id)
-                        break
-                    }
-                }
-            } else {
-                add_dot(dot)
-            }
-        }
-    }
-}
-
-
+// to move pawn diagonally if diagonal has opposite scout
 function pawn_diagonal_move(id, k) {
     dot = document.getElementById("" + String(id + k))
     if (dot) {
-        if (dot.classList.length === 3) {
-            if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            }
+        if (dot.classList.length === 3 && !(dot.classList[2][0] === turn[0])) {
+            add_or_push_dot(dot)
         }
     }
 }
 
 
-function white_knight_movement() {
-    if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            knight_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_knight_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-        
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            knight_movement(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function knight_movement(id) {
+// check movement of knight is possible or not
+// then add dots to possible blocks
+function knight_movement_check(id) {
     // check if it is removed then king have checked or not
-    // for left-right-movement
-    movement_possible_or_not(id, 1)
-    var left_right = movement_possibility
-    movement_possibility = true
-    // for up-down-movement
-    movement_possible_or_not(id, 10)
-    var up_down = movement_possibility
-    movement_possibility = true
-    // for main-digonal-movement
-    movement_possible_or_not(id, 11)
-    var main_diagonal = movement_possibility
-    movement_possibility = true
-    // for cross-diaonal-movement
-    movement_possible_or_not(id, 9)
-    var cross_diagonal = movement_possibility
-    movement_possibility = true
-    
+    var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
+
     if (left_right && up_down && main_diagonal && cross_diagonal) {
         var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
 
@@ -1209,28 +485,8 @@ function knight_movement(id) {
             dot = document.getElementById("" + String(knight_moves[j]))
 
             if (dot) {
-                if (dot.classList.length < 3) {
-                    if (checked) {
-                        for (let i = 0; i < check_list.length; i++) {
-                            if (dot.id === String(check_list[i])) {
-                                possible_id.push(dot.id)
-                                break
-                            }
-                        }
-                    } else {
-                        add_dot(dot)
-                    }
-                } else if (!(dot.classList[2][0] === turn[0])) {
-                    if (checked) {
-                        for (let i = 0; i < check_list.length; i++) {
-                            if (dot.id === String(check_list[i])) {
-                                possible_id.push(dot.id)
-                                break
-                            }
-                        }
-                    } else {
-                        add_dot(dot)
-                    }
+                if (dot.classList.length < 3 || !(dot.classList[2][0] === turn[0])) {
+                    add_or_push_dot(dot)
                 }
             }
         }
@@ -1238,60 +494,34 @@ function knight_movement(id) {
 }
 
 
-function white_king_movement() {
+// check movement of king is possible or not
+// then add dots to possible blocks
+function player_king_movement_check(id) {
     if (turn === "white") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            white_king_movement_check(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
+        scout = "black" // for opposite scouts
+        k = -1 // black pawns move upward w.r.t. board
+    } else {
+        scout = "white" // for opposite scouts
+        k = 1 // white pawns move downward w.r.t. board
     }
-}
 
-
-function white_king_movement_check(id) {
-    var black_rooks = document.querySelectorAll(".black-rook")
-    var black_knights = document.querySelectorAll(".black-knight")
-    var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queens = document.querySelectorAll(".black-queen")
-    var black_king = document.querySelector(".black-king")
-    var black_pawns = document.querySelectorAll(".black-pawn")
+    var opposite_rooks = document.querySelectorAll("."+scout+"-rook")
+    var opposite_knights = document.querySelectorAll("."+scout+"-knight")
+    var opposite_bishops = document.querySelectorAll("."+scout+"-bishop")
+    var opposite_queens = document.querySelectorAll("."+scout+"-queen")
+    var opposite_king = document.querySelector("."+scout+"-king")
+    var opposite_pawns = document.querySelectorAll("."+scout+"-pawn")
 
     var king_moves = [id-11, id-10, id-9, id-1, id+1, id+9, id+10, id+11]
 
+    // check for all the above places are checked from any opposite scout or not
     for (let j = 0; j < 8; j++) {
         var place = document.getElementById("" + String(king_moves[j]))
         
+        // if place is not available or have same scout then continue
         if (place) {
-            if (place.classList.length >= 3) {
-                if (place.classList[2][0] === turn[0]) {
-                    continue
-                }
+            if (place.classList.length >= 3 && place.classList[2][0] === turn[0]) {
+                continue
             }
         } else {
             continue
@@ -1300,23 +530,23 @@ function white_king_movement_check(id) {
         var place_id = place.id
         var check = false
 
-        for (let i = 0; i < black_rooks.length; i++) {
+        for (let i = 0; i < opposite_rooks.length; i++) {
             if (!check) {
-                if (black_rooks[i].id) {
+                if (opposite_rooks[i].id) {
                     // left-right-movement
-                    check = king_movement(Number(black_rooks[i].id), place_id, 1, check)
+                    check = king_movement_check(Number(opposite_rooks[i].id), place_id, 1, check)
                     // up-down-movement
-                    check = king_movement(Number(black_rooks[i].id), place_id, 10, check)
+                    check = king_movement_check(Number(opposite_rooks[i].id), place_id, 10, check)
                 }
             } else {
                 break
             }
         }
 
-        for (let i = 0; i < black_knights.length; i++) {
+        for (let i = 0; i < opposite_knights.length; i++) {
             if (!check) {
-                if (black_knights[i].id) {
-                    var id1 = Number(black_knights[i].id)
+                if (opposite_knights[i].id) {
+                    var id1 = Number(opposite_knights[i].id)
                     knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
 
                     // check if any of these id has black-king
@@ -1332,30 +562,30 @@ function white_king_movement_check(id) {
             }
         }
 
-        for (let i = 0; i < black_bishops.length; i++) {
+        for (let i = 0; i < opposite_bishops.length; i++) {
             if (!check) {
-                if (black_bishops[i].id) {
+                if (opposite_bishops[i].id) {
                     // main-diagonal-movement
-                    check = king_movement(Number(black_bishops[i].id), place_id, 11, check)
+                    check = king_movement_check(Number(opposite_bishops[i].id), place_id, 11, check)
                     // cross-diagonal-movement
-                    check = king_movement(Number(black_bishops[i].id), place_id, 9, check)
+                    check = king_movement_check(Number(opposite_bishops[i].id), place_id, 9, check)
                 }
             } else {
                 break
             }
         }
 
-        for (let i = 0; i < black_queens.length; i++) {
+        for (let i = 0; i < opposite_queens.length; i++) {
             if (!check) {
-                if (black_queens[i].id) {
+                if (opposite_queens[i].id) {
                     // left-right-movement
-                    check = king_movement(Number(black_queens[i].id), place_id, 1, check)
+                    check = king_movement_check(Number(opposite_queens[i].id), place_id, 1, check)
                     // up-down-movement
-                    check = king_movement(Number(black_queens[i].id), place_id, 10, check)
+                    check = king_movement_check(Number(opposite_queens[i].id), place_id, 10, check)
                     // main-diagonal-movement
-                    check = king_movement(Number(black_queens[i].id), place_id, 11, check)
+                    check = king_movement_check(Number(opposite_queens[i].id), place_id, 11, check)
                     // cross-diagonal-movement
-                    check = king_movement(Number(black_queens[i].id), place_id, 9, check)
+                    check = king_movement_check(Number(opposite_queens[i].id), place_id, 9, check)
                 }
             } else {
                 break
@@ -1363,36 +593,32 @@ function white_king_movement_check(id) {
         }
 
         if (!check) {
-            var id1 = Number(black_king.id)
-            var black_king_moves = [id1-11, id1-10, id1-9, id1-1, id1+1, id1+9, id1+10, id1+11]
+            var id1 = Number(opposite_king.id)
+            var opposite_king_moves = [id1-11, id1-10, id1-9, id1-1, id1+1, id1+9, id1+10, id1+11]
 
             for (let k = 0; k < 8; k++) {
-                if (place_id === String(black_king_moves[k])) {
+                if (place_id === String(opposite_king_moves[k])) {
                     check = true
                     break
                 }
             }
         }
 
-        for (let i = 0; i < black_pawns.length; i++) {
+        for (let i = 0; i < opposite_pawns.length; i++) {
             if (!check) {
-                if (black_pawns[i].id) {
-                    var id1 = Number(black_pawns[i].id)
+                if (opposite_pawns[i].id) {
+                    var id1 = Number(opposite_pawns[i].id)
 
                     // check for left forward move
-                    dot = document.getElementById("" + String(id1 - 11))
-                    if (dot) {
-                        if (dot.id === place_id) {
-                            check = true
-                        }
+                    dot = document.getElementById("" + String(id1 + 11*k))
+                    if (dot && dot.id === place_id) {
+                        check = true
                     }
 
                     // check for right forward move
-                    dot = document.getElementById("" + String(id1 - 9))
-                    if (dot) {
-                        if (dot.id === place_id) {
-                            check = true
-                        }
+                    dot = document.getElementById("" + String(id1 + 9*k))
+                    if (dot && dot.id === place_id) {
+                        check = true
                     }
                 }
             } else {
@@ -1401,13 +627,7 @@ function white_king_movement_check(id) {
         }
 
         if (!check) {
-            if (place.classList.length < 3) {
-                if (checked) {
-                    possible_id.push(place.id)
-                } else {
-                    add_dot(place)
-                }
-            } else if (!(place.classList[2][0] === turn[0])) {
+            if (place.classList.length < 3 || !(place.classList[2][0] === turn[0])) {
                 if (checked) {
                     possible_id.push(place.id)
                 } else {
@@ -1419,395 +639,164 @@ function white_king_movement_check(id) {
 }
 
 
-function black_king_movement() {
-    if (turn === "black") {
-        var flag = 1
-
-        if (selected) {
-            remove_dots()
-            selected.classList.remove("selected")
-
-            if (selected === this) {
-                selected = null
-                flag = 0
-            }
-        }
-
-        if (flag === 1) {
-            selected = this
-            selected.classList.add("selected")
-
-            var id = Number(this.id)
-
-            black_king_movement_check(id)
-
-            if (possible_id.length) {
-                for (let i = 0; i < possible_id.length; i++) {
-                    dot = document.getElementById(possible_id[i])
-                    add_dot(dot)
-                }
-                possible_id = []
-            }
-
-            add_event_to_dots()
-        }
-    }
-}
-
-
-function black_king_movement_check(id) {
-    var white_rooks = document.querySelectorAll(".white-rook")
-    var white_knights = document.querySelectorAll(".white-knight")
-    var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queens = document.querySelectorAll(".white-queen")
-    var white_king = document.querySelector(".white-king")
-    var white_pawns = document.querySelectorAll(".white-pawn")
-
-    var king_moves = [id-11, id-10, id-9, id-1, id+1, id+9, id+10, id+11]
-
-    for (let j = 0; j < 8; j++) {
-        var place = document.getElementById("" + String(king_moves[j]))
-        
-        if (place) {
-            if (place.classList.length >= 3) {
-                if (place.classList[2][0] === turn[0]) {
-                    continue
-                }
-            }
-        } else {
-            continue
-        }
-
-        var place_id = place.id
-        var check = false
-
-        for (let i = 0; i < white_rooks.length; i++) {
-            if (!check) {
-                if (white_rooks[i].id) {
-                    // left-right-movement
-                    check = king_movement(Number(white_rooks[i].id), place_id, 1, check)
-                    // up-down-movement
-                    check = king_movement(Number(white_rooks[i].id), place_id, 10, check)
-                }
-            } else {
-                break
-            }
-        }
-
-        for (let i = 0; i < white_knights.length; i++) {
-            if (!check) {
-                if (white_knights[i].id) {
-                    var id1 = Number(white_knights[i].id)
-                    knight_moves = [id1-21, id1-19, id1-12, id1-8, id1+8, id1+12, id1+19, id1+21]
-
-                    // check if any of these id has black-king
-                    for (let j = 0; j < 8; j++) {
-                        if (place_id === String(knight_moves[j])) {
-                            check = true
-                            break
-                        }
-                    }
-                }
-            } else {
-                break
-            }
-        }
-
-        for (let i = 0; i < white_bishops.length; i++) {
-            if (!check) {
-                if (white_bishops[i].id) {
-                    // main-diagonal-movement
-                    check = king_movement(Number(white_bishops[i].id), place_id, 11, check)
-                    // cross-diagonal-movement
-                    check = king_movement(Number(white_bishops[i].id), place_id, 9, check)
-                }
-            } else {
-                break
-            }
-        }
-
-        for (let i = 0; i < white_queens.length; i++) {
-            if (!check) {
-                if (white_queens[i].id) {
-                    // left-right-movement
-                    check = king_movement(Number(white_queens[i].id), place_id, 1, check)
-                    // up-down-movement
-                    check = king_movement(Number(white_queens[i].id), place_id, 10, check)
-                    // main-diagonal-movement
-                    check = king_movement(Number(white_queens[i].id), place_id, 11, check)
-                    // cross-diagonal-movement
-                    check = king_movement(Number(white_queens[i].id), place_id, 9, check)
-                }
-            } else {
-                break
-            }
-        }
-
-        if (!check) {
-            var id1 = Number(white_king.id)
-            var white_king_moves = [id1-11, id1-10, id1-9, id1-1, id1+1, id1+9, id1+10, id1+11]
-
-            for (let k = 0; k < 8; k++) {
-                if (place_id === String(white_king_moves[k])) {
+// to check if this place_id is checked or not from other scout available at id's with id+j*k or id-j*k
+function king_movement_check(id, place_id, k, check) {
+    let i = 0 // first check for id+j*k then id-j*k
+    while (i < 2) {
+        for (let j = id + k; (j >= 11 && j <= 88); j += k) {
+            dot = document.getElementById("" + String(j))
+    
+            // check if id is available otherwise break as other id's are also not available
+            if (dot) {
+                // check if it is that place then return true
+                if (dot.id === place_id) {
                     check = true
-                    break
+                    return check
                 }
-            }
-        }
-
-        for (let i = 0; i < white_pawns.length; i++) {
-            if (!check) {
-                if (white_pawns[i].id) {
-                    var id1 = Number(white_pawns[i].id)
-
-                    // check for left forward move
-                    dot = document.getElementById("" + String(id1 + 11))
-                    if (dot) {
-                        if (dot.id === place_id) {
-                            check = true
-                        }
-                    }
-
-                    // check for right forward move
-                    dot = document.getElementById("" + String(id1 + 9))
-                    if (dot) {
-                        if (dot.id === place_id) {
-                            check = true
-                        }
-                    }
+                
+                // if this id have any scout then break
+                if (!(dot.classList.length < 3) && !(dot.classList[2] === turn+"-king")) {
+                    break
                 }
             } else {
                 break
             }
         }
-
-        if (!check) {
-            if (place.classList.length < 3) {
-                if (checked) {
-                    possible_id.push(place.id)
-                } else {
-                    add_dot(place)
-                }
-            } else if (!(place.classList[2][0] === turn[0])) {
-                if (checked) {
-                    possible_id.push(place.id)
-                } else {
-                    add_dot(place)
-                }
-            }
-        }
-    }
-}
-
-
-function king_movement(id, place_id, k, check) {
-    // check for downward id's w.r.t. board
-    for (let j = id + k; j <= 88; j += k) {
-        dot = document.getElementById("" + String(j))
-
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // check if it is that place then return true
-            if (dot.id === place_id) {
-                check = true
-                return check
-            }
-            
-            // if this id have any scout then break
-            if (!(dot.classList.length < 3)) {
-                if (!(dot.classList[2] === turn+"-king")) {
-                    break
-                }
-            }
-        } else {
-            break
-        }
-    }
-
-    // check for upward id's w.r.t. board
-    for (let j = id - k; j >= 11; j -= k) {
-        dot = document.getElementById("" + String(j))
-
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // check if it is that place then return true
-            if (dot.id === place_id) {
-                check = true
-                return check
-            }
-            
-            // if this id have any scout then break
-            if (!(dot.classList.length < 3)) {
-                if (!(dot.classList[2] === turn+"-king")) {
-                    break
-                }
-            }
-        } else {
-            break
-        }
+        k *= -1
+        i += 1
     }
 
     return check
 }
 
 
+// to check for movements of this scout in id+j*k and id-j*k
 function check_movement(id, k) {
-    // check for downward id's w.r.t. board
-    for (j = id + k; j <= 88; j += k) {
-        dot = document.getElementById("" + String(j))
+    let i = 0 // first check for id+j*k then id-j*k
+    while (i < 2) {
+        // check for downward id's w.r.t. board
+        for (j = id + k; (j >= 11 && j <= 88); j += k) {
+            dot = document.getElementById("" + String(j))
 
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id don't have any scout then add dot and 
-            // if it has opposite scout then add dot and break
-            // and break otherwise
-            if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
+            // check if id is available otherwise break as other id's are also not available
+            if (dot) {
+                // if this id don't have any scout then add dot and 
+                // if it has opposite scout then add dot and break
+                // and break otherwise
+                if (dot.classList.length < 3) {
+                    add_or_push_dot(dot)
+                } else if (!(dot.classList[2][0] === turn[0])) {
+                    add_or_push_dot(dot)
+                    break
                 } else {
-                    add_dot(dot)
+                    break
                 }
-            } else if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-                break
             } else {
                 break
             }
-        } else {
-            break
         }
-    }
-
-    //check for upward id's w.r.t. board
-    for (j = id - k; j >= 11; j -= k) {
-        dot = document.getElementById("" + String(j))
-
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id don't have any scout then add dot and 
-            // if it has opposite scout then add dot and break
-            // and break otherwise
-            if (dot.classList.length < 3) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-            } else if (!(dot.classList[2][0] === turn[0])) {
-                if (checked) {
-                    for (let i = 0; i < check_list.length; i++) {
-                        if (dot.id === String(check_list[i])) {
-                            possible_id.push(dot.id)
-                            break
-                        }
-                    }
-                } else {
-                    add_dot(dot)
-                }
-                break
-            } else {
-                break
-            }
-        } else {
-            break
-        }
+        k *= -1
+        i += 1
     }
 }
 
 
+// check movement of scout is possible in all directions
+function check_possibility(id) {
+    // for left-right-movement
+    movement_possible_or_not(id, 1)
+    var left_right = movement_possibility
+    movement_possibility = true
+    // for up-down-movement
+    movement_possible_or_not(id, 10)
+    var up_down = movement_possibility
+    movement_possibility = true
+    // for main-digonal-movement
+    movement_possible_or_not(id, 11)
+    var main_diagonal = movement_possibility
+    movement_possibility = true
+    // for cross-diaonal-movement
+    movement_possible_or_not(id, 9)
+    var cross_diagonal = movement_possibility
+    movement_possibility = true
+
+    return [left_right, up_down, main_diagonal, cross_diagonal]
+}
+
+
+// to add dot to this dot if king is not checked
+// otherwise push it's id in possible_id list
+function add_or_push_dot(dot) {
+    // if king is checked, then push dot id in possible_id list
+    // otherwise add "dot" div to this dot
+    if (checked) {
+        for (let i = 0; i < check_list.length; i++) {
+            if (dot.id === String(check_list[i])) {
+                possible_id.push(dot.id)
+                break
+            }
+        }
+    } else {
+        add_dot(dot)
+    }
+}
+
+
+// check if this scout have one side it's king and another side opposite rook, bishopor queen
+// then return false as it cannot move in any other direction
 function movement_possible_or_not(id, k) {
     var opposite_scout = false
     var same_king = false
 
-    // check for downward id's w.r.t. board
-    for (j = id + k; j <= 88; j += k) {
-        dot = document.getElementById("" + String(j))
+    let i = 0 // first check for id+j*k then id-j*k
+    while (i < 2) {
+        // check for downward id's w.r.t. board
+        for (j = id + k; (j >= 11 && j <= 88); j += k) {
+            dot = document.getElementById("" + String(j))
 
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id don't have any scout then add dot and 
-            // if it has opposite scout then add dot and break
-            // and break otherwise
-            if (!(dot.classList.length < 3)) {
-                if (dot.classList[2][0] === turn[0]) {
-                    if (dot.classList[2] === turn+"-king") {
-                        same_king = true
-                    }
-                } else {
-                    if (k === 10 || k === 1) {
-                        if (dot.classList[2].substring(6) === "rook" || dot.classList[2].substring(6) === "queen") {
-                            opposite_scout = true
+            // check if id is available otherwise break as other id's are also not available
+            if (dot) {
+                // if this id don't have any scout then add dot and 
+                // if it has opposite scout then add dot and break
+                // and break otherwise
+                if (!(dot.classList.length < 3)) {
+                    if (dot.classList[2][0] === turn[0]) {
+                        if (dot.classList[2] === turn+"-king") {
+                            same_king = true
+                            if (opposite_scout) {
+                                movement_possibility = false
+                            }
                         }
-                    } else if (k === 11 || k === 9) {
-                        if (dot.classList[2].substring(6) === "bishop" || dot.classList[2].substring(6) === "queen") {
-                            opposite_scout = true
-                        }
-                    }
-                }
-                break
-            }
-        } else {
-            break
-        }
-    }
-
-    //check for upward id's w.r.t. board
-    for (j = id - k; j >= 11; j -= k) {
-        dot = document.getElementById("" + String(j))
-
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id don't have any scout then add dot and 
-            // if it has opposite scout then add dot and break
-            // and break otherwise
-            if (!(dot.classList.length < 3)) {
-                if (dot.classList[2][0] === turn[0]) {
-                    if (dot.classList[2] === turn+"-king") {
-                        if (opposite_scout) {
-                            movement_possibility = false
-                        }
-                    }
-                } else {
-                    if (same_king) {
-                        if (k === 10 || k === 1) {
+                    } else {
+                        if (k === 10 || k === 1 || k === -1 || k === -10) {
                             if (dot.classList[2].substring(6) === "rook" || dot.classList[2].substring(6) === "queen") {
-                                movement_possibility = false
+                                opposite_scout = true
+                                if (same_king) {
+                                    movement_possibility = false
+                                }
                             }
-                        } else if (k === 11 || k === 9) {
+                        } else if (k === 11 || k === 9 || k === -11 || k === -9) {
                             if (dot.classList[2].substring(6) === "bishop" || dot.classList[2].substring(6) === "queen") {
-                                movement_possibility = false
+                                opposite_scout = true
+                                if (same_king) {
+                                    movement_possibility = false
+                                }
                             }
                         }
                     }
+                    break
                 }
+            } else {
                 break
             }
-        } else {
-            break
         }
+        k *= -1
+        i += 1
     }
 }
 
 
+// add event listeners to dots
 function add_event_to_dots() {
     for (let i = 0; i < dots.length; i++) {
         dots[i].addEventListener("click", dot_event)
@@ -1815,6 +804,7 @@ function add_event_to_dots() {
 }
 
 
+// add dot to this place
 function add_dot(dot) {
     // adding a child div with dot class
     var select = document.createElement("div")
@@ -1825,6 +815,7 @@ function add_dot(dot) {
 }
 
 
+// remove dot from all places in dots list
 function remove_dots() {
     for (i = 0; i < dots.length; i++) {
         // remove child div
@@ -1835,6 +826,7 @@ function remove_dots() {
 }
 
 
+// event for dots when clicked
 function dot_event() {
     remove_dots()
 
@@ -1859,236 +851,336 @@ function dot_event() {
     scout = selected.classList[2]
     selected.classList.remove(scout)
 
+    // move scout from 'selected' to 'this'
     duration = 0
     duration = move_scout.bind(this)(scout, duration)
 
+    // this function start after movement of scout
     setTimeout(() => {
+        // remove event listener from slected id
+        if (scout.substring(6) === "rook") {
+            selected.removeEventListener("click", rook_movement)
+        } else if (scout.substring(6) === "knight") {
+            selected.removeEventListener("click", knight_movement)
+        } else if (scout.substring(6) === "bishop") {
+            selected.removeEventListener("click", bishop_movement)
+        } else if (scout.substring(6) === "queen") {
+            selected.removeEventListener("click", queen_movement)
+        } else if (scout.substring(6) === "king") {
+            selected.removeEventListener("click", king_movement)
+        } else if (scout.substring(6) === "pawn") {
+            selected.removeEventListener("click", pawn_movement)
+        }
+
+        // remove event listener and check for black king is checked or not
+        player("remove")
+
+        var flag = 1
+        // if pawn moves to last move then change it to rook, knight, bishop, or queen
         if (scout.substring(6) === "pawn") {
             var id = Number(this.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
-                var x = prompt("Type \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
-                while (true) {
-                    if (x === "Q" || x === "q") {
-                        this.classList.remove(scout)
-                        this.classList.add(scout.substring(0, 6)+"queen")
-                        break
-                    } else if (x === "R" || x === "r") {
-                        this.classList.remove(scout)
-                        this.classList.add(scout.substring(0, 6)+"rook")
-                        break
-                    } else if (x === "K" || x === "k") {
-                        this.classList.remove(scout)
-                        this.classList.add(scout.substring(0, 6)+"knight")
-                        break
-                    } else if (x === "B" || x === "b") {
-                        this.classList.remove(scout)
-                        this.classList.add(scout.substring(0, 6)+"bishop")
-                        break
-                    } else {
-                        x = prompt("Type correct value \n'Q' for Queen \n'R' for Rook \n'K' for Knight \n'B' for Bishop")
-                    }
-                }
+                flag = 0
+                var div = document.createElement("div")
+                var dimensions = document.getElementById("41").getBoundingClientRect()
+                width = dimensions.width
+                div.style.width = width*8
+                div.style.height = width*2
+                div.style.padding = '0 '+width
+                div.style.left = dimensions.left
+                div.style.top = dimensions.top
+                div.classList.add("pawn")
+                document.querySelector(".container").appendChild(div)
+                var pawn = this
+
+                replace_pawn("rook", scout, pawn, width, 1, div)
+                replace_pawn("knight", scout, pawn, width, 5/4, div)
+                replace_pawn("bishop", scout, pawn, width, 5/4, div)
+                replace_pawn("queen", scout, pawn, width, 5/4, div)
             }
         }
 
-        if (turn === "black") {
-            // remove event listener from slected id
-            if (scout === "black-rook") {
-                selected.removeEventListener("click", black_rook_movement)
-            } else if (scout === "black-knight") {
-                selected.removeEventListener("click", black_knight_movement)
-            } else if (scout === "black-bishop") {
-                selected.removeEventListener("click", black_bishop_movement)
-            } else if (scout === "black-queen") {
-                selected.removeEventListener("click", black_queen_movement)
-            } else if (scout === "black-king") {
-                selected.removeEventListener("click", black_king_movement)
-            } else if (scout === "black-pawn") {
-                selected.removeEventListener("click", black_pawn_movement)
-            }
-
-            // remove event listener and check for black king is checked or not
-            black("remove")
-            // change turn to white
-            turn = "white"
-
-            var white_player = document.getElementById("white-player")
-            var black_player = document.getElementById("black-player")
-            black_player.textContent = ""
-            white_player.textContent = "White's Turn"
-
-            if (checked) {
-                white_check_mate()
-            }
-
-            // add event listener to white scouts
-            white("add")
-        } else {
-            // remove event listener from slected id
-            if (scout === "white-rook") {
-                selected.removeEventListener("click", white_rook_movement)
-            } else if (scout === "white-knight") {
-                selected.removeEventListener("click", white_knight_movement)
-            } else if (scout === "white-bishop") {
-                selected.removeEventListener("click", white_bishop_movement)
-            } else if (scout === "white-queen") {
-                selected.removeEventListener("click", white_queen_movement)
-            } else if (scout === "white-king") {
-                selected.removeEventListener("click", white_king_movement)
-            } else if (scout === "white-pawn") {
-                selected.removeEventListener("click", white_pawn_movement)
-            }
-
-            // remove event listener and check for white king is checked or not
-            white("remove")
-            // change turn to black
-            turn = "black"
-
-            var black_player = document.getElementById("black-player")
-            var white_player = document.getElementById("white-player")
-            white_player.textContent = ""
-            black_player.textContent = "Black's Turn"
-
-            if (checked) {
-                black_check_mate()
-            }
-
-            // add event listener to black scouts 
-            black("add")
+        if (flag) {
+            change_turn()
         }
-
-        if (players_left === 2) {
-            setTimeout(() => {
-                alert("Game Tie")
-            }, 10);
-            setTimeout(reset, 5000);
-        }
-
-        players_left = 0
-
-        selected = null
     }, duration);
 }
 
 
+// to add 'scout1' to 'div' and replace it with pawn when clicked
+function replace_pawn(scout1, scout, pawn, width, x, div) {
+    scout2 = document.createElement('img')
+    scout2.setAttribute('src', 'icons/'+scout.substring(0, 5)+'_'+scout1+'.png')
+    scout2.style.width = width*x
+    scout2.style.height = width*5/4
+    scout2.style.margin =  width*3/8+' '+width*5/32
+
+    div.appendChild(scout2)
+
+    scout2.addEventListener("click", function () {
+        pawn.classList.remove(scout)
+        pawn.classList.add(scout.substring(0, 6)+scout1)
+        document.querySelector(".container").removeChild(div)
+        change_turn()
+    })
+}
+
+
+// this function is used for pawn removal at last move
+// otherwise used simply
+function change_turn() {
+    // check for opposite king
+    check_king()
+
+    var black_player = document.getElementById("black-player")
+    var white_player = document.getElementById("white-player")
+
+    if (turn === "black") {
+        // change turn to white
+        turn = "white"
+
+        black_player.textContent = ""
+        white_player.textContent = "White's Turn"
+    } else {
+        // change turn to black
+        turn = "black"
+
+        white_player.textContent = ""
+        black_player.textContent = "Black's Turn"
+    }
+
+    // if king is checked then check if king can move or not
+    if (checked) {
+        check_mate()
+    }
+
+    // add event listener to white scouts
+    player("add")
+
+    // if only kings are left then game tied
+    if (players_left === 2) {
+        setTimeout(() => {
+            alert("Game Tie")
+            reset()
+        }, 10);
+    }
+
+    players_left = 0
+    selected = null
+}
+
+
+// to check if opposite king is checked or not from the scouts of this turn
+function check_king() {
+    var rooks = document.querySelectorAll("."+turn+"-rook")
+    var knights = document.querySelectorAll("."+turn+"-knight")
+    var bishops = document.querySelectorAll("."+turn+"-bishop")
+    var queens = document.querySelectorAll("."+turn+"-queen")
+    var king = document.querySelector("."+turn+"-king")
+    var pawns = document.querySelectorAll("."+turn+"-pawn")
+
+    if (turn === "white") {
+        var opposite_king = document.querySelector(".black-king")
+        k = 1
+    } else {
+        var opposite_king = document.querySelector(".white-king")
+        k = -1
+    }
+    var opposite_king_id = Number(opposite_king.id)
+
+    players_left += 1 // for king
+
+    for (let i = 0; i < rooks.length; i++) {
+        if (rooks[i].id) {
+            players_left += 1
+            // counting number of checks on king as
+            // if number of checks >= 2, then only king can move
+            if (number_of_checks < 2) {
+                // left-right-movement
+                check_king_movement(Number(rooks[i].id), 1, opposite_king)
+                // up-down-movement
+                check_king_movement(Number(rooks[i].id), 10, opposite_king)
+            }
+        }
+    }
+
+    for (let i = 0; i < knights.length; i++) {
+        if (knights[i].id) {
+            players_left += 1
+            if (number_of_checks < 2) {
+                var id = Number(knights[i].id)
+                var knight_moves = [id-21, id-19, id-12, id-8, id+8, id+12, id+19, id+21]
+
+                // check if any of these id has black-king
+                for (let j = 0; j < 8; j++) {
+                    if (opposite_king_id === knight_moves[j]) {
+                        add_checked_dot_to_king(id, opposite_king)
+                        break
+                    }
+                }
+            }
+        }
+    }
+
+    for (let i = 0; i < bishops.length; i++) {
+        if (bishops[i].id) {
+            players_left += 1
+            if (number_of_checks < 2) {
+                // main-diagonal-movement
+                check_king_movement(Number(bishops[i].id), 11, opposite_king)
+                // cross-diagonal-movement
+                check_king_movement(Number(bishops[i].id), 9, opposite_king)
+            }
+        }
+    }
+
+    for (let i = 0; i < queens.length; i++) {
+        if (queens[i].id) {
+            players_left += 1
+            if (number_of_checks < 2) {
+                // left-right-movement
+                check_king_movement(Number(queens[i].id), 1, opposite_king)
+                // up-down-movement
+                check_king_movement(Number(queens[i].id), 10, opposite_king)
+                // main-diagonal-movement
+                check_king_movement(Number(queens[i].id), 11, opposite_king)
+                // cross-diagonal-movement
+                check_king_movement(Number(queens[i].id), 9, opposite_king)
+            }
+        }
+    }
+
+    for (let i = 0; i < pawns.length; i++) {
+        if (pawns[i].id) {
+            players_left += 1
+            if (number_of_checks < 2) {
+                var id = Number(pawns[i].id)
+
+                // check for right forward
+                pawn_check_king_movement(id, 11*k, opposite_king)
+                // check for left forward
+                pawn_check_king_movement(id, 9*k, opposite_king)
+            }
+        }
+    }
+}
+
+
+// to check if opposite king is checked or not from this scout 
+// king is checked if it is available at id's with id+j*k or id-j*k
 function check_king_movement(id, k, king) {
-    // check for downward id's w.r.t. board
-    for (j = id + k; j <= 88; j += k) {
-        dot = document.getElementById("" + String(j))
+    let i = 0 // first check for id+j*k then id-j*k
+    while (i < 2) {
+        // check for downward id's w.r.t. board
+        for (j = id + k; j <= 88; j += k) {
+            dot = document.getElementById("" + String(j))
 
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id have any scout then
-            // check if it has opposite king then add dot and break
-            if (!(dot.classList.length < 3)) {
-                if (dot === king) {
-                    number_of_checks += 1
+            // check if id is available otherwise break as other id's are also not available
+            if (dot) {
+                // if this id have any scout then
+                // check if it has opposite king then add dot and break
+                if (!(dot.classList.length < 3)) {
+                    if (dot === king) {
+                        add_checked_dot_to_king(id, king)
+                    }
+                    break
+                } else {
                     if (!checked) {
-                        check_list.push(id)
-                        add_checked_dot_to_king(king)
+                        check_list.push(j)
                     }
                 }
-                break
             } else {
-                if (!checked) {
-                    check_list.push(j)
-                }
-            }
-        } else {
-            break
-        }
-    }
-
-    if (!number_of_checks) {
-        check_list = []
-    }
-
-    //check for upward id's w.r.t. board
-    for (j = id - k; j >= 11; j -= k) {
-        dot = document.getElementById("" + String(j))
-
-        // check if id is available otherwise break as other id's are also not available
-        if (dot) {
-            // if this id have any scout then
-            // check if it has opposite king then add dot and break
-            if (!(dot.classList.length < 3)) {
-                if (dot === king) {
-                    number_of_checks += 1
-                    if (!checked) {
-                        check_list.push(id)
-                        add_checked_dot_to_king(king)
-                    }
-                }
                 break
-            } else {
-                if (!checked) {
-                    check_list.push(j)
-                }
             }
-        } else {
-            break
         }
-    }
 
-    if (!number_of_checks) {
-        check_list = []
+        // if king is not checked then empty checklist
+        if (!number_of_checks) {
+            check_list = []
+        }
+        k *= -1
+        i += 1
     }
 }
 
 
-function add_checked_dot_to_king(king) {
-    // adding a child div with checked class
-    check_dot = document.createElement("div")
-    check_dot.classList.add("checked")
-    king.appendChild(check_dot)
-    checked = true
+// to check that king is checked from pawn or not
+function pawn_check_king_movement(id, k, opposite_king) {
+    dot = document.getElementById("" + String(id + k))
+    if (dot) {
+        if (dot === opposite_king) {
+            add_checked_dot_to_king(id, opposite_king)
+        }
+    }
 }
 
-function white_check_mate() {
-    var white_rooks = document.querySelectorAll(".white-rook")
-    var white_knights = document.querySelectorAll(".white-knight")
-    var white_bishops = document.querySelectorAll(".white-bishop")
-    var white_queens = document.querySelectorAll(".white-queen")
-    var white_king = document.querySelector(".white-king")
-    var white_pawns = document.querySelectorAll(".white-pawn")
+
+// add checked dot to king if checked is false and
+// increase number_of_checks by 1
+function add_checked_dot_to_king(id, king) {
+    number_of_checks += 1
+    if (!checked) {
+        // adding a child div with checked class
+        check_dot = document.createElement("div")
+        check_dot.classList.add("checked")
+        king.appendChild(check_dot)
+        checked = true
+        check_list.push(id)
+    }
+}
+
+
+// check if any of the same scout can save king from check or not
+function check_mate() {
+    var rooks = document.querySelectorAll("."+turn+"-rook")
+    var knights = document.querySelectorAll("."+turn+"-knight")
+    var bishops = document.querySelectorAll("."+turn+"-bishop")
+    var queens = document.querySelectorAll("."+turn+"-queen")
+    var king = document.querySelector("."+turn+"-king")
+    var pawns = document.querySelectorAll("."+turn+"-pawn")
 
     if (number_of_checks < 2) {
-        for (let i = 0; i < white_rooks.length; i++) {
-            if (white_rooks[i].id) {
-                rook_movement(Number(white_rooks[i].id))
+        for (let i = 0; i < rooks.length; i++) {
+            if (rooks[i].id) {
+                rook_movement_check(Number(rooks[i].id))
             }
         }
 
-        for (let i = 0; i < white_knights.length; i++) {
-            if (white_knights[i].id) {
-                knight_movement(Number(white_knights[i].id))
+        for (let i = 0; i < knights.length; i++) {
+            if (knights[i].id) {
+                knight_movement_check(Number(knights[i].id))
             }
         }
 
-        for (let i = 0; i < white_bishops.length; i++) {
-            if (white_bishops[i].id) {
-                bishop_movement(Number(white_bishops[i].id))
+        for (let i = 0; i < bishops.length; i++) {
+            if (bishops[i].id) {
+                bishop_movement_check(Number(bishops[i].id))
             }
         }
 
-        for (let i = 0; i < white_queens.length; i++) {
-            if (white_queens[i].id) {
-                queen_movement(Number(white_queens[i].id))
+        for (let i = 0; i < queens.length; i++) {
+            if (queens[i].id) {
+                queen_movement_check(Number(queens[i].id))
             }
         }
 
-        for (let i = 0; i < white_pawns.length; i++) {
-            if (white_pawns[i].id) {
-                white_pawn_movement_check(Number(white_pawns[i].id))
+        for (let i = 0; i < pawns.length; i++) {
+            if (pawns[i].id) {
+                pawn_movement_check(Number(pawns[i].id))
             }
         }
     }
 
-    white_king_movement_check(Number(white_king.id))
+    player_king_movement_check(Number(king.id))
 
+    // if any movement is not possible to save check then alert checkmate and reset board
     if (!possible_id.length) {
         setTimeout(() => {
-            alert("Check Mate \nBlack Player Won")
+            if (turn === "white") {
+                alert("Check Mate \nBlack Player Won")
+            } else {
+                alert("Check Mate \nWhite Player Won")
+            }
         }, 10);
         setTimeout(() => {
             if (confirm("Reset Board")) {
@@ -2101,81 +1193,28 @@ function white_check_mate() {
 }
 
 
-function black_check_mate() {
-    var black_rooks = document.querySelectorAll(".black-rook")
-    var black_knights = document.querySelectorAll(".black-knight")
-    var black_bishops = document.querySelectorAll(".black-bishop")
-    var black_queens = document.querySelectorAll(".black-queen")
-    var black_king = document.querySelector(".black-king")
-    var black_pawns = document.querySelectorAll(".black-pawn")
-
-    if (number_of_checks < 2) {
-        for (let i = 0; i < black_rooks.length; i++) {
-            if (black_rooks[i].id) {
-                rook_movement(Number(black_rooks[i].id))
-            }
-        }
-
-        for (let i = 0; i < black_knights.length; i++) {
-            if (black_knights[i].id) {
-                knight_movement(Number(black_knights[i].id))
-            }
-        }
-
-        for (let i = 0; i < black_bishops.length; i++) {
-            if (black_bishops[i].id) {
-                bishop_movement(Number(black_bishops[i].id))
-            }
-        }
-
-        for (let i = 0; i < black_queens.length; i++) {
-            if (black_queens[i].id) {
-                queen_movement(Number(black_queens[i].id))
-            }
-        }
-
-        for (let i = 0; i < black_pawns.length; i++) {
-            if (black_pawns[i].id) {
-                black_pawn_movement_check(Number(black_pawns[i].id))
-            }
-        }
-    }    
-
-    black_king_movement_check(Number(black_king.id))
-
-    if (!possible_id.length) {
-        setTimeout(() => {
-            alert("Check Mate \nWhite Player Won")
-        }, 10);
-        setTimeout(() => {
-            if (confirm("Reset Board")) {
-                reset()
-            }
-        }, 1000);
-    }
-
-    possible_id = []
-}
-
-
+// to move scout in a div above the blocks
 function move_scout(scout, duration) {
     var moving_div = document.createElement("div")
     moving_div.classList.add("moving-div")
 
     document.querySelector(".container").appendChild(moving_div)
 
+    // save image of scout in moving_div 
     var img = document.createElement('img')
     img.setAttribute('src', 'icons/'+scout.substring(0, 5)+'_'+scout.substring(6)+'.png')
     img.style.position = 'relative'
 
     moving_div.appendChild(img)
 
+    // to get dimensions of the small id place
     var id = (this.id<selected.id)?(this.id):(selected.id)
     var dimensions = document.getElementById(id).getBoundingClientRect()
     left1 = dimensions.left
     top1 = dimensions.top
     width = dimensions.width
 
+    // set image height, width and margin according to width of block
     img.style.height = width*3/4
     img.style.width = width*3/4
     img.style.margin = width/8
@@ -2188,79 +1227,40 @@ function move_scout(scout, duration) {
     if (scout.substring(6) === "knight") {
         moving_div.style.height = 3*width
         moving_div.style.width = 2*width
+        let rotation = 0
         if (this_id > selected_id) {
-            if (this_id%10-selected_id%10 === -1) {
-                moving_div.style.top = top1
-                moving_div.style.left = left1-width
-                min_width_left = width+5
-                max_width_left = 5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else if (this_id%10-selected_id%10 === -2) {
-                moving_div.style.top = top1-width/2
-                moving_div.style.left = left1-width*3/2
-                moving_div.style.transform = 'rotate(90deg)'
-                img.style.transform = 'rotate(-90deg)'
-                min_width_left = 5
-                max_width_left = width+5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else if (this_id%10-selected_id%10 === 1) {
-                moving_div.style.top = top1
-                moving_div.style.left = left1
-                min_width_left = 5
-                max_width_left = width+5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else {
-                moving_div.style.top = top1-width/2
-                moving_div.style.left = left1+width/2
-                moving_div.style.transform = 'rotate(-90deg)'
-                img.style.transform = 'rotate(90deg)'
-                min_width_left = width+5
-                max_width_left = 5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            }
+            k = 1 // for downward movement of scout w.r.t. board
         } else {
-            if (this_id%10-selected_id%10 === -1) {
-                moving_div.style.top = top1
-                moving_div.style.left = left1
-                moving_div.style.transform = 'rotate(180deg)'
-                img.style.transform = 'rotate(-180deg)'
-                min_width_left = 5
-                max_width_left = width+5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else if (this_id%10-selected_id%10 === -2) {
-                moving_div.style.top = top1-width/2
-                moving_div.style.left = left1+width/2
-                moving_div.style.transform = 'rotate(90deg)'
-                img.style.transform = 'rotate(-90deg)'
-                min_width_left = width+5
-                max_width_left = 5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else if (this_id%10-selected_id%10 === 1) {
-                moving_div.style.top = top1
-                moving_div.style.left = left1-width
-                moving_div.style.transform = 'rotate(180deg)'
-                img.style.transform = 'rotate(-180deg)'
-                min_width_left = width+5
-                max_width_left = 5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            } else {
-                moving_div.style.top = top1-width/2
-                moving_div.style.left = left1-width*3/2
-                moving_div.style.transform = 'rotate(-90deg)'
-                img.style.transform = 'rotate(90deg)'
-                min_width_left = 5
-                max_width_left = width+5
-                min_width_top = 5
-                max_width_top = 2*width+5
-            }
+            k = -1 // for upward movement of scout w.r.t. board
+            rotation += 180 // same as downward movement only rotate div by 180 degree
         }
+
+        min_width_left = 5
+        max_width_left = width+5
+        min_width_top = 5
+        max_width_top = 2*width+5
+        if (this_id%10-selected_id%10 === -1*k) {
+            moving_div.style.top = top1
+            moving_div.style.left = left1-width
+            min_width_left = width+5
+            max_width_left = 5
+        } else if (this_id%10-selected_id%10 === -2*k) {
+            moving_div.style.top = top1-width/2
+            moving_div.style.left = left1-width*3/2
+            rotation += 90
+        } else if (this_id%10-selected_id%10 === 1*k) {
+            moving_div.style.top = top1
+            moving_div.style.left = left1
+        } else {
+            moving_div.style.top = top1-width/2
+            moving_div.style.left = left1+width/2
+            rotation -= 90
+            min_width_left = width+5
+            max_width_left = 5
+        }
+
+        moving_div.style.transform = 'rotate('+String(rotation)+'deg)'
+        img.style.transform = 'rotate('+String((-1)*rotation)+'deg)'
 
         img.style.marginTop = min_width_top
         img.style.marginLeft = min_width_left
@@ -2272,44 +1272,42 @@ function move_scout(scout, duration) {
             setTimeout(() => {
                 img.animate({
                     marginTop: [min_width, max_width]
-                }, 200)
+                }, 150)
                 setTimeout(() => {
                     img.style.marginTop = max_width
                     min_width = max_width
                     max_width = String(max_width_top)+'px'
-                }, 200);
+                }, 150);
             }, duration);
-            duration += 400
+            duration += 300
         }
 
         setTimeout(() => {
             img.animate({
                 marginLeft: [String(min_width_left)+'px', String(max_width_left)+'px']
-            }, 200)
+            }, 150)
             setTimeout(() => {
                 img.style.marginLeft = max_width_left
-            }, 200);
+            }, 150);
         }, duration);
-        duration += 200
+        duration += 150
     } else {
         var diagonal = 0
+        let rotation = 0
         if(this_id%10 === selected_id%10) {
             number_of_blocks = Math.abs(selected_id-selected_id%10-this_id+this_id%10)/10+1
             moving_div.style.top = top1+width*(number_of_blocks/2-0.5)
             moving_div.style.left = left1-width*(number_of_blocks/2-0.5)
             if(this_id > selected_id) {
-                moving_div.style.transform = 'rotate(90deg)'
-                img.style.transform = 'rotate(-90deg)'
+                rotation = 90
             } else {
-                moving_div.style.transform = 'rotate(-90deg)'
-                img.style.transform = 'rotate(90deg)'
+                rotation = -90
             }
         } else if (this_id-this_id%10 === selected_id-selected.id%10) {
             moving_div.style.top = top1
             moving_div.style.left = left1
             if (this_id < selected_id) {
-                moving_div.style.transform = 'rotate(180deg)'
-                img.style.transform = 'rotate(-180deg)'
+                rotation = 180
             }
         } else {
             diagonal = 1
@@ -2319,12 +1317,10 @@ function move_scout(scout, duration) {
                 moving_div.style.top = top1+width*(number_of_blocks/2-0.5-number_of_extra_blocks/2)
                 if(this_id%10 > selected_id%10) {
                     moving_div.style.left = left1-width*number_of_extra_blocks/2
-                    moving_div.style.transform = 'rotate(45deg)'
-                    img.style.transform = 'rotate(-45deg)'
+                    rotation = 45
                 } else {
                     moving_div.style.left = left1-width*(number_of_blocks-1-number_of_extra_blocks/2)
-                    moving_div.style.transform = 'rotate(135deg)'
-                    img.style.transform = 'rotate(-135deg)'
+                    rotation = 135
                 }
             } else {
                 var number_of_extra_blocks = number_of_blocks/2-1
@@ -2332,17 +1328,18 @@ function move_scout(scout, duration) {
                 moving_div.style.top = top1+width*(number_of_blocks/2-0.5-number_of_extra_blocks/2)
                 if(this_id%10 < selected_id%10) {
                     moving_div.style.left = left1-width*number_of_extra_blocks/2
-                    moving_div.style.transform = 'rotate(-135deg)'
-                    img.style.transform = 'rotate(135deg)'
+                    rotation = -135
                 } else {
                     moving_div.style.left = left1-width*(number_of_blocks-1-number_of_extra_blocks/2)
-                    moving_div.style.transform = 'rotate(-45deg)'
-                    img.style.transform = 'rotate(45deg)'
+                    rotation = -45
                 }
             }
         }
+        moving_div.style.transform = 'rotate('+String(rotation)+'deg)'
+        img.style.transform = 'rotate('+String((-1)*rotation)+'deg)'
         moving_div.style.width = width*number_of_blocks
 
+        // set k to move scout step by step
         var k = 1
         if (diagonal) {
             k = 1.25
@@ -2353,23 +1350,27 @@ function move_scout(scout, duration) {
 
         min_width = '5px'
         for (let j = k; j < number_of_blocks; j += k) {
-            console.log(j)
             setTimeout(() => {
                 max_width = String(width*j+5)+'px'
                 img.animate({
                     marginLeft: [min_width, max_width]
-                }, 200)
+                }, 100)
                 min_width = max_width
                 setTimeout(() => {
                     img.style.marginLeft = max_width
-                }, 200);
+                }, 100);
             }, duration);
-            duration += 400
+            duration += 200
         }
+        duration -= 100
     }
+
+    // after movement
     setTimeout(() => {
+        // remove moving_div
         document.querySelector(".container").removeChild(moving_div)
 
+        // remove scout available at this id and add to the respective removing space
         if (this.classList.length === 3) {
             removing_scout = this.classList[2]
             this.classList.remove(removing_scout)
@@ -2377,27 +1378,22 @@ function move_scout(scout, duration) {
             var remove_scout = document.createElement("div")
             remove_scout.classList.add("col-1")
             remove_scout.classList.add(removing_scout)
-    
+
             if (turn === "white") {
-                var black_removes = document.querySelectorAll(".black-remove")
-                
-                if (black_removes[0].children.length < 8) {
-                    black_removes[0].appendChild(remove_scout)
-                } else {
-                    black_removes[1].appendChild(remove_scout)
-                }
+                var player_removes = document.querySelectorAll(".black-remove")
             } else {
-                var white_removes = document.querySelectorAll(".white-remove")
-                
-                if (white_removes[0].children.length < 8) {
-                    white_removes[0].appendChild(remove_scout)
-                } else {
-                    white_removes[1].appendChild(remove_scout)
-                }
+                var player_removes = document.querySelectorAll(".white-remove")
+            }
+            if (player_removes[0].children.length < 8) {
+                player_removes[0].appendChild(remove_scout)
+            } else {
+                player_removes[1].appendChild(remove_scout)
             }    
         }
 
+        // add the scout to this id
         this.classList.add(scout)
     }, duration);
+    duration += 50
     return duration
 }
