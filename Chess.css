@@ -35,7 +35,7 @@ body {
 
 .white-rook {
     background-image: url("icons/white_rook.png");
-    background-size: 60% 70%;
+    background-size: 65% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
@@ -148,5 +148,10 @@ body {
 }
 
 .moving-div {
+    position: fixed;
+}
+
+.pawn {
+    background-color: rgba(255, 255, 255, 0.5);
     position: fixed;
 }
