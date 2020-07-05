@@ -9,6 +9,10 @@ var number_of_checks = 0
 var possible_id = []
 var movement_possibility = true
 var players_left = 0
+var scout_moved = []
+var scout_moved_from = []
+var scout_moved_to = []
+var scout_removed = []
 
 
 reset()
@@ -31,6 +35,12 @@ function reset() {
     if (selected) {
         selected.classList.remove("selected")
     }
+
+    // remove shifted class from last move
+    last_moves = document.querySelectorAll(".shifted")
+    last_moves.forEach(last_move => {
+        last_move.classList.remove("shifted")
+    });
 
     // remove all scouts from removing space
     var white_removes = document.querySelectorAll(".white-remove")
@@ -83,6 +93,10 @@ function reset() {
     number_of_checks = 0
     possible_id = []
     movement_possibility = true
+    scout_moved = []
+    scout_moved_from = []
+    scout_moved_to = []
+    scout_removed = []
 
     // adding event listeners to white scouts
     player("add")
@@ -452,6 +466,8 @@ function pawn_forward_move(id, k) {
         if (dot) {
             if (dot.classList.length < 3) {
                 add_or_push_dot(dot)
+            } else if (dot.classList[2] === 'shifted') {
+                add_or_push_dot(dot)
             } else {
                 break
             }
@@ -464,8 +480,10 @@ function pawn_forward_move(id, k) {
 function pawn_diagonal_move(id, k) {
     dot = document.getElementById("" + String(id + k))
     if (dot) {
-        if (dot.classList.length === 3 && !(dot.classList[2][0] === turn[0])) {
-            add_or_push_dot(dot)
+        if (dot.classList.length >= 3 && !(dot.classList[2][0] === turn[0])) {
+            if (dot.classList[2] !== 'shifted') {
+                add_or_push_dot(dot)
+            }
         }
     }
 }
@@ -655,7 +673,7 @@ function king_movement_check(id, place_id, k, check) {
                 }
                 
                 // if this id have any scout then break
-                if (!(dot.classList.length < 3) && !(dot.classList[2] === turn+"-king")) {
+                if (!(dot.classList.length < 3) && !(dot.classList[2] === turn+"-king") && !(dot.classList[2] === "shifted")) {
                     break
                 }
             } else {
@@ -687,7 +705,9 @@ function check_movement(id, k) {
                     add_or_push_dot(dot)
                 } else if (!(dot.classList[2][0] === turn[0])) {
                     add_or_push_dot(dot)
-                    break
+                    if (dot.classList[2] !== 'shifted') {
+                        break
+                    }
                 } else {
                     break
                 }
@@ -851,9 +871,22 @@ function dot_event() {
     scout = selected.classList[2]
     selected.classList.remove(scout)
 
+    // remove shifted class from last move
+    last_moves = document.querySelectorAll(".shifted")
+    last_moves.forEach(last_move => {
+        last_move.classList.remove("shifted")
+    });
+
+    // to save last move
+    scout_moved.push(scout)
+    scout_moved_from.push(selected)
+    scout_moved_to.push(this)
+    selected.classList.add("shifted") // to show the last move
+    document.getElementById("takeback").removeAttribute('disabled')
+
     // move scout from 'selected' to 'this'
     duration = 0
-    duration = move_scout.bind(this)(scout, duration)
+    duration = move_scout.bind(this)(scout, duration, "move")
 
     // this function start after movement of scout
     setTimeout(() => {
@@ -1181,6 +1214,7 @@ function check_mate() {
             } else {
                 alert("Check Mate \nWhite Player Won")
             }
+            document.getElementById("takeback").setAttribute('disabled', 'disabled')
         }, 10);
         setTimeout(() => {
             if (confirm("Reset Board")) {
@@ -1194,7 +1228,7 @@ function check_mate() {
 
 
 // to move scout in a div above the blocks
-function move_scout(scout, duration) {
+function move_scout(scout, duration, option) {
     var moving_div = document.createElement("div")
     moving_div.classList.add("moving-div")
 
@@ -1223,6 +1257,29 @@ function move_scout(scout, duration) {
     this_id = Number(this.id)
     number_of_blocks = Math.abs(selected_id%10-this_id%10)+1
     moving_div.style.height = width
+
+    if (option === "takeback") {
+        removed_scout = scout_removed.pop()
+        if (removed_scout) {
+            // remove scout from removing area
+            if (turn === "black") {
+                var player_removes = document.querySelectorAll(".black-remove")
+            } else {
+                var player_removes = document.querySelectorAll(".white-remove")
+            }
+            if (player_removes[0].children.length < 8) {
+                player_remove = player_removes[0]
+            } else {
+                player_remove = player_removes[1]
+            }
+
+            var remove_scout = player_remove.querySelectorAll('.'+removed_scout)
+            player_remove.removeChild(remove_scout[remove_scout.length-1])
+
+            // add scout to its place
+            selected.classList.add(removed_scout)
+        }
+    }
 
     if (scout.substring(6) === "knight") {
         moving_div.style.height = 3*width
@@ -1371,7 +1428,7 @@ function move_scout(scout, duration) {
         document.querySelector(".container").removeChild(moving_div)
 
         // remove scout available at this id and add to the respective removing space
-        if (this.classList.length === 3) {
+        if (this.classList.length >= 3) {
             removing_scout = this.classList[2]
             this.classList.remove(removing_scout)
 
@@ -1388,12 +1445,99 @@ function move_scout(scout, duration) {
                 player_removes[0].appendChild(remove_scout)
             } else {
                 player_removes[1].appendChild(remove_scout)
-            }    
+            }
+
+            if (option === "move") {
+                scout_removed.push(removing_scout)
+            }
+        } else {
+            if (option === "move") {
+                scout_removed.push(null)
+            }
         }
 
         // add the scout to this id
         this.classList.add(scout)
+        if (option === "move") {
+            this.classList.add("shifted") // to show the last move
+        }
     }, duration);
     duration += 50
     return duration
+}
+
+
+// for reset button
+document.getElementById("reset").addEventListener("click", reset)
+
+
+// for takeback
+document.getElementById("takeback").addEventListener("click", takeback)
+
+function takeback() {
+    if (scout_moved.length) {
+        this.setAttribute('disabled', 'disabled')
+
+        // if king is checked then remove check dot from king
+        if (checked) {
+            if (turn === "black") {
+                var black_king = document.querySelector(".black-king")
+        
+                black_king.innerHTML = ""
+            } else {
+                var white_king = document.querySelector(".white-king")
+        
+                white_king.innerHTML = ""
+            }
+            checked = false
+            check_list = []
+            number_of_checks = 0
+        }
+
+        if (selected) {
+            selected.classList.remove("selected")
+            selected.classList.remove("active")
+            remove_dots()
+        }
+
+        // remove shifted class from last move
+        last_moves = document.querySelectorAll(".shifted")
+        last_moves.forEach(last_move => {
+            last_move.classList.remove("shifted")
+        });
+
+        scout = scout_moved.pop()
+        selected = scout_moved_to.pop()
+        move_to = scout_moved_from.pop()
+        selected.classList.remove(scout)
+
+        // if scout is pawn and pawn is at it's last move then change available_scout to pawn
+        if (scout.substring(6) === "pawn") {
+            var id = Number(move_to.id)
+            if (id-id%10 === 10 || id-id%10 === 80) {
+                move_to.classList.remove(move_to.classList[2])
+                move_to.classList.add(scout)
+            }
+        }
+
+        // move scout from selected to move_to
+        duration = 0
+        duration = move_scout.bind(move_to)(scout, duration, "takeback")
+
+        // this function start after movement of scout
+        setTimeout(() => {
+            // add shifted class to last move
+            number_of_moves = scout_moved.length
+            if (number_of_moves) {
+                scout_moved_from[number_of_moves-1].classList.add("shifted")
+                scout_moved_to[number_of_moves-1].classList.add("shifted")
+                this.removeAttribute('disabled')
+            }
+
+            // remove event listener and check for black king is checked or not
+            player("remove")
+
+            change_turn()
+        }, duration);
+    }
 }

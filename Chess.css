@@ -12,7 +12,7 @@ body {
 }
 
 .black {
-    background-color: rgb(97, 60, 18);
+    background-color: rgb(133, 71, 1);
     height: 60px;
     max-width: 60px;
     padding: 0;
@@ -130,11 +130,11 @@ body {
 }
 
 .checked {
-    border: 2px solid red;
+    border: 1px solid red;
     border-radius: 50%;
     height: 100%;
     width: 100%;
-    box-shadow: 0 0 20px 10px red;
+    box-shadow: 0 0 10px 5px red;
 }
 
 .white-remove {
@@ -154,4 +154,10 @@ body {
 .pawn {
     background-color: rgba(255, 255, 255, 0.5);
     position: fixed;
+}
+
+.shifted {
+    z-index: 1;
+    transform: scale(0.95);
+    box-shadow: 0 0 4px 3px rgb(3, 247, 133);
 }
