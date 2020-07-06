@@ -484,6 +484,23 @@ function pawn_diagonal_move(id, k) {
             if (dot.classList[2] !== 'shifted') {
                 add_or_push_dot(dot)
             }
+        } else if (id-id%10 === 40 || id-id%10 === 50) {
+            // check if the last move is of pawn and from it's default id
+            // also moves 2 move then add dot to this dot
+            number_of_moves = scout_moved.length
+            if (number_of_moves) {
+                if (scout_moved[number_of_moves-1].substring(6) === "pawn") {
+                    id1 = Number(scout_moved_from[number_of_moves-1].id)
+                    id2 = Number(scout_moved_to[number_of_moves-1].id)
+                    if (((k === 9 || k === -11) && id-id2 === 1) || ((k === -9 || k === 11) && id2-id === 1)) {
+                        if (id1-id1%10 === 20 || id1-id1%10 === 70) {
+                            if (Math.abs(id2-id1) === 20) {
+                                add_or_push_dot(dot)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -1276,8 +1293,34 @@ function move_scout(scout, duration, option) {
             var remove_scout = player_remove.querySelectorAll('.'+removed_scout)
             player_remove.removeChild(remove_scout[remove_scout.length-1])
 
+            flag = 1
             // add scout to its place
-            selected.classList.add(removed_scout)
+            if (scout.substring(6) === "pawn") {
+                // check if the last move is of pawn and from it's default id
+                // also moves 2 move then add removed scout to it's place instead of selected
+                id = Number(move_to.id)
+                if (id-id%10 === 40 || id-id%10 === 50) {
+                    number_of_moves = scout_moved.length
+                    if (number_of_moves) {
+                        if (removed_scout.substring(6) === "pawn") {
+                            id1 = Number(scout_moved_from[number_of_moves-1].id)
+                            id2 = Number(scout_moved_to[number_of_moves-1].id)
+                            if (Math.abs(id-id2) === 1 && Math.abs(Number(selected.id)-id2) === 10) {
+                                if (id1-id1%10 === 20 || id1-id1%10 === 70) {
+                                    if (Math.abs(id2-id1) === 20) {
+                                        flag = 0
+                                        scout_moved_to[number_of_moves-1].classList.add(removed_scout)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (flag) {
+                selected.classList.add(removed_scout)
+            }
         }
     }
 
@@ -1427,11 +1470,39 @@ function move_scout(scout, duration, option) {
         // remove moving_div
         document.querySelector(".container").removeChild(moving_div)
 
+        flag = 0
         // remove scout available at this id and add to the respective removing space
-        if (this.classList.length >= 3) {
-            removing_scout = this.classList[2]
-            this.classList.remove(removing_scout)
+        if (option === "move") {
+            if (this.classList.length >= 3) {
+                removing_scout = this.classList[2]
+                this.classList.remove(removing_scout)
+                flag = 1
+            } else if (scout.substring(6) === "pawn") {
+                // check if the last move is of pawn and from it's default id
+                // also moves 2 move then remove the pawn from it's place
+                id = Number(selected.id)
+                if (id-id%10 === 40 || id-id%10 === 50) {
+                    number_of_moves = scout_moved.length
+                    if (number_of_moves) {
+                        if (scout_moved[number_of_moves-2].substring(6) === "pawn") {
+                            id1 = Number(scout_moved_from[number_of_moves-2].id)
+                            id2 = Number(scout_moved_to[number_of_moves-2].id)
+                            if (Math.abs(id-id2) === 1) {
+                                if (id1-id1%10 === 20 || id1-id1%10 === 70) {
+                                    if (Math.abs(id2-id1) === 20) {
+                                        flag = 1
+                                        removing_scout = scout_moved[number_of_moves-2]
+                                        scout_moved_to[number_of_moves-2].classList.remove(removing_scout)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
+        if (flag) {
             var remove_scout = document.createElement("div")
             remove_scout.classList.add("col-1")
             remove_scout.classList.add(removing_scout)
@@ -1447,9 +1518,7 @@ function move_scout(scout, duration, option) {
                 player_removes[1].appendChild(remove_scout)
             }
 
-            if (option === "move") {
-                scout_removed.push(removing_scout)
-            }
+            scout_removed.push(removing_scout)
         } else {
             if (option === "move") {
                 scout_removed.push(null)
@@ -1509,16 +1578,17 @@ function takeback() {
         scout = scout_moved.pop()
         selected = scout_moved_to.pop()
         move_to = scout_moved_from.pop()
-        selected.classList.remove(scout)
 
         // if scout is pawn and pawn is at it's last move then change available_scout to pawn
         if (scout.substring(6) === "pawn") {
-            var id = Number(move_to.id)
+            var id = Number(selected.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
-                move_to.classList.remove(move_to.classList[2])
-                move_to.classList.add(scout)
+                console.log(selected.classList[2])
+                selected.classList.remove(selected.classList[2])
+                selected.classList.add(scout)
             }
         }
+        selected.classList.remove(scout)
 
         // move scout from selected to move_to
         duration = 0
