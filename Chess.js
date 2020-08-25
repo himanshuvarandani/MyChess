@@ -107,6 +107,8 @@ function reset() {
     var black_player = document.getElementById("black-player")
     black_player.textContent = ""
     white_player.textContent = "White's Turn"
+
+    document.getElementById("takeback").setAttribute('disabled', 'disabled')
 }
 
 
