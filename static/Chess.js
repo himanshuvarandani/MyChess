@@ -13,9 +13,16 @@ var scout_moved = []
 var scout_moved_from = []
 var scout_moved_to = []
 var scout_removed = []
+var socket = io.connect("http://localhost:3000");
+var client_id
+var turn_id
 
 
-reset()
+socket.on('reset', function(data) {
+    client_id = socket.id
+    turn_id = data.id
+    reset()
+})
 
 
 // to reset board
@@ -99,7 +106,9 @@ function reset() {
     scout_removed = []
 
     // adding event listeners to white scouts
-    player("add")
+    if (turn_id === client_id) {
+        player("add")
+    }
 
     players_left = 0
     
@@ -162,8 +171,10 @@ function player(option) {
             if (rooks[i].id) {
                 players_left += 1
 
-                rooks[i].classList.add("active")
-                rooks[i].addEventListener("click", rook_movement)
+                if (turn_id === client_id) {
+                    rooks[i].classList.add("active")
+                    rooks[i].addEventListener("click", rook_movement)
+                }
             }
         }
 
@@ -171,8 +182,10 @@ function player(option) {
             if (knights[i].id) {
                 players_left += 1
 
-                knights[i].classList.add("active")
-                knights[i].addEventListener("click", knight_movement)
+                if (turn_id === client_id) {
+                    knights[i].classList.add("active")
+                    knights[i].addEventListener("click", knight_movement)
+                }
             }
         }
 
@@ -180,8 +193,10 @@ function player(option) {
             if (bishops[i].id) {
                 players_left += 1
 
-                bishops[i].classList.add("active")
-                bishops[i].addEventListener("click", bishop_movement)
+                if (turn_id === client_id) {
+                    bishops[i].classList.add("active")
+                    bishops[i].addEventListener("click", bishop_movement)
+                }
             }
         }
 
@@ -189,22 +204,28 @@ function player(option) {
             if (queens[i].id) {
                 players_left += 1
 
-                queens[i].classList.add("active")
-                queens[i].addEventListener("click", queen_movement)
+                if (turn_id === client_id) {
+                    queens[i].classList.add("active")
+                    queens[i].addEventListener("click", queen_movement)
+                }
             }
         }
 
         players_left += 1
 
-        king.classList.add("active")
-        king.addEventListener("click", king_movement)
+        if (turn_id === client_id) {
+            king.classList.add("active")
+            king.addEventListener("click", king_movement)
+        }
 
         for (let i = 0; i < pawns.length; i++) {
             if (pawns[i].id) {
                 players_left += 1
 
-                pawns[i].classList.add("active")
-                pawns[i].addEventListener("click", pawn_movement)
+                if (turn_id === client_id) {
+                    pawns[i].classList.add("active")
+                    pawns[i].addEventListener("click", pawn_movement)
+                }
             }
         }
     } else {
@@ -951,9 +972,20 @@ function dot_event() {
                 replace_pawn("queen", scout, pawn, width, 5/4, div)
             }
         }
-
+        
         if (flag) {
-            change_turn()
+            length = scout_moved.length;
+            socket.emit('details', {
+                id:                  socket.id,
+                turn:                turn,
+                scout_moved:         scout_moved[length-1],
+                scout_moved_from:    scout_moved_from[length-1].id,
+                scout_moved_to:      scout_moved_to[length-1].id,
+                scout_removed:       scout_removed[length-1],
+                change_pawn:         ""
+            })
+
+            change_turn("")
         }
     }, duration);
 }
@@ -973,14 +1005,26 @@ function replace_pawn(scout1, scout, pawn, width, x, div) {
         pawn.classList.remove(scout)
         pawn.classList.add(scout.substring(0, 6)+scout1)
         document.querySelector(".container").removeChild(div)
-        change_turn()
+
+        length = scout_moved.length;
+        socket.emit('details', {
+            id:                  socket.id,
+            turn:                turn,
+            scout_moved:         scout_moved[length-1],
+            scout_moved_from:    scout_moved_from[length-1].id,
+            scout_moved_to:      scout_moved_to[length-1].id,
+            scout_removed:       scout_removed[length-1],
+            change_pawn:         scout.substring(0, 6)+scout1
+        })
+
+        change_turn("")
     })
 }
 
 
 // this function is used for pawn removal at last move
 // otherwise used simply
-function change_turn() {
+function change_turn(option) {
     // check for opposite king
     check_king()
 
@@ -1005,10 +1049,12 @@ function change_turn() {
     if (checked) {
         check_mate()
     }
-
-    // add event listener to white scouts
-    player("add")
-
+    
+    // add event listener to opposite scouts
+    if (option === "add") {
+        player("add")
+    }
+    
     // if only kings are left then game tied
     if (players_left === 2) {
         setTimeout(() => {
@@ -1609,7 +1655,64 @@ function takeback() {
             // remove event listener and check for black king is checked or not
             player("remove")
 
-            change_turn()
+            change_turn("")
         }, duration);
     }
 }
+
+
+// Listen for events and get details of scout moved
+socket.on('details', function(data) {
+    client_id = socket.id
+    turn_id = data.id
+    turn = data.turn
+    scout = data.scout_moved
+    selected = document.getElementById(data.scout_moved_from)
+    move_to = document.getElementById(data.scout_moved_to)
+    change_pawn = data.change_pawn
+    duration = 0
+
+    // if king is checked then remove check dot from king
+    if (checked) {
+        if (turn === "black") {
+            var black_king = document.querySelector(".black-king")
+    
+            black_king.innerHTML = ""
+        } else {
+            var white_king = document.querySelector(".white-king")
+    
+            white_king.innerHTML = ""
+        }
+        checked = false
+        check_list = []
+        number_of_checks = 0
+    }
+
+    selected.classList.remove("active")
+    selected.classList.remove(scout)
+
+    // remove shifted class from last move
+    last_moves = document.querySelectorAll(".shifted")
+    last_moves.forEach(last_move => {
+        last_move.classList.remove("shifted")
+    });
+
+    // to save last move
+    scout_moved.push(scout)
+    scout_moved_from.push(selected)
+    scout_moved_to.push(this)
+    selected.classList.add("shifted") // to show the last move
+    document.getElementById("takeback").removeAttribute('disabled')
+
+    duration = move_scout.bind(move_to)(scout, duration, "move")
+
+    // this function start after movement of scout
+    setTimeout(() => {
+        if (change_pawn) {
+            move_to.classList.remove(change_pawn.substring(0, 6)+"pawn")
+            move_to.classList.add(change_pawn)
+        }
+
+        change_turn("add")
+    }, duration)
+})
