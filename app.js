@@ -51,4 +51,18 @@ io.on('connection', function(socket) {
         
         socket.broadcast.emit('details', data);
     });
+
+    socket.on('takeback', function (data) {
+        if (clients[0] === socket.id) {
+            data.id1 = clients[1];
+        } else if (clients[1] === socket.id) {
+            data.id1 = clients[0];
+        }
+        
+        io.sockets.to(data.id1).emit('takeback', data);
+    });
+
+    socket.on('takeback reply', function (data) {
+        io.sockets.emit('takeback reply', data);
+    });
 });

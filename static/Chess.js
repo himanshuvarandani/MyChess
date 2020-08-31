@@ -107,7 +107,7 @@ function reset() {
 
     // adding event listeners to white scouts
     if (turn_id === client_id) {
-        player("add")
+        player("add", "add")
     }
 
     players_left = 0
@@ -157,7 +157,7 @@ function remove_scouts(scout) {
 
 
 // to add or remove event listeners from scouts of turn
-function player(option) {
+function player(option, option1) {
     var rooks = document.querySelectorAll("."+turn+"-rook")
     var knights = document.querySelectorAll("."+turn+"-knight")
     var bishops = document.querySelectorAll("."+turn+"-bishop")
@@ -171,7 +171,7 @@ function player(option) {
             if (rooks[i].id) {
                 players_left += 1
 
-                if (turn_id === client_id) {
+                if (option1 === "add") {
                     rooks[i].classList.add("active")
                     rooks[i].addEventListener("click", rook_movement)
                 }
@@ -182,7 +182,7 @@ function player(option) {
             if (knights[i].id) {
                 players_left += 1
 
-                if (turn_id === client_id) {
+                if (option1 === "add") {
                     knights[i].classList.add("active")
                     knights[i].addEventListener("click", knight_movement)
                 }
@@ -193,7 +193,7 @@ function player(option) {
             if (bishops[i].id) {
                 players_left += 1
 
-                if (turn_id === client_id) {
+                if (option1 === "add") {
                     bishops[i].classList.add("active")
                     bishops[i].addEventListener("click", bishop_movement)
                 }
@@ -204,7 +204,7 @@ function player(option) {
             if (queens[i].id) {
                 players_left += 1
 
-                if (turn_id === client_id) {
+                if (option1 === "add") {
                     queens[i].classList.add("active")
                     queens[i].addEventListener("click", queen_movement)
                 }
@@ -213,7 +213,7 @@ function player(option) {
 
         players_left += 1
 
-        if (turn_id === client_id) {
+        if (option1 === "add") {
             king.classList.add("active")
             king.addEventListener("click", king_movement)
         }
@@ -222,14 +222,14 @@ function player(option) {
             if (pawns[i].id) {
                 players_left += 1
 
-                if (turn_id === client_id) {
+                if (option1 === "add") {
                     pawns[i].classList.add("active")
                     pawns[i].addEventListener("click", pawn_movement)
                 }
             }
         }
     } else {
-        // remove event listener and check for opposite king is checked or not
+        // remove event listeners
         for (let i = 0; i < rooks.length; i++) {
             if (rooks[i].removeEventListener) {
                 rooks[i].removeEventListener("click", rook_movement)
@@ -922,7 +922,10 @@ function dot_event() {
     scout_moved_from.push(selected)
     scout_moved_to.push(this)
     selected.classList.add("shifted") // to show the last move
-    document.getElementById("takeback").removeAttribute('disabled')
+
+    if (turn_id === client_id) {
+        document.getElementById("takeback").removeAttribute('disabled')
+    }
 
     // move scout from 'selected' to 'this'
     duration = 0
@@ -945,7 +948,7 @@ function dot_event() {
             selected.removeEventListener("click", pawn_movement)
         }
 
-        // remove event listener and check for black king is checked or not
+        // remove event listeners
         player("remove")
 
         var flag = 1
@@ -1051,10 +1054,7 @@ function change_turn(option) {
     }
     
     // add event listener to opposite scouts
-    if (option === "add") {
-        player("add")
-    }
-    
+    player("add", option)
     // if only kings are left then game tied
     if (players_left === 2) {
         setTimeout(() => {
@@ -1585,25 +1585,55 @@ function move_scout(scout, duration, option) {
 
 
 // for reset button
-document.getElementById("reset").addEventListener("click", reset)
+// document.getElementById("reset").addEventListener("click", reset)
 
 
 // for takeback
-document.getElementById("takeback").addEventListener("click", takeback)
+document.getElementById("takeback").addEventListener("click", propose_takeback)
 
-function takeback() {
+
+function propose_takeback() {
+    socket.emit('takeback', {
+        reply:  0,
+        id:     socket.id,
+        id1:    socket.id
+    })
+}
+
+
+socket.on('takeback', function (data) {
+    data.reply = confirm("Opponent proposes a takeback")
+    
+    socket.emit('takeback reply', data)
+})
+
+
+socket.on('takeback reply', function (data) {
+    turn_id = data.id
+    client_id = socket.id
+    
+    if (data.reply) {
+        takeback(data.id1)
+    } else if (turn_id === client_id) {
+        alert('takeback denied')
+    }
+})
+
+
+function takeback(opposite_client_id) {
+    takeback_button = document.getElementById("takeback")
     if (scout_moved.length) {
-        this.setAttribute('disabled', 'disabled')
+        takeback_button.setAttribute('disabled', 'disabled')
 
         // if king is checked then remove check dot from king
         if (checked) {
             if (turn === "black") {
                 var black_king = document.querySelector(".black-king")
-        
+
                 black_king.innerHTML = ""
             } else {
                 var white_king = document.querySelector(".white-king")
-        
+
                 white_king.innerHTML = ""
             }
             checked = false
@@ -1631,7 +1661,6 @@ function takeback() {
         if (scout.substring(6) === "pawn") {
             var id = Number(selected.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
-                console.log(selected.classList[2])
                 selected.classList.remove(selected.classList[2])
                 selected.classList.add(scout)
             }
@@ -1649,13 +1678,19 @@ function takeback() {
             if (number_of_moves) {
                 scout_moved_from[number_of_moves-1].classList.add("shifted")
                 scout_moved_to[number_of_moves-1].classList.add("shifted")
-                this.removeAttribute('disabled')
+                if (opposite_client_id === client_id) {
+                    takeback_button.removeAttribute('disabled')
+                }
             }
 
-            // remove event listener and check for black king is checked or not
+            // remove event listener
             player("remove")
 
-            change_turn("")
+            if (turn_id === client_id) {
+                change_turn("add")
+            } else {
+                change_turn("")
+            }
         }, duration);
     }
 }
@@ -1700,9 +1735,11 @@ socket.on('details', function(data) {
     // to save last move
     scout_moved.push(scout)
     scout_moved_from.push(selected)
-    scout_moved_to.push(this)
+    scout_moved_to.push(move_to)
     selected.classList.add("shifted") // to show the last move
-    document.getElementById("takeback").removeAttribute('disabled')
+    if (turn_id === client_id) {
+        document.getElementById("takeback").setAttribute('disabled', 'disabled')
+    }
 
     duration = move_scout.bind(move_to)(scout, duration, "move")
 
@@ -1713,6 +1750,10 @@ socket.on('details', function(data) {
             move_to.classList.add(change_pawn)
         }
 
-        change_turn("add")
+        if (turn_id === client_id) {
+            change_turn("add")
+        } else {
+            change_turn("")
+        }
     }, duration)
 })
