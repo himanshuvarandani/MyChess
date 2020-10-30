@@ -21,12 +21,47 @@ var turn_id
 socket.on('reset', function(data) {
     client_id = socket.id
     turn_id = data.id
-    reset()
+    reset(data)
+})
+
+
+socket.on('current positions', function (data) {
+    for (let key in data.positions) {
+        var scouts = document.getElementsByClassName(key)
+        
+        data.positions[key] = []
+        if (key.substring(6) === "remove") {
+            area = document.getElementsByClassName(key)
+            
+            for (i = 0; i < 2; i++) {
+                data.positions[key].push(area[i].innerHTML)
+            }
+        } else if (key === "checked") {
+            if (scouts[0]) {
+                data.positions[key].push(scouts[0].parentElement.id)
+            }
+        } else {
+            for (i = 0; i < scouts.length; i++) {
+                if (scouts[i].id) {
+                    data.positions[key].push(scouts[i].id)
+                }
+            }
+        }
+    }
+
+    data.turn = turn
+    data.checked = checked
+    data.scout_moved = scout_moved
+    data.scout_moved_from = scout_moved_from
+    data.scout_moved_to = scout_moved_to
+    data.scout_removed = scout_removed
+    
+    socket.emit('current positions', data)
 })
 
 
 // to reset board
-function reset() {
+function reset(data) {
     // removing dots if available
     remove_dots()
 
@@ -63,47 +98,42 @@ function reset() {
     // remove all scouts from board
     remove_scouts("white")
     remove_scouts("black")
+    
+    // adding scouts to board at their repective id's in positions
+    positions = data.positions
+    for (let key in positions) {
+        if (key.substring(6) === "remove") {
+            area = document.getElementsByClassName(key)
 
-    // adding scouts to board at default id's
-    document.getElementById("11").classList.add("white-rook")
-    document.getElementById("12").classList.add("white-knight")
-    document.getElementById("13").classList.add("white-bishop")
-    document.getElementById("14").classList.add("white-queen")
-    document.getElementById("15").classList.add("white-king")
-    document.getElementById("16").classList.add("white-bishop")
-    document.getElementById("17").classList.add("white-knight")
-    document.getElementById("18").classList.add("white-rook")
-
-    for (let i = 0; i < 8; i++) {
-        document.getElementById(white_pawn_default_id[i]).classList.add("white-pawn")
+            for (i = 0; i < 2; i++) {
+                area[i].innerHTML = positions[key][i]
+            }
+        } else if (key === "checked") {
+            if (positions[key].length !== 0) {
+                check_dot = document.createElement("div")
+                check_dot.classList.add("checked")
+                document.getElementById(positions[key][0]).appendChild(check_dot)
+            }
+        } else {
+            positions[key].forEach(function (value) {
+                document.getElementById(value).classList.add(key)
+            })
+        }
     }
-
-    for (let i = 0; i < 8; i++) {
-        document.getElementById(black_pawn_default_id[i]).classList.add("black-pawn")
-    }
-
-    document.getElementById("81").classList.add("black-rook")
-    document.getElementById("82").classList.add("black-knight")
-    document.getElementById("83").classList.add("black-bishop")
-    document.getElementById("84").classList.add("black-queen")
-    document.getElementById("85").classList.add("black-king")
-    document.getElementById("86").classList.add("black-bishop")
-    document.getElementById("87").classList.add("black-knight")
-    document.getElementById("88").classList.add("black-rook")
 
     // setting all global variables to default
-    turn = "white"
     dots = []
     selected = null
-    checked = false
     check_list = []
     number_of_checks = 0
     possible_id = []
     movement_possibility = true
-    scout_moved = []
-    scout_moved_from = []
-    scout_moved_to = []
-    scout_removed = []
+    turn = data.turn
+    checked = data.checked
+    scout_moved = data.scout_moved
+    scout_moved_from = data.scout_moved_from
+    scout_moved_to = data.scout_moved_to
+    scout_removed = data.scout_removed
 
     // adding event listeners to white scouts
     if (turn_id === client_id) {
@@ -1281,11 +1311,6 @@ function check_mate() {
             }
             document.getElementById("takeback").setAttribute('disabled', 'disabled')
         }, 10);
-        setTimeout(() => {
-            if (confirm("Reset Board")) {
-                reset()
-            }
-        }, 1000);
     }
     
     possible_id = []
@@ -1711,11 +1736,11 @@ socket.on('details', function(data) {
     if (checked) {
         if (turn === "black") {
             var black_king = document.querySelector(".black-king")
-    
+            
             black_king.innerHTML = ""
         } else {
             var white_king = document.querySelector(".white-king")
-    
+            
             white_king.innerHTML = ""
         }
         checked = false
