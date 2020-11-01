@@ -23,31 +23,28 @@ var io = socket(server);
 var clients = [];
 var random = Math.round(Math.random());
 var id = "";
-var positions = {"white-rook": ["11", "18"],
-                "white-knight": ["12", "17"],
-                "white-bishop": ["13", "16"],
-                "white-queen": ["15"],
-                "white-king": ["14"],
-                "white-pawn": ["21", "22", "23", "24", "25", "26", "27", "28"],
-                "black-rook": ["81", "88"],
-                "black-knight": ["82", "87"],
-                "black-bishop": ["83", "86"],
-                "black-queen": ["85"],
-                "black-king": ["84"],
-                "black-pawn": ["71", "72", "73", "74", "75", "76", "77", "78"],
-                "white-remove": ["", ""],
-                "black-remove": ["", ""],
+var positions = {"wr": ["11", "18"],
+                "wn": ["12", "17"],
+                "wb": ["13", "16"],
+                "wq": ["15"],
+                "wk": ["14"],
+                "wp": ["21", "22", "23", "24", "25", "26", "27", "28"],
+                "br": ["81", "88"],
+                "bn": ["82", "87"],
+                "bb": ["83", "86"],
+                "bq": ["85"],
+                "bk": ["84"],
+                "bp": ["71", "72", "73", "74", "75", "76", "77", "78"],
+                "wremove": ["", ""],
+                "bremove": ["", ""],
                 "shifted": [],
                 "checked": []
                 };
 var data = {id: id,
             positions: positions,
-            turn: "white",
+            turn: "w",
             checked: false,
-            scout_moved: [],
-            scout_moved_from: [],
-            scout_moved_to: [],
-            scout_removed: []
+            moves: []
         };
 
 io.on('connection', function(socket) {

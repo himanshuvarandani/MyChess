@@ -8,8 +8,8 @@
     </head>
     <body>
         <div class="container mt-md-2">
-            <div class="row white-remove justify-content-center rounded-top"></div>
-            <div class="row white-remove justify-content-center rounded-bottom"></div>
+            <div class="row wremove justify-content-center rounded-top"></div>
+            <div class="row wremove justify-content-center rounded-bottom"></div>
             <div id="white-player" class="row justify-content-center" style="height:30px"></div>
             <div class="row justify-content-center">
                 <div class="col-6 p-0">
@@ -156,8 +156,8 @@
                 </div>
             </div>
             <div id="black-player" class="row justify-content-center" style="height:30px"></div>
-            <div class="row black-remove justify-content-center rounded-top"></div>
-            <div class="row black-remove justify-content-center rounded-bottom"></div>
+            <div class="row bremove justify-content-center rounded-top"></div>
+            <div class="row bremove justify-content-center rounded-bottom"></div>
             
             <div class="row justify-content-center mt-1">
                 <!-- <button type="button" id="reset" class="btn btn-secondary mx-2">Reset</button> -->
@@ -181,7 +181,7 @@
                     black.style.height = width
                 })
 
-                var black_removes = document.querySelectorAll('.black-remove')
+                var black_removes = document.querySelectorAll('.bremove')
 
                 black_removes.forEach(function (black_remove) {
                     black_remove.style.width = width*8
@@ -196,7 +196,7 @@
                     }
                 })
 
-                var white_removes = document.querySelectorAll('.white-remove')
+                var white_removes = document.querySelectorAll('.wremove')
 
                 white_removes.forEach(function (white_remove) {
                     white_remove.style.width = width*8

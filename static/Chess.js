@@ -1,4 +1,4 @@
-var turn = "white"
+var turn = "w"
 var dots = []
 var selected = null
 var checked = false
@@ -9,10 +9,7 @@ var number_of_checks = 0
 var possible_id = []
 var movement_possibility = true
 var players_left = 0
-var scout_moved = []
-var scout_moved_from = []
-var scout_moved_to = []
-var scout_removed = []
+var moves = []
 var socket = io.connect("http://localhost:3000");
 var client_id
 var turn_id
@@ -30,7 +27,7 @@ socket.on('current positions', function (data) {
         var scouts = document.getElementsByClassName(key)
         
         data.positions[key] = []
-        if (key.substring(6) === "remove") {
+        if (key.substring(1) === "remove") {
             area = document.getElementsByClassName(key)
             
             for (i = 0; i < 2; i++) {
@@ -51,10 +48,7 @@ socket.on('current positions', function (data) {
 
     data.turn = turn
     data.checked = checked
-    data.scout_moved = scout_moved
-    data.scout_moved_from = scout_moved_from
-    data.scout_moved_to = scout_moved_to
-    data.scout_removed = scout_removed
+    data.moves = moves
     
     socket.emit('current positions', data)
 })
@@ -70,7 +64,7 @@ function reset(data) {
 
     // if king is checked then remove check dot from king
     if (checked) {
-        var king = document.querySelector("."+turn+"-king")
+        var king = document.querySelector("."+turn+"k")
         king.innerHTML = ""
     }
 
@@ -85,24 +79,24 @@ function reset(data) {
     });
 
     // remove all scouts from removing space
-    var white_removes = document.querySelectorAll(".white-remove")
+    var white_removes = document.querySelectorAll(".wremove")
     for (let i = 0; i < white_removes.length; i++) {
         white_removes[i].innerHTML = ""
     }
 
-    var black_removes = document.querySelectorAll(".black-remove")
+    var black_removes = document.querySelectorAll(".bremove")
     for (let i = 0; i < black_removes.length; i++) {
         black_removes[i].innerHTML = ""
     }
 
     // remove all scouts from board
-    remove_scouts("white")
-    remove_scouts("black")
+    remove_scouts("w")
+    remove_scouts("b")
     
     // adding scouts to board at their repective id's in positions
     positions = data.positions
     for (let key in positions) {
-        if (key.substring(6) === "remove") {
+        if (key.substring(1) === "remove") {
             area = document.getElementsByClassName(key)
 
             for (i = 0; i < 2; i++) {
@@ -130,10 +124,7 @@ function reset(data) {
     movement_possibility = true
     turn = data.turn
     checked = data.checked
-    scout_moved = data.scout_moved
-    scout_moved_from = data.scout_moved_from
-    scout_moved_to = data.scout_moved_to
-    scout_removed = data.scout_removed
+    moves = data.moves
 
     // adding event listeners to white scouts
     if (turn_id === client_id) {
@@ -153,47 +144,47 @@ function reset(data) {
 
 // to remove scouts of white and black when reset
 function remove_scouts(scout) {
-    var rooks = document.querySelectorAll("."+scout+"-rook")
-    var knights = document.querySelectorAll("."+scout+"-knight")
-    var bishops = document.querySelectorAll("."+scout+"-bishop")
-    var queens = document.querySelectorAll("."+scout+"-queen")
-    var king = document.querySelector("."+scout+"-king")
-    var pawns = document.querySelectorAll("."+scout+"-pawn")
+    var rooks = document.querySelectorAll("."+scout+"r")
+    var knights = document.querySelectorAll("."+scout+"n")
+    var bishops = document.querySelectorAll("."+scout+"b")
+    var queens = document.querySelectorAll("."+scout+"q")
+    var king = document.querySelector("."+scout+"k")
+    var pawns = document.querySelectorAll("."+scout+"p")
 
     for (let i = 0; i < rooks.length; i++) {
-        rooks[i].classList.remove(""+scout+"-rook")
+        rooks[i].classList.remove(""+scout+"r")
     }
 
     for (let i = 0; i < knights.length; i++) {
-        knights[i].classList.remove(""+scout+"-knight")
+        knights[i].classList.remove(""+scout+"n")
     }
 
     for (let i = 0; i < bishops.length; i++) {
-        bishops[i].classList.remove(""+scout+"-bishop")
+        bishops[i].classList.remove(""+scout+"b")
     }
 
     for (let i = 0; i < queens.length; i++) {
-        queens[i].classList.remove(""+scout+"-queen")
+        queens[i].classList.remove(""+scout+"q")
     }
 
     if (king) {
-        king.classList.remove(""+scout+"-king")
+        king.classList.remove(""+scout+"k")
     }
 
     for (let i = 0; i < pawns.length; i++) {
-        pawns[i].classList.remove(""+scout+"-pawn")
+        pawns[i].classList.remove(""+scout+"p")
     }
 }
 
 
 // to add or remove event listeners from scouts of turn
 function player(option, option1) {
-    var rooks = document.querySelectorAll("."+turn+"-rook")
-    var knights = document.querySelectorAll("."+turn+"-knight")
-    var bishops = document.querySelectorAll("."+turn+"-bishop")
-    var queens = document.querySelectorAll("."+turn+"-queen")
-    var king = document.querySelector("."+turn+"-king")
-    var pawns = document.querySelectorAll("."+turn+"-pawn")
+    var rooks = document.querySelectorAll("."+turn+"r")
+    var knights = document.querySelectorAll("."+turn+"n")
+    var bishops = document.querySelectorAll("."+turn+"b")
+    var queens = document.querySelectorAll("."+turn+"q")
+    var king = document.querySelector("."+turn+"k")
+    var pawns = document.querySelectorAll("."+turn+"p")
 
     if (option === "add") {
         // add event listener
@@ -322,22 +313,22 @@ function player(option, option1) {
 
 // functions for listeners calling movement function on click
 function rook_movement() {
-    movement.bind(this)("rook")
+    movement.bind(this)("r")
 }
 function knight_movement() {
-    movement.bind(this)("knight")
+    movement.bind(this)("n")
 }
 function bishop_movement() {
-    movement.bind(this)("bishop")
+    movement.bind(this)("b")
 }
 function queen_movement() {
-    movement.bind(this)("queen")
+    movement.bind(this)("q")
 }
 function king_movement() {
-    movement.bind(this)("king")
+    movement.bind(this)("k")
 }
 function pawn_movement() {
-    movement.bind(this)("pawn")
+    movement.bind(this)("p")
 }
 
 
@@ -363,17 +354,17 @@ function movement(scout) {
 
         var id = Number(this.id)
 
-        if (scout === "rook") {
+        if (scout === "r") {
             rook_movement_check(id)
-        } else if (scout === "knight") {
+        } else if (scout === "n") {
             knight_movement_check(id)
-        } else if (scout === "bishop") {
+        } else if (scout === "b") {
             bishop_movement_check(id)
-        } else if (scout === "queen") {
+        } else if (scout === "q") {
             queen_movement_check(id)
-        } else if (scout === "king") {
+        } else if (scout === "k") {
             player_king_movement_check(id)
-        } else if (scout === "pawn") {
+        } else if (scout === "p") {
             pawn_movement_check(id)
         }
 
@@ -466,7 +457,7 @@ function pawn_movement_check(id) {
     // check if it is removed then king have checked or not
     var [left_right, up_down, main_diagonal, cross_diagonal] = check_possibility(id)
 
-    if (turn === "white") {
+    if (turn === "w") {
         k = 1 // white pawn moves downward w.r.t. board
     } else {
         k = -1 // black pawn moves upward w.r.t. board
@@ -540,11 +531,11 @@ function pawn_diagonal_move(id, k) {
         } else if (id-id%10 === 40 || id-id%10 === 50) {
             // check if the last move is of pawn and from it's default id
             // also moves 2 move then add dot to this dot
-            number_of_moves = scout_moved.length
+            number_of_moves = moves.length
             if (number_of_moves) {
-                if (scout_moved[number_of_moves-1].substring(6) === "pawn") {
-                    id1 = Number(scout_moved_from[number_of_moves-1].id)
-                    id2 = Number(scout_moved_to[number_of_moves-1].id)
+                if (moves[number_of_moves-1].substring(1, 2) === "p") {
+                    id1 = Number(moves[number_of_moves-1].substring(2, 4))
+                    id2 = Number(moves[number_of_moves-1].substring(4, 6))
                     if (((k === 9 || k === -11) && id-id2 === 1) || ((k === -9 || k === 11) && id2-id === 1)) {
                         if (id1-id1%10 === 20 || id1-id1%10 === 70) {
                             if (Math.abs(id2-id1) === 20) {
@@ -585,20 +576,20 @@ function knight_movement_check(id) {
 // check movement of king is possible or not
 // then add dots to possible blocks
 function player_king_movement_check(id) {
-    if (turn === "white") {
-        scout = "black" // for opposite scouts
+    if (turn === "w") {
+        scout = "b" // for opposite scouts
         k = -1 // black pawns move upward w.r.t. board
     } else {
-        scout = "white" // for opposite scouts
+        scout = "w" // for opposite scouts
         k = 1 // white pawns move downward w.r.t. board
     }
 
-    var opposite_rooks = document.querySelectorAll("."+scout+"-rook")
-    var opposite_knights = document.querySelectorAll("."+scout+"-knight")
-    var opposite_bishops = document.querySelectorAll("."+scout+"-bishop")
-    var opposite_queens = document.querySelectorAll("."+scout+"-queen")
-    var opposite_king = document.querySelector("."+scout+"-king")
-    var opposite_pawns = document.querySelectorAll("."+scout+"-pawn")
+    var opposite_rooks = document.querySelectorAll("."+scout+"r")
+    var opposite_knights = document.querySelectorAll("."+scout+"n")
+    var opposite_bishops = document.querySelectorAll("."+scout+"b")
+    var opposite_queens = document.querySelectorAll("."+scout+"q")
+    var opposite_king = document.querySelector("."+scout+"k")
+    var opposite_pawns = document.querySelectorAll("."+scout+"p")
 
     var king_moves = [id-11, id-10, id-9, id-1, id+1, id+9, id+10, id+11]
 
@@ -743,7 +734,7 @@ function king_movement_check(id, place_id, k, check) {
                 }
                 
                 // if this id have any scout then break
-                if (!(dot.classList.length < 3) && !(dot.classList[2] === turn+"-king") && !(dot.classList[2] === "shifted")) {
+                if (!(dot.classList.length < 3) && !(dot.classList[2] === turn+"k") && !(dot.classList[2] === "shifted")) {
                     break
                 }
             } else {
@@ -851,7 +842,7 @@ function movement_possible_or_not(id, k) {
                 // and break otherwise
                 if (!(dot.classList.length < 3)) {
                     if (dot.classList[2][0] === turn[0]) {
-                        if (dot.classList[2] === turn+"-king") {
+                        if (dot.classList[2] === turn+"k") {
                             same_king = true
                             if (opposite_scout) {
                                 movement_possibility = false
@@ -859,14 +850,14 @@ function movement_possible_or_not(id, k) {
                         }
                     } else {
                         if (k === 10 || k === 1 || k === -1 || k === -10) {
-                            if (dot.classList[2].substring(6) === "rook" || dot.classList[2].substring(6) === "queen") {
+                            if (dot.classList[2].substring(1) === "r" || dot.classList[2].substring(1) === "q") {
                                 opposite_scout = true
                                 if (same_king) {
                                     movement_possibility = false
                                 }
                             }
                         } else if (k === 11 || k === 9 || k === -11 || k === -9) {
-                            if (dot.classList[2].substring(6) === "bishop" || dot.classList[2].substring(6) === "queen") {
+                            if (dot.classList[2].substring(1) === "b" || dot.classList[2].substring(1) === "q") {
                                 opposite_scout = true
                                 if (same_king) {
                                     movement_possibility = false
@@ -922,12 +913,12 @@ function dot_event() {
 
     // if king is checked then remove check dot from king
     if (checked) {
-        if (turn === "black") {
-            var black_king = document.querySelector(".black-king")
+        if (turn === "b") {
+            var black_king = document.querySelector(".bk")
     
             black_king.innerHTML = ""
         } else {
-            var white_king = document.querySelector(".white-king")
+            var white_king = document.querySelector(".wk")
     
             white_king.innerHTML = ""
         }
@@ -948,9 +939,8 @@ function dot_event() {
     });
 
     // to save last move
-    scout_moved.push(scout)
-    scout_moved_from.push(selected)
-    scout_moved_to.push(this)
+    var move = scout + String(selected.id) + String(this.id)
+    moves.push(move)
     selected.classList.add("shifted") // to show the last move
 
     if (turn_id === client_id) {
@@ -964,17 +954,17 @@ function dot_event() {
     // this function start after movement of scout
     setTimeout(() => {
         // remove event listener from slected id
-        if (scout.substring(6) === "rook") {
+        if (scout.substring(1) === "r") {
             selected.removeEventListener("click", rook_movement)
-        } else if (scout.substring(6) === "knight") {
+        } else if (scout.substring(1) === "n") {
             selected.removeEventListener("click", knight_movement)
-        } else if (scout.substring(6) === "bishop") {
+        } else if (scout.substring(1) === "b") {
             selected.removeEventListener("click", bishop_movement)
-        } else if (scout.substring(6) === "queen") {
+        } else if (scout.substring(1) === "q") {
             selected.removeEventListener("click", queen_movement)
-        } else if (scout.substring(6) === "king") {
+        } else if (scout.substring(1) === "k") {
             selected.removeEventListener("click", king_movement)
-        } else if (scout.substring(6) === "pawn") {
+        } else if (scout.substring(1) === "p") {
             selected.removeEventListener("click", pawn_movement)
         }
 
@@ -982,8 +972,8 @@ function dot_event() {
         player("remove")
 
         var flag = 1
-        // if pawn moves to last move then change it to rook, knight, bishop, or queen
-        if (scout.substring(6) === "pawn") {
+        // if pawn moves to last move then change it to rook, knight, bishop, or q
+        if (scout.substring(1) === "p") {
             var id = Number(this.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
                 flag = 0
@@ -999,22 +989,19 @@ function dot_event() {
                 document.querySelector(".container").appendChild(div)
                 var pawn = this
 
-                replace_pawn("rook", scout, pawn, width, 1, div)
-                replace_pawn("knight", scout, pawn, width, 5/4, div)
-                replace_pawn("bishop", scout, pawn, width, 5/4, div)
-                replace_pawn("queen", scout, pawn, width, 5/4, div)
+                replace_pawn("r", scout, pawn, width, 1, div)
+                replace_pawn("n", scout, pawn, width, 5/4, div)
+                replace_pawn("b", scout, pawn, width, 5/4, div)
+                replace_pawn("q", scout, pawn, width, 5/4, div)
             }
         }
         
         if (flag) {
-            length = scout_moved.length;
+            length = moves.length;
             socket.emit('details', {
                 id:                  socket.id,
                 turn:                turn,
-                scout_moved:         scout_moved[length-1],
-                scout_moved_from:    scout_moved_from[length-1].id,
-                scout_moved_to:      scout_moved_to[length-1].id,
-                scout_removed:       scout_removed[length-1],
+                move:                moves[length-1],
                 change_pawn:         ""
             })
 
@@ -1036,18 +1023,15 @@ function replace_pawn(scout1, scout, pawn, width, x, div) {
 
     scout2.addEventListener("click", function () {
         pawn.classList.remove(scout)
-        pawn.classList.add(scout.substring(0, 6)+scout1)
+        pawn.classList.add(scout.substring(0, 1)+scout1)
         document.querySelector(".container").removeChild(div)
 
-        length = scout_moved.length;
+        length = moves.length;
         socket.emit('details', {
             id:                  socket.id,
             turn:                turn,
-            scout_moved:         scout_moved[length-1],
-            scout_moved_from:    scout_moved_from[length-1].id,
-            scout_moved_to:      scout_moved_to[length-1].id,
-            scout_removed:       scout_removed[length-1],
-            change_pawn:         scout.substring(0, 6)+scout1
+            move:                moves[length-1],
+            change_pawn:         scout.substring(0, 1)+scout1
         })
 
         change_turn("")
@@ -1064,15 +1048,15 @@ function change_turn(option) {
     var black_player = document.getElementById("black-player")
     var white_player = document.getElementById("white-player")
 
-    if (turn === "black") {
+    if (turn === "b") {
         // change turn to white
-        turn = "white"
+        turn = "w"
 
         black_player.textContent = ""
         white_player.textContent = "White's Turn"
     } else {
         // change turn to black
-        turn = "black"
+        turn = "b"
 
         white_player.textContent = ""
         black_player.textContent = "Black's Turn"
@@ -1100,18 +1084,18 @@ function change_turn(option) {
 
 // to check if opposite king is checked or not from the scouts of this turn
 function check_king() {
-    var rooks = document.querySelectorAll("."+turn+"-rook")
-    var knights = document.querySelectorAll("."+turn+"-knight")
-    var bishops = document.querySelectorAll("."+turn+"-bishop")
-    var queens = document.querySelectorAll("."+turn+"-queen")
-    var king = document.querySelector("."+turn+"-king")
-    var pawns = document.querySelectorAll("."+turn+"-pawn")
+    var rooks = document.querySelectorAll("."+turn+"r")
+    var knights = document.querySelectorAll("."+turn+"n")
+    var bishops = document.querySelectorAll("."+turn+"b")
+    var queens = document.querySelectorAll("."+turn+"q")
+    var king = document.querySelector("."+turn+"k")
+    var pawns = document.querySelectorAll("."+turn+"p")
 
-    if (turn === "white") {
-        var opposite_king = document.querySelector(".black-king")
+    if (turn === "w") {
+        var opposite_king = document.querySelector(".bk")
         k = 1
     } else {
-        var opposite_king = document.querySelector(".white-king")
+        var opposite_king = document.querySelector(".wk")
         k = -1
     }
     var opposite_king_id = Number(opposite_king.id)
@@ -1260,12 +1244,12 @@ function add_checked_dot_to_king(id, king) {
 
 // check if any of the same scout can save king from check or not
 function check_mate() {
-    var rooks = document.querySelectorAll("."+turn+"-rook")
-    var knights = document.querySelectorAll("."+turn+"-knight")
-    var bishops = document.querySelectorAll("."+turn+"-bishop")
-    var queens = document.querySelectorAll("."+turn+"-queen")
-    var king = document.querySelector("."+turn+"-king")
-    var pawns = document.querySelectorAll("."+turn+"-pawn")
+    var rooks = document.querySelectorAll("."+turn+"r")
+    var knights = document.querySelectorAll("."+turn+"n")
+    var bishops = document.querySelectorAll("."+turn+"b")
+    var queens = document.querySelectorAll("."+turn+"q")
+    var king = document.querySelector("."+turn+"k")
+    var pawns = document.querySelectorAll("."+turn+"p")
 
     if (number_of_checks < 2) {
         for (let i = 0; i < rooks.length; i++) {
@@ -1304,7 +1288,7 @@ function check_mate() {
     // if any movement is not possible to save check then alert checkmate and reset board
     if (!possible_id.length) {
         setTimeout(() => {
-            if (turn === "white") {
+            if (turn === "w") {
                 alert("Check Mate \nBlack Player Won")
             } else {
                 alert("Check Mate \nWhite Player Won")
@@ -1325,8 +1309,29 @@ function move_scout(scout, duration, option) {
     document.querySelector(".container").appendChild(moving_div)
 
     // save image of scout in moving_div 
+    image = 'icons/'
+    if (scout.substring(0, 1) == 'w') {
+        image += 'white'
+    } else {
+        image += 'black'
+    }
+    image += '_'
+    if (scout.substring(1, 2) == 'r') {
+        image += 'rook'
+    } else if (scout.substring(1, 2) == 'n') {
+        image += 'knight'
+    } else if (scout.substring(1, 2) == 'b') {
+        image += 'bishop'
+    } else if (scout.substring(1, 2) == 'q') {
+        image += 'queen'
+    } else if (scout.substring(1, 2) == 'k') {
+        image += 'king'
+    } else {
+        image += 'pawn'
+    }
+    image += '.png'
     var img = document.createElement('img')
-    img.setAttribute('src', 'icons/'+scout.substring(0, 5)+'_'+scout.substring(6)+'.png')
+    img.setAttribute('src', image)
     img.style.position = 'relative'
 
     moving_div.appendChild(img)
@@ -1349,13 +1354,14 @@ function move_scout(scout, duration, option) {
     moving_div.style.height = width
 
     if (option === "takeback") {
-        removed_scout = scout_removed.pop()
-        if (removed_scout) {
+        console.log(moves)
+        removed_scout = moves.pop().substring(6)
+        if (removed_scout != 'nl') {
             // remove scout from removing area
-            if (turn === "black") {
-                var player_removes = document.querySelectorAll(".black-remove")
+            if (turn === "b") {
+                var player_removes = document.querySelectorAll(".bremove")
             } else {
-                var player_removes = document.querySelectorAll(".white-remove")
+                var player_removes = document.querySelectorAll(".wremove")
             }
             if (player_removes[0].children.length < 8) {
                 player_remove = player_removes[0]
@@ -1368,21 +1374,21 @@ function move_scout(scout, duration, option) {
 
             flag = 1
             // add scout to its place
-            if (scout.substring(6) === "pawn") {
+            if (scout.substring(1) === "p") {
                 // check if the last move is of pawn and from it's default id
                 // also moves 2 move then add removed scout to it's place instead of selected
                 id = Number(move_to.id)
                 if (id-id%10 === 40 || id-id%10 === 50) {
-                    number_of_moves = scout_moved.length
+                    number_of_moves = moves.length
                     if (number_of_moves) {
-                        if (removed_scout.substring(6) === "pawn") {
-                            id1 = Number(scout_moved_from[number_of_moves-1].id)
-                            id2 = Number(scout_moved_to[number_of_moves-1].id)
+                        if (removed_scout.substring(1) === "p") {
+                            id1 = Number(moves[number_of_moves-1].substring(2, 4))
+                            id2 = Number(moves[number_of_moves-1].substring(4, 6))
                             if (Math.abs(id-id2) === 1 && Math.abs(Number(selected.id)-id2) === 10) {
                                 if (id1-id1%10 === 20 || id1-id1%10 === 70) {
                                     if (Math.abs(id2-id1) === 20) {
                                         flag = 0
-                                        scout_moved_to[number_of_moves-1].classList.add(removed_scout)
+                                        document.getElementById(id2).classList.add(removed_scout)
                                     }
                                 }
                             }
@@ -1397,7 +1403,7 @@ function move_scout(scout, duration, option) {
         }
     }
 
-    if (scout.substring(6) === "knight") {
+    if (scout.substring(1) === "n") {
         moving_div.style.height = 3*width
         moving_div.style.width = 2*width
         let rotation = 0
@@ -1550,22 +1556,22 @@ function move_scout(scout, duration, option) {
                 removing_scout = this.classList[2]
                 this.classList.remove(removing_scout)
                 flag = 1
-            } else if (scout.substring(6) === "pawn") {
+            } else if (scout.substring(1) === "p") {
                 // check if the last move is of pawn and from it's default id
                 // also moves 2 move then remove the pawn from it's place
                 id = Number(selected.id)
                 if (id-id%10 === 40 || id-id%10 === 50) {
-                    number_of_moves = scout_moved.length
+                    number_of_moves = moves.length
                     if (number_of_moves) {
-                        if (scout_moved[number_of_moves-2].substring(6) === "pawn") {
-                            id1 = Number(scout_moved_from[number_of_moves-2].id)
-                            id2 = Number(scout_moved_to[number_of_moves-2].id)
+                        if (moves[number_of_moves-2].substring(1) === "p") {
+                            id1 = Number(moves[number_of_moves-2].substring(2, 4))
+                            id2 = Number(moves[number_of_moves-2].substring(4, 6))
                             if (Math.abs(id-id2) === 1) {
                                 if (id1-id1%10 === 20 || id1-id1%10 === 70) {
                                     if (Math.abs(id2-id1) === 20) {
                                         flag = 1
-                                        removing_scout = scout_moved[number_of_moves-2]
-                                        scout_moved_to[number_of_moves-2].classList.remove(removing_scout)
+                                        removing_scout = moves[number_of_moves-2].substring(0, 2)
+                                        document.getElementById(id2).classList.remove(removing_scout)
                                     }
                                 }
                             }
@@ -1580,10 +1586,10 @@ function move_scout(scout, duration, option) {
             remove_scout.classList.add("col-1")
             remove_scout.classList.add(removing_scout)
 
-            if (turn === "white") {
-                var player_removes = document.querySelectorAll(".black-remove")
+            if (turn === "w") {
+                var player_removes = document.querySelectorAll(".bremove")
             } else {
-                var player_removes = document.querySelectorAll(".white-remove")
+                var player_removes = document.querySelectorAll(".wremove")
             }
             if (player_removes[0].children.length < 8) {
                 player_removes[0].appendChild(remove_scout)
@@ -1591,10 +1597,10 @@ function move_scout(scout, duration, option) {
                 player_removes[1].appendChild(remove_scout)
             }
 
-            scout_removed.push(removing_scout)
+            moves[moves.length-1] += removing_scout
         } else {
             if (option === "move") {
-                scout_removed.push(null)
+                moves[moves.length-1] += "nl"
             }
         }
 
@@ -1647,17 +1653,17 @@ socket.on('takeback reply', function (data) {
 
 function takeback(opposite_client_id) {
     takeback_button = document.getElementById("takeback")
-    if (scout_moved.length) {
+    if (moves.length) {
         takeback_button.setAttribute('disabled', 'disabled')
 
         // if king is checked then remove check dot from king
         if (checked) {
-            if (turn === "black") {
-                var black_king = document.querySelector(".black-king")
+            if (turn === "b") {
+                var black_king = document.querySelector(".bk")
 
                 black_king.innerHTML = ""
             } else {
-                var white_king = document.querySelector(".white-king")
+                var white_king = document.querySelector(".wk")
 
                 white_king.innerHTML = ""
             }
@@ -1678,12 +1684,13 @@ function takeback(opposite_client_id) {
             last_move.classList.remove("shifted")
         });
 
-        scout = scout_moved.pop()
-        selected = scout_moved_to.pop()
-        move_to = scout_moved_from.pop()
+        move = moves[moves.length-1]
+        scout = move.substring(0, 2)
+        selected = document.getElementById(move.substring(4, 6))
+        move_to = document.getElementById(move.substring(2, 4))
 
         // if scout is pawn and pawn is at it's last move then change available_scout to pawn
-        if (scout.substring(6) === "pawn") {
+        if (scout.substring(1) === "p") {
             var id = Number(selected.id)
             if (id-id%10 === 10 || id-id%10 === 80) {
                 selected.classList.remove(selected.classList[2])
@@ -1699,10 +1706,10 @@ function takeback(opposite_client_id) {
         // this function start after movement of scout
         setTimeout(() => {
             // add shifted class to last move
-            number_of_moves = scout_moved.length
+            number_of_moves = moves.length
             if (number_of_moves) {
-                scout_moved_from[number_of_moves-1].classList.add("shifted")
-                scout_moved_to[number_of_moves-1].classList.add("shifted")
+                document.getElementById(moves[number_of_moves-1].substring(2, 4)).classList.add("shifted")
+                document.getElementById(moves[number_of_moves-1].substring(4, 6)).classList.add("shifted")
                 if (opposite_client_id === client_id) {
                     takeback_button.removeAttribute('disabled')
                 }
@@ -1723,23 +1730,25 @@ function takeback(opposite_client_id) {
 
 // Listen for events and get details of scout moved
 socket.on('details', function(data) {
+    console.log(data.move)
     client_id = socket.id
     turn_id = data.id
     turn = data.turn
-    scout = data.scout_moved
-    selected = document.getElementById(data.scout_moved_from)
-    move_to = document.getElementById(data.scout_moved_to)
+    move = data.move
+    scout = move.substring(0, 2)
+    selected = document.getElementById(move.substring(2, 4))
+    move_to = document.getElementById(move.substring(4, 6))
     change_pawn = data.change_pawn
     duration = 0
 
     // if king is checked then remove check dot from king
     if (checked) {
-        if (turn === "black") {
-            var black_king = document.querySelector(".black-king")
+        if (turn === "b") {
+            var black_king = document.querySelector(".bk")
             
             black_king.innerHTML = ""
         } else {
-            var white_king = document.querySelector(".white-king")
+            var white_king = document.querySelector(".wk")
             
             white_king.innerHTML = ""
         }
@@ -1758,9 +1767,8 @@ socket.on('details', function(data) {
     });
 
     // to save last move
-    scout_moved.push(scout)
-    scout_moved_from.push(selected)
-    scout_moved_to.push(move_to)
+    move = move.substring(0, 6)
+    moves.push(move)
     selected.classList.add("shifted") // to show the last move
     if (turn_id === client_id) {
         document.getElementById("takeback").setAttribute('disabled', 'disabled')
@@ -1771,7 +1779,7 @@ socket.on('details', function(data) {
     // this function start after movement of scout
     setTimeout(() => {
         if (change_pawn) {
-            move_to.classList.remove(change_pawn.substring(0, 6)+"pawn")
+            move_to.classList.remove(change_pawn.substring(0, 1)+"p")
             move_to.classList.add(change_pawn)
         }
 

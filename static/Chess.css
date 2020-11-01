@@ -33,84 +33,84 @@ body {
     background-color: rgb(129, 110, 3);
 }
 
-.white-rook {
+.wr {
     background-image: url("icons/white_rook.png");
     background-size: 65% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.white-knight {
+.wn {
     background-image: url("icons/white_knight.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.white-bishop {
+.wb {
     background-image: url("icons/white_bishop.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.white-queen {
+.wq {
     background-image: url("icons/white_queen.png");
     background-size: 75% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.white-king {
+.wk {
     background-image: url("icons/white_king.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.white-pawn {
+.wp {
     background-image: url("icons/white_pawn.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-rook {
+.br {
     background-image: url("icons/black_rook.png");
     background-size: 60% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-knight {
+.bn {
     background-image: url("icons/black_knight.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-bishop {
+.bb {
     background-image: url("icons/black_bishop.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-queen {
+.bq {
     background-image: url("icons/black_queen.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-king {
+.bk {
     background-image: url("icons/black_king.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
     background-position: center;
 }
 
-.black-pawn {
+.bp {
     background-image: url("icons/black_pawn.png");
     background-size: 70% 70%;
     background-repeat: no-repeat;
@@ -137,12 +137,12 @@ body {
     box-shadow: 0 0 10px 5px red;
 }
 
-.white-remove {
+.wremove {
     background-color: rgb(150, 119, 85);
     height: 40px;
 }
 
-.black-remove {
+.bremove {
     background-color: rgb(150, 119, 85);
     height: 40px;
 }
