@@ -1,4 +1,4 @@
-var turn = "white"
+var turn = "black"
 var dots = []
 var selected = null
 var checked = false
